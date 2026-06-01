@@ -2,7 +2,7 @@ import { images } from "@/config/images";
 
 export const siteConfig = {
   name: "Ceyloe",
-  tagline: "Exquisite Gemstones from Sri Lanka",
+  tagline: "We take Pride & Joy Knowing Gem",
   description:
     "Discover ethically sourced, certified gemstones and fine jewellery. From sapphires to spinel, each stone carries a story of heritage and craftsmanship.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://ceyloe.com",

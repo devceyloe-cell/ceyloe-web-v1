@@ -7,12 +7,13 @@ import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/layout/logo";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/50 bg-background">
       <Container>
         <div className="flex h-16 items-center justify-between md:h-20">
           <Logo size="md" />
@@ -29,10 +30,12 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <ThemeToggle />
+
             <Link
               href="/catalog"
-              className="hidden items-center gap-2 text-sm uppercase tracking-widest text-gold transition-colors hover:text-gold-light sm:flex"
+              className="hidden items-center gap-2 text-sm uppercase tracking-widest text-gold transition-colors hover:text-gold-light md:flex"
             >
               <ShoppingBag className="h-4 w-4" />
               Shop
@@ -57,6 +60,10 @@ export function Header() {
         )}
       >
         <Container className="py-4">
+          <div className="mb-4 flex items-center justify-between border-b border-border pb-4">
+            <span className="text-xs uppercase tracking-widest text-muted">Theme</span>
+            <ThemeToggle />
+          </div>
           <nav className="flex flex-col gap-1">
             {siteConfig.nav.map((item) => (
               <Link

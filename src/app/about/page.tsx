@@ -1,86 +1,58 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
-import { SectionHeading } from "@/components/ui/section-heading";
-import { getSiteContent } from "@/services/content-service";
+import { AboutSectionBlock } from "@/components/about/about-section-block";
+import {
+  aboutClosing,
+  aboutPageIntro,
+  aboutSections,
+} from "@/data/about-content";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Discover the story behind Ceyloe — ethically sourced gemstones from the heart of Sri Lanka.",
+    "Learn how Ceyloe ethically sources, mines, and hand-cuts gemstones from Sri Lanka — our story, vision, and process.",
 };
 
-export default async function AboutPage() {
-  const content = await getSiteContent();
-
+export default function AboutPage() {
   return (
     <>
-      <section className="border-b border-border bg-surface py-20 md:py-28">
+      <section className="border-b border-border bg-surface py-12 md:py-16">
         <Container>
-          <SectionHeading
-            eyebrow="About Ceyloe"
-            title="A Legacy of Excellence"
-            description="We take pride and joy in knowing each gemstone we offer."
-          />
+          <nav className="mb-6 text-sm text-muted" aria-label="Breadcrumb">
+            <Link href="/" className="transition-colors hover:text-gold">
+              Home
+            </Link>
+            <span className="mx-2">/</span>
+            <span className="text-foreground">{aboutPageIntro.breadcrumb}</span>
+          </nav>
+          <p className="text-xs font-medium uppercase tracking-[0.25em] text-sapphire-light">
+            {siteConfig.name}
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-light tracking-tight text-foreground sm:text-5xl md:text-6xl">
+            {aboutPageIntro.tagline}
+          </h1>
         </Container>
       </section>
 
-      <section className="py-20 md:py-28">
-        <Container>
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-            <div>
-              <h2 className="font-display text-3xl font-light sm:text-4xl">
-                {content.brandStory.title}
-              </h2>
-              <div className="mt-6 h-px w-16 bg-gradient-to-r from-gold to-transparent" />
-              <div className="mt-8 space-y-4">
-                {content.brandStory.paragraphs.map((p, i) => (
-                  <p key={i} className="text-base leading-relaxed text-muted sm:text-lg">
-                    {p}
-                  </p>
-                ))}
-              </div>
-            </div>
-            <div className="relative aspect-[4/3] overflow-hidden border border-border">
-              <Image
-                src={content.brandStory.image}
-                alt="Ceyloe gemstone sourcing"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-            </div>
-          </div>
+      <section className="py-16 md:py-24">
+        <Container className="space-y-20 md:space-y-28">
+          {aboutSections.map((section, index) => (
+            <AboutSectionBlock
+              key={section.id}
+              section={section}
+              reverse={index % 2 === 1}
+            />
+          ))}
         </Container>
       </section>
 
-      <section className="border-t border-border bg-surface py-20 md:py-28">
+      <section className="border-t border-border bg-surface py-16 md:py-20">
         <Container>
-          <SectionHeading
-            eyebrow="Our Values"
-            title="What Sets Us Apart"
-          />
-          <div className="grid gap-8 md:grid-cols-3">
-            {[
-              {
-                title: "Direct Sourcing",
-                desc: "We work directly with Sri Lankan miners, eliminating middlemen and ensuring fair compensation.",
-              },
-              {
-                title: "Full Transparency",
-                desc: "Every treatment, origin, and certification detail is disclosed — no surprises, ever.",
-              },
-              {
-                title: "Personal Service",
-                desc: "From selection to setting, our gemologists guide you through every step of your journey.",
-              },
-            ].map((item) => (
-              <div key={item.title} className="border border-border p-8">
-                <h3 className="font-display text-xl font-light text-gold">{item.title}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-muted">{item.desc}</p>
-              </div>
-            ))}
-          </div>
+          <p className="mx-auto max-w-3xl text-center text-base leading-relaxed text-muted sm:text-lg">
+            {aboutClosing}
+          </p>
         </Container>
       </section>
     </>

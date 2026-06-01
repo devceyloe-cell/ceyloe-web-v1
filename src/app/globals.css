@@ -1,23 +1,41 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Shared brand tokens */
 :root {
-  /* Brand palette */
+  --gold: #d4af37;
+  --gold-light: #e8c96a;
+  --gold-muted: #b8962e;
+  --sapphire: #0057b8;
+  --sapphire-light: #1a6fd4;
+  --sapphire-muted: #004494;
+  --success: #2e8b57;
+}
+
+/* Light theme */
+html.light {
+  color-scheme: light;
+  --background: #f8f6f0;
+  --foreground: #080808;
+  --surface: #ffffff;
+  --surface-elevated: #f0ede6;
+  --border: #e0dcd3;
+  --muted: #5c5c5c;
+  --gold-light: #b8962e;
+  --gold-muted: #9a7d24;
+  --sapphire-light: #004494;
+}
+
+/* Dark theme */
+html.dark {
+  color-scheme: dark;
   --background: #080808;
   --foreground: #f8f6f0;
   --surface: #161616;
   --surface-elevated: #1e1e1e;
   --border: #2a2a2a;
-
-  --gold: #d4af37;
-  --gold-light: #e8c96a;
-  --gold-muted: #b8962e;
-
-  --sapphire: #0057b8;
-  --sapphire-light: #1a6fd4;
-  --sapphire-muted: #004494;
-
   --muted: #b5b5b5;
-  --success: #2e8b57;
 }
 
 @theme inline {
@@ -48,12 +66,18 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 body {
-  background: var(--background);
+  min-height: 100vh;
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
 ::selection {
@@ -86,11 +110,6 @@ body {
   100% {
     background-position: 200% center;
   }
-}
-
-.logo-gold {
-  filter: brightness(0) saturate(100%) invert(75%) sepia(47%) saturate(600%)
-    hue-rotate(10deg) brightness(95%);
 }
 
 .shimmer {
