@@ -1,88 +1,115 @@
 import type { Metadata } from "next";
-import { Mail, Phone, MapPin } from "lucide-react";
+import Link from "next/link";
+import { Phone, MapPin } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { SectionHeading } from "@/components/ui/section-heading";
 import { ContactForm } from "@/components/contact/contact-form";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with Ceyloe for gemstone inquiries, custom orders, and consultations.",
+  description:
+    "Get in touch with Ceyloe — head office in Australia, mining and production in Sri Lanka.",
 };
 
 export default function ContactPage() {
+  const { contact } = siteConfig;
+
   return (
-    <Container className="py-12 md:py-20">
-      <SectionHeading
-        eyebrow="Get in Touch"
-        title="Contact Us"
-        description="Whether you're seeking a specific stone or planning a bespoke piece, we're here to help."
-      />
+    <>
+      <section className="border-b border-border bg-surface py-12 md:py-16">
+        <Container>
+          <nav className="mb-6 text-sm text-muted" aria-label="Breadcrumb">
+            <Link href="/" className="transition-colors hover:text-gold">
+              Home
+            </Link>
+            <span className="mx-2">/</span>
+            <span className="text-foreground">Contact</span>
+          </nav>
+          <h1 className="font-display text-4xl font-light tracking-tight text-foreground sm:text-5xl md:text-6xl">
+            Get in touch.
+          </h1>
+        </Container>
+      </section>
 
-      <div className="grid gap-12 lg:grid-cols-[1fr_400px]">
-        <ContactForm />
+      <Container className="py-12 md:py-20">
+        <div className="grid gap-12 lg:grid-cols-[1fr_400px]">
+          <ContactForm />
 
-        <aside className="space-y-8">
-          <div className="border border-border bg-surface p-8">
-            <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
-              Contact Details
-            </h3>
-            <ul className="mt-6 space-y-5">
-              <li className="flex items-start gap-3">
-                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <div>
-                  <p className="text-sm font-medium text-foreground">Email</p>
-                  <a
-                    href={`mailto:${siteConfig.contact.email}`}
-                    className="text-sm text-muted hover:text-gold"
-                  >
-                    {siteConfig.contact.email}
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <div>
-                  <p className="text-sm font-medium text-foreground">Phone</p>
-                  <a
-                    href={`tel:${siteConfig.contact.phone}`}
-                    className="text-sm text-muted hover:text-gold"
-                  >
-                    {siteConfig.contact.phone}
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
+          <aside className="space-y-6">
+            <div className="border border-border bg-surface p-8">
+              <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+                {contact.headOffice.label}
+              </h3>
+              <address className="mt-4 flex gap-3 not-italic">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <div>
-                  <p className="text-sm font-medium text-foreground">Location</p>
-                  <p className="text-sm text-muted">{siteConfig.contact.address}</p>
+                <div className="text-sm leading-relaxed text-muted">
+                  {contact.headOffice.lines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
                 </div>
-              </li>
-            </ul>
-          </div>
+              </address>
+            </div>
 
-          <div className="border border-border bg-surface p-8">
-            <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
-              Consultation Hours
-            </h3>
-            <dl className="mt-6 space-y-3 text-sm">
-              <div className="flex justify-between">
-                <dt className="text-muted">Mon – Fri</dt>
-                <dd className="text-foreground">9:00 AM – 6:00 PM</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-muted">Saturday</dt>
-                <dd className="text-foreground">10:00 AM – 4:00 PM</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-muted">Sunday</dt>
-                <dd className="text-foreground">By appointment</dd>
-              </div>
-            </dl>
-          </div>
-        </aside>
-      </div>
-    </Container>
+            <div className="border border-border bg-surface p-8">
+              <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+                {contact.miningOffice.label}
+              </h3>
+              <address className="mt-4 flex gap-3 not-italic">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                <div className="text-sm leading-relaxed text-muted">
+                  {contact.miningOffice.lines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </div>
+              </address>
+            </div>
+
+            <div className="border border-border bg-surface p-8">
+              <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+                Phone
+              </h3>
+              <ul className="mt-4 space-y-3">
+                <li className="flex items-center gap-3">
+                  <Phone className="h-4 w-4 shrink-0 text-gold" />
+                  <a
+                    href={`tel:${contact.phone.replace(/\s/g, "")}`}
+                    className="text-sm text-muted hover:text-gold"
+                  >
+                    {contact.phone}
+                  </a>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Phone className="h-4 w-4 shrink-0 text-gold" />
+                  <div>
+                    <p className="text-xs text-muted">Overseas</p>
+                    <a
+                      href={`tel:${contact.phoneInternational.replace(/\s/g, "")}`}
+                      className="text-sm text-muted hover:text-gold"
+                    >
+                      {contact.phoneInternational}
+                    </a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <p className="text-center text-sm">
+              <a
+                href={siteConfig.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gold hover:underline"
+              >
+                Follow us on Instagram @ceyloegemstones
+              </a>
+            </p>
+          </aside>
+        </div>
+      </Container>
+    </>
   );
 }
