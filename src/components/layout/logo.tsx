@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-const LOGO_PATH = "/images/Home/imgi_1_ceyloe.png";
+const LOGO_PATH = "/images/Home/logo.png";
 
 interface LogoProps {
   className?: string;
@@ -25,7 +25,7 @@ export function Logo({ className, size = "md", showLink = true }: LogoProps) {
       alt="Ceyloe — Fine Gemstones"
       width={width}
       height={height}
-      className={cn(sizeClass, "logo-gold object-contain", className)}
+      className={cn(sizeClass, "object-contain", className)}
       priority
     />
   );
