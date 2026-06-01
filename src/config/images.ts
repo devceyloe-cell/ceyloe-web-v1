@@ -1,0 +1,24 @@
+export const images = {
+  logo: "/images/Home/imgi_1_ceyloe.png",
+  hero: {
+    poster: "/images/Home/imgi_10_110423001-9.jpg",
+    slides: [
+      "/images/Home/imgi_10_110423001-9.jpg",
+      "/images/Home/imgi_11_110423001-24.jpg",
+      "/images/Home/imgi_57_12-1_web.jpg",
+      "/images/Home/imgi_65_15_2_web.jpg",
+    ],
+  },
+  about: {
+    main: "/images/about/pexels-shkrabaanthony-7167020-1320x880.jpg",
+    secondary: "/images/about/3.jpg",
+    team: "/images/about/2.jpg",
+  },
+  categories: {
+    sapphires: "/images/Sapphires/14-2_web-1.jpg",
+    spinel: "/images/Spinel/110423001-14.jpg",
+    garnet: "/images/Garnet/1112023001-1.jpg",
+    zircon: "/images/Zircon/110423001-24.jpg",
+    jewellery: "/images/Jewellery/130723001-1.jpg",
+  },
+} as const;

@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand palette */
+  --background: #080808;
+  --foreground: #f8f6f0;
+  --surface: #161616;
+  --surface-elevated: #1e1e1e;
+  --border: #2a2a2a;
+
+  --gold: #d4af37;
+  --gold-light: #e8c96a;
+  --gold-muted: #b8962e;
+
+  --sapphire: #0057b8;
+  --sapphire-light: #1a6fd4;
+  --sapphire-muted: #004494;
+
+  --muted: #b5b5b5;
+  --success: #2e8b57;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-muted: var(--gold-muted);
+
+  --color-sapphire: var(--sapphire);
+  --color-sapphire-light: var(--sapphire-light);
+  --color-sapphire-muted: var(--sapphire-muted);
+
+  --color-muted: var(--muted);
+  --color-success: var(--success);
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--gold) 35%, transparent);
+  color: var(--foreground);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-muted));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sapphire-gradient-text {
+  background: linear-gradient(135deg, var(--sapphire-light), var(--sapphire));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gold-border-gradient {
+  border-image: linear-gradient(135deg, var(--gold-light), var(--gold-muted)) 1;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.logo-gold {
+  filter: brightness(0) saturate(100%) invert(75%) sepia(47%) saturate(600%)
+    hue-rotate(10deg) brightness(95%);
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--gold) 18%, transparent) 50%,
+    color-mix(in srgb, var(--sapphire) 8%, transparent) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
 }
