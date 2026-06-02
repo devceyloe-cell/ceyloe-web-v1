@@ -1,11 +1,14 @@
 export interface GemstoneSpec {
   carat?: string;
+  caratWeight?: number;
   color?: string;
   clarity?: string;
   cut?: string;
+  shape?: string;
   origin?: string;
   treatment?: string;
   certification?: string;
+  certificateNumber?: string;
 }
 
 export interface Product {
@@ -18,7 +21,11 @@ export interface Product {
   category: string;
   image: string;
   images: string[];
+  viewer360Images?: string[];
+  videoUrl?: string;
   featured?: boolean;
+  isNew?: boolean;
+  createdAt?: string;
   specs: GemstoneSpec;
   certificationUrl?: string;
   inStock: boolean;
@@ -31,6 +38,7 @@ export interface Testimonial {
   quote: string;
   rating: number;
   product?: string;
+  date?: string;
 }
 
 export interface Certification {
@@ -62,8 +70,47 @@ export interface SiteContent {
 
 export interface CatalogFilters {
   category?: string;
+  color?: string;
+  shape?: string;
+  origin?: string;
   minPrice?: number;
   maxPrice?: number;
+  minCarat?: number;
+  maxCarat?: number;
   sort?: "price-asc" | "price-desc" | "newest" | "featured";
   search?: string;
+}
+
+export interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  readTime: string;
+  publishedAt: string;
+  image: string;
+  content: string[];
+}
+
+export interface PortfolioItem {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+  stone?: string;
+  metal?: string;
+}
+
+export interface RecommendRequest {
+  budget?: number;
+  color?: string;
+  shape?: string;
+  minCarat?: number;
+  occasion?: string;
+}
+
+export interface RecommendResult {
+  products: Product[];
+  message: string;
 }

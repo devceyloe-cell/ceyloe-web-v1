@@ -1,7 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { formatPrice } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Price } from "@/components/ui/price";
+import { CompareButton } from "@/components/compare/compare-button";
 import type { Product } from "@/types";
 
 interface ProductCardProps {
@@ -10,46 +12,39 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Link
-      href={`/products/${product.handle}`}
-      className="group flex flex-col border border-border bg-surface transition-all duration-300 hover:border-gold/30"
-    >
-      <div className="relative aspect-square overflow-hidden bg-surface-elevated">
-        <Image
-          src={product.image}
-          alt={product.title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
-        {product.specs.certification && (
-          <div className="absolute left-3 top-3">
-            <Badge variant="sapphire">{product.specs.certification}</Badge>
-          </div>
-        )}
-        {!product.inStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/70">
-            <span className="text-xs uppercase tracking-widest text-muted">Sold</span>
-          </div>
-        )}
-      </div>
-      <div className="flex flex-1 flex-col p-5">
-        <p className="text-xs uppercase tracking-widest text-muted">{product.category}</p>
-        <h3 className="mt-1 font-display text-base font-light text-foreground transition-colors group-hover:text-gold sm:text-lg">
-          {product.title}
-        </h3>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {product.specs.carat && (
-            <span className="text-xs text-muted">{product.specs.carat}</span>
+    <div className="group relative">
+      <Link href={`/products/${product.handle}`}>
+        <div className="relative aspect-square overflow-hidden bg-surface-elevated">
+          <Image
+            src={product.image}
+            alt={product.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          />
+          {product.isNew && (
+            <span className="absolute left-2 top-2 bg-primary px-2 py-0.5 text-[10px] uppercase tracking-widest text-white">
+              New
+            </span>
           )}
-          {product.specs.color && (
-            <span className="text-xs text-muted">&middot; {product.specs.color}</span>
+          {!product.inStock && (
+            <div className="absolute inset-x-0 bottom-0 bg-background/80 py-2 text-center">
+              <span className="text-[10px] uppercase tracking-widest text-muted">Sold out</span>
+            </div>
           )}
         </div>
-        <p className="mt-auto pt-4 text-lg font-medium text-gold">
-          {formatPrice(product.price, product.currency)}
-        </p>
+        <div className="mt-3">
+          <h3 className="text-sm leading-snug text-heading transition-colors group-hover:text-primary">
+            {product.title}
+          </h3>
+          <p className="mt-1 text-sm text-foreground">
+            <Price amount={product.price} />
+          </p>
+        </div>
+      </Link>
+      <div className="mt-2">
+        <CompareButton handle={product.handle} />
       </div>
-    </Link>
+    </div>
   );
 }

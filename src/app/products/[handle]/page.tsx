@@ -6,9 +6,12 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductGallery } from "@/components/product/product-gallery";
+import { ProductVideo } from "@/components/product/product-video";
 import { ProductSpecs } from "@/components/product/product-specs";
+import { CertificationDisplay } from "@/components/product/certification-display";
+import { CompareButton } from "@/components/compare/compare-button";
 import { getProductByHandle } from "@/services/product-service";
-import { formatPrice } from "@/lib/utils";
+import { ProductPrice } from "@/components/product/product-price";
 import { siteConfig } from "@/config/site";
 
 interface ProductPageProps {
@@ -18,24 +21,17 @@ interface ProductPageProps {
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { handle } = await params;
   const product = await getProductByHandle(handle);
-
   if (!product) return { title: "Product Not Found" };
-
   return {
     title: product.title,
     description: product.description,
-    openGraph: {
-      title: product.title,
-      description: product.description,
-      images: [{ url: product.image }],
-    },
+    openGraph: { title: product.title, description: product.description, images: [{ url: product.image }] },
   };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { handle } = await params;
   const product = await getProductByHandle(handle);
-
   if (!product) notFound();
 
   const whatsappMessage = encodeURIComponent(
@@ -43,62 +39,72 @@ export default async function ProductPage({ params }: ProductPageProps) {
   );
 
   return (
-    <Container className="py-12 md:py-20">
-      <Link
-        href="/catalog"
-        className="mb-8 inline-flex items-center gap-2 text-sm uppercase tracking-widest text-muted transition-colors hover:text-gold"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Catalog
-      </Link>
+    <div className="section-bg">
+      <Container className="py-12 md:py-20">
+        <Link
+          href="/catalog"
+          className="mb-8 inline-flex items-center gap-2 text-sm uppercase tracking-widest text-muted transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Catalog
+        </Link>
 
-      <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
-        <ProductGallery images={product.images} title={product.title} />
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
+          <ProductGallery
+            images={product.images}
+            title={product.title}
+            viewer360Images={product.viewer360Images}
+          />
 
-        <div className="flex flex-col">
-          <div className="mb-2 flex flex-wrap gap-2">
-            <Badge variant="muted">{product.category}</Badge>
-            {product.specs.certification && (
-              <Badge variant="sapphire">{product.specs.certification} Certified</Badge>
-            )}
-          </div>
+          <div className="flex flex-col">
+            <div className="mb-2 flex flex-wrap gap-2">
+              <Badge variant="muted">{product.category}</Badge>
+              {product.isNew && <Badge variant="sapphire">New Arrival</Badge>}
+              {product.specs.certification && (
+                <Badge variant="sapphire">{product.specs.certification} Certified</Badge>
+              )}
+            </div>
 
-          <h1 className="font-display text-3xl font-light tracking-tight sm:text-4xl">
-            {product.title}
-          </h1>
+            <h1 className="font-display text-3xl font-light tracking-tight sm:text-4xl">
+              {product.title}
+            </h1>
 
-          <p className="mt-4 text-3xl font-medium text-gold">
-            {formatPrice(product.price, product.currency)}
-          </p>
+            <ProductPrice amount={product.price} />
 
-          <p className="mt-6 text-base leading-relaxed text-muted">
-            {product.description}
-          </p>
+            <p className="mt-6 text-base leading-relaxed text-muted">{product.description}</p>
 
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <a
-              href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${whatsappMessage}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1"
-            >
-              <Button size="lg" className="w-full">
-                <MessageCircle className="h-4 w-4" />
-                Inquire Now
-              </Button>
-            </a>
-            <Link href="/contact" className="flex-1">
-              <Button variant="outline" size="lg" className="w-full">
-                Request Consultation
-              </Button>
-            </Link>
-          </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <CompareButton handle={product.handle} />
+            </div>
 
-          <div className="mt-10">
-            <ProductSpecs specs={product.specs} />
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <a
+                href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${whatsappMessage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1"
+              >
+                <Button size="lg" className="w-full">
+                  <MessageCircle className="h-4 w-4" />
+                  Inquire on WhatsApp
+                </Button>
+              </a>
+              <Link href="/custom-jewelry" className="flex-1">
+                <Button variant="outline" size="lg" className="w-full">
+                  Custom Jewelry Inquiry
+                </Button>
+              </Link>
+            </div>
+
+            <div className="mt-10">
+              <ProductSpecs specs={product.specs} />
+            </div>
+
+            <CertificationDisplay product={product} />
+            <ProductVideo videoUrl={product.videoUrl} poster={product.image} title={product.title} />
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 }

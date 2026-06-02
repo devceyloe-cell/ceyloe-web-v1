@@ -1,7 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Badge } from "@/components/ui/badge";
@@ -54,7 +56,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 )}
                 <div className="mt-auto flex items-center justify-between pt-4">
                   <span className="text-lg font-medium text-gold">
-                    {formatPrice(product.price, product.currency)}
+                    <Price amount={product.price} />
                   </span>
                   <ArrowRight className="h-4 w-4 text-muted transition-transform group-hover:translate-x-1 group-hover:text-gold" />
                 </div>

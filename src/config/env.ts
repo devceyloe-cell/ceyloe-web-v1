@@ -5,6 +5,7 @@ export const env = {
     storeDomain: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ?? "",
     storefrontToken: process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ?? "",
     apiVersion: process.env.SHOPIFY_API_VERSION ?? "2024-10",
+    customerClientId: process.env.SHOPIFY_CUSTOMER_CLIENT_ID ?? "",
   },
   sanity: {
     projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "",

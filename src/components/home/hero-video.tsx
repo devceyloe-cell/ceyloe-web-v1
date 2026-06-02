@@ -35,7 +35,7 @@ export function HeroVideo({ content }: HeroVideoProps) {
               className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: `url(${env.hero.posterUrl})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-background via-background/70 to-sapphire/15" />
+            <div className="absolute inset-0 bg-gradient-to-br from-background via-background/70 to-transparent" />
           </>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />

@@ -1,14 +1,11 @@
+import { heroSlides, getHeroSlideImage } from "@/data/hero-slides";
+
 export const images = {
   logo: "/images/Home/logo2.png",
   favicon: "/favicon.png",
   hero: {
-    poster: "/images/Home/imgi_10_110423001-9.jpg",
-    slides: [
-      "/images/Home/imgi_10_110423001-9.jpg",
-      "/images/Home/imgi_11_110423001-24.jpg",
-      "/images/Home/imgi_57_12-1_web.jpg",
-      "/images/Home/imgi_65_15_2_web.jpg",
-    ],
+    poster: heroSlides[0].images.desktop,
+    slides: heroSlides,
   },
   about: {
     main: "/images/about/pexels-shkrabaanthony-7167020-1320x880.jpg",
@@ -23,3 +20,9 @@ export const images = {
     jewellery: "/images/Jewellery/130723001-1.jpg",
   },
 } as const;
+
+/** Hero slide desktop image path for backward compatibility */
+export function getHeroSlideSrc(slide: (typeof images.hero.slides)[number] | string): string {
+  if (typeof slide === "string") return slide;
+  return getHeroSlideImage(slide, "desktop");
+}

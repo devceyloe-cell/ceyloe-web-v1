@@ -24,23 +24,18 @@ export function SectionHeading({
       )}
     >
       {eyebrow && (
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-gold">
+        <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-primary">
           {eyebrow}
         </p>
       )}
-      <h2 className="font-display text-3xl font-light tracking-tight text-foreground sm:text-4xl md:text-5xl">
+      <h2 className="font-display text-3xl font-light tracking-tight text-heading sm:text-4xl md:text-5xl">
         {title}
       </h2>
       {description && (
-        <p className="mt-4 max-w-2xl text-muted sm:text-lg mx-auto">{description}</p>
+        <p className={cn("mt-4 max-w-2xl text-muted sm:text-base", align === "center" && "mx-auto")}>
+          {description}
+        </p>
       )}
-      <div
-        className={cn(
-          "mt-6 h-px w-16 bg-gradient-to-r from-sapphire/40 via-gold to-sapphire/40",
-          align === "left" && "mx-0",
-          align === "center" && "mx-auto",
-        )}
-      />
     </div>
   );
 }

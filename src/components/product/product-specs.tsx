@@ -5,26 +5,28 @@ interface ProductSpecsProps {
   specs: GemstoneSpec;
 }
 
-const specLabels: Record<keyof GemstoneSpec, string> = {
+const specLabels: Partial<Record<keyof GemstoneSpec, string>> = {
   carat: "Carat Weight",
   color: "Color",
   clarity: "Clarity",
   cut: "Cut",
+  shape: "Shape",
   origin: "Origin",
   treatment: "Treatment",
   certification: "Certification",
+  certificateNumber: "Certificate No.",
 };
 
+const hiddenKeys = new Set<keyof GemstoneSpec>(["caratWeight"]);
+
 export function ProductSpecs({ specs }: ProductSpecsProps) {
-  const entries = Object.entries(specs).filter(([, value]) => value) as [
-    keyof GemstoneSpec,
-    string,
-  ][];
+  const entries = (Object.entries(specs) as [keyof GemstoneSpec, string | number | undefined][])
+    .filter(([key, value]) => value && !hiddenKeys.has(key) && specLabels[key]);
 
   return (
     <div className="border border-border">
-      <div className="border-b border-border bg-surface px-6 py-4">
-        <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+      <div className="border-b border-border bg-surface-elevated px-6 py-4">
+        <h3 className="text-xs font-medium uppercase tracking-[0.15em] text-muted">
           Gemstone Specifications
         </h3>
       </div>

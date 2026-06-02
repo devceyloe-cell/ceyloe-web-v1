@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" fill="none">
+  <defs>
+    <linearGradient id="bg4" x1="1920" y1="0" x2="0" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FAF8F4"/>
+      <stop offset="0.45" stop-color="#EEF2FF"/>
+      <stop offset="1" stop-color="#0A2540"/>
+    </linearGradient>
+    <linearGradient id="necklace" x1="900" y1="280" x2="1500" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE68A"/>
+      <stop offset="0.35" stop-color="#D4AF37"/>
+      <stop offset="1" stop-color="#92700C"/>
+    </linearGradient>
+    <radialGradient id="pendant" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1260 520) scale(220)">
+      <stop stop-color="#93C5FD"/>
+      <stop offset="0.6" stop-color="#1D4ED8"/>
+      <stop offset="1" stop-color="#0A2540"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg4)"/>
+  <path d="M760 420 C980 220, 1240 220, 1460 420" stroke="url(#necklace)" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <path d="M820 430 C990 280, 1210 280, 1380 430" stroke="#D4AF37" stroke-width="4" fill="none" opacity="0.45"/>
+  <polygon points="1260,360 1410,520 1320,760 1200,760 1110,520" fill="url(#pendant)"/>
+  <polygon points="1260,420 1360,520 1300,680 1220,680 1160,520" fill="#EFF6FF" opacity="0.25"/>
+  <circle cx="1260" cy="520" r="18" fill="#D4AF37" opacity="0.75"/>
+  <circle cx="980" cy="760" r="140" fill="#1D4ED8" opacity="0.05"/>
+  <circle cx="1540" cy="760" r="90" fill="#0F766E" opacity="0.07"/>
+  <g opacity="0.35" fill="#D4AF37">
+    <circle cx="1480" cy="300" r="4"/>
+    <circle cx="1040" cy="260" r="3"/>
+    <circle cx="1620" cy="540" r="3"/>
+  </g>
+</svg>

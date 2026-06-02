@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" fill="none">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="1920" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A2540"/>
+      <stop offset="0.55" stop-color="#123a5c"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1280 420) rotate(90) scale(520 620)">
+      <stop stop-color="#3B82F6" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sapphire" x1="1180" y1="180" x2="1520" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA"/>
+      <stop offset="0.45" stop-color="#1D4ED8"/>
+      <stop offset="1" stop-color="#0A2540"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg1)"/>
+  <rect width="1920" height="1080" fill="url(#glow1)"/>
+  <g opacity="0.12" stroke="#D4AF37" stroke-width="1">
+    <path d="M120 900 L420 760 L720 900 L420 1040 Z"/>
+    <path d="M260 640 L500 520 L740 640 L500 760 Z"/>
+  </g>
+  <g transform="translate(980 120)">
+    <polygon points="420,60 720,260 620,620 220,620 120,260" fill="url(#sapphire)" opacity="0.95"/>
+    <polygon points="420,120 640,260 560,540 280,540 200,260" fill="#93C5FD" opacity="0.35"/>
+    <polygon points="420,180 560,260 520,460 320,460 280,260" fill="#EFF6FF" opacity="0.22"/>
+    <path d="M280 260 L420 120 L560 260 L420 400 Z" stroke="#D4AF37" stroke-width="3" opacity="0.55"/>
+  </g>
+  <circle cx="1540" cy="220" r="6" fill="#D4AF37" opacity="0.8"/>
+  <circle cx="1480" cy="760" r="4" fill="#D4AF37" opacity="0.55"/>
+  <circle cx="860" cy="180" r="3" fill="#FAF8F4" opacity="0.35"/>
+</svg>

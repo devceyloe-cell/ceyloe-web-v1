@@ -6,8 +6,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="dark"
-      themes={["light", "dark"]}
+      defaultTheme="light"
+      forcedTheme="light"
+      themes={["light"]}
       enableSystem={false}
       storageKey="ceyloe-theme"
       disableTransitionOnChange={false}

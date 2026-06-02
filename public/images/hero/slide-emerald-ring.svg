@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" fill="none">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1920" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FAF8F4"/>
+      <stop offset="0.7" stop-color="#E8E2D8"/>
+      <stop offset="1" stop-color="#0A2540"/>
+    </linearGradient>
+    <linearGradient id="emerald" x1="1100" y1="220" x2="1500" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34D399"/>
+      <stop offset="0.5" stop-color="#0F766E"/>
+      <stop offset="1" stop-color="#064E3B"/>
+    </linearGradient>
+    <linearGradient id="goldBand" x1="980" y1="520" x2="1620" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE68A"/>
+      <stop offset="0.5" stop-color="#D4AF37"/>
+      <stop offset="1" stop-color="#B8962E"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg2)"/>
+  <ellipse cx="1320" cy="620" rx="360" ry="90" fill="#0A2540" opacity="0.08"/>
+  <ellipse cx="1280" cy="540" rx="300" ry="300" stroke="url(#goldBand)" stroke-width="28" fill="none"/>
+  <ellipse cx="1280" cy="540" rx="250" ry="250" stroke="#D4AF37" stroke-width="8" fill="none" opacity="0.45"/>
+  <polygon points="1280,260 1460,420 1380,680 1180,680 1100,420" fill="url(#emerald)"/>
+  <polygon points="1280,330 1410,420 1350,610 1210,610 1150,420" fill="#6EE7B7" opacity="0.25"/>
+  <path d="M1150 420 L1280 260 L1410 420 L1280 580 Z" stroke="#D4AF37" stroke-width="2.5" opacity="0.6"/>
+  <circle cx="420" cy="820" r="120" fill="#0F766E" opacity="0.06"/>
+  <circle cx="520" cy="760" r="60" fill="#D4AF37" opacity="0.08"/>
+</svg>

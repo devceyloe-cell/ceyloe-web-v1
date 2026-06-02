@@ -3,9 +3,9 @@ import { images } from "@/config/images";
 
 export const mockSiteContent: SiteContent = {
   hero: {
-    headline: "Beyond Rare — Discover Your Perfect Gemstone",
+    headline: "Specialists in Fine Natural Gemstones",
     subheadline:
-      "Ethically sourced, certified gemstones from the heart of Sri Lanka. Each stone, a masterpiece of nature.",
+      "Every bespoke creation begins with choosing an extraordinary natural gemstone — ethically sourced and certified from Sri Lanka.",
     ctaLabel: "Explore Collection",
     ctaHref: "/catalog",
   },

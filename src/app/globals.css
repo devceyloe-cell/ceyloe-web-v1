@@ -2,57 +2,73 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Shared brand tokens */
+/* Ceyloe luxury palette */
 :root {
+  --brand-navy: #0a2540;
+  --brand-blue: #1d4ed8;
+  --brand-blue-hover: #1e40af;
   --gold: #d4af37;
   --gold-light: #e8c96a;
   --gold-muted: #b8962e;
-  --sapphire: #0057b8;
-  --sapphire-light: #1a6fd4;
-  --sapphire-muted: #004494;
-  --success: #2e8b57;
+  --emerald: #0f766e;
+  --emerald-light: #14b8a6;
+  --sapphire: #1d4ed8;
+  --sapphire-light: #3b82f6;
+  --sapphire-muted: #1e40af;
+  --success: #0f766e;
 }
 
-/* Light theme */
 html.light {
   color-scheme: light;
-  --background: #f8f6f0;
-  --foreground: #080808;
+  --background: #ffffff;
+  --foreground: #1f2937;
+  --heading: #0a2540;
   --surface: #ffffff;
-  --surface-elevated: #f0ede6;
-  --border: #e0dcd3;
-  --muted: #5c5c5c;
-  --gold-light: #b8962e;
-  --gold-muted: #9a7d24;
-  --sapphire-light: #004494;
+  --surface-elevated: #ffffff;
+  --surface-header: #ffffff;
+  --primary: #1d4ed8;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+  --on-dark: #ffffff;
 }
 
-/* Dark theme */
 html.dark {
-  color-scheme: dark;
-  --background: #080808;
-  --foreground: #f8f6f0;
-  --surface: #161616;
-  --surface-elevated: #1e1e1e;
-  --border: #2a2a2a;
-  --muted: #b5b5b5;
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #1f2937;
+  --heading: #0a2540;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-header: #ffffff;
+  --primary: #1d4ed8;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+  --on-dark: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-heading: var(--heading);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
+  --color-surface-header: var(--surface-header);
   --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-on-dark: var(--on-dark);
 
   --color-gold: var(--gold);
   --color-gold-light: var(--gold-light);
   --color-gold-muted: var(--gold-muted);
 
+  --color-emerald: var(--emerald);
+  --color-emerald-light: var(--emerald-light);
+
   --color-sapphire: var(--sapphire);
   --color-sapphire-light: var(--sapphire-light);
   --color-sapphire-muted: var(--sapphire-muted);
 
+  --color-brand-navy: var(--brand-navy);
   --color-muted: var(--muted);
   --color-success: var(--success);
 
@@ -80,9 +96,18 @@ body {
     color 0.25s ease;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--heading);
+}
+
 ::selection {
   background: color-mix(in srgb, var(--gold) 35%, transparent);
-  color: var(--foreground);
+  color: var(--heading);
 }
 
 .gold-gradient-text {
@@ -97,10 +122,6 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.gold-border-gradient {
-  border-image: linear-gradient(135deg, var(--gold-light), var(--gold-muted)) 1;
 }
 
 @keyframes shimmer {
@@ -122,4 +143,31 @@ body {
   );
   background-size: 200% 100%;
   animation: shimmer 3s infinite;
+}
+
+.section-bg {
+  background-color: var(--background);
+}
+
+.section-bg-alt {
+  background-color: var(--surface-elevated);
+}
+
+.section-hero {
+  background-color: var(--background);
+}
+
+.accent-emerald {
+  --accent: var(--emerald);
+}
+
+.accent-sapphire {
+  --accent: var(--sapphire);
+}
+
+@media print {
+  header,
+  footer {
+    display: none !important;
+  }
 }
