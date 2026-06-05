@@ -50,7 +50,7 @@ export default function RootLayout({
       className={`light ${inter.variable} ${playfair.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-background text-foreground antialiased">
+      <body className="min-h-screen text-foreground antialiased">
         <ThemeScript />
         <ThemeProvider>
           <SiteShell>{children}</SiteShell>

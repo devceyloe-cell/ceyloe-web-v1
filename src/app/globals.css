@@ -20,12 +20,12 @@
 
 html.light {
   color-scheme: light;
-  --background: #ffffff;
+  --background: transparent;
   --foreground: #1f2937;
   --heading: #0a2540;
-  --surface: #ffffff;
-  --surface-elevated: #ffffff;
-  --surface-header: #ffffff;
+  --surface: rgb(255 255 255 / 0.82);
+  --surface-elevated: rgb(255 255 255 / 0.82);
+  --surface-header: rgb(255 255 255 / 0.94);
   --primary: #1d4ed8;
   --border: #e5e7eb;
   --muted: #6b7280;
@@ -34,12 +34,12 @@ html.light {
 
 html.dark {
   color-scheme: light;
-  --background: #ffffff;
+  --background: transparent;
   --foreground: #1f2937;
   --heading: #0a2540;
-  --surface: #ffffff;
-  --surface-elevated: #ffffff;
-  --surface-header: #ffffff;
+  --surface: rgb(255 255 255 / 0.82);
+  --surface-elevated: rgb(255 255 255 / 0.82);
+  --surface-header: rgb(255 255 255 / 0.94);
   --primary: #1d4ed8;
   --border: #e5e7eb;
   --muted: #6b7280;
@@ -82,13 +82,13 @@ html.dark {
 
 html {
   scroll-behavior: smooth;
-  background-color: var(--background);
+  background-color: #ffffff;
   color: var(--foreground);
 }
 
 body {
   min-height: 100vh;
-  background-color: var(--background);
+  background-color: transparent;
   color: var(--foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
   transition:
@@ -146,11 +146,18 @@ h6 {
 }
 
 .section-bg {
-  background-color: var(--background);
+  background-color: rgb(255 255 255 / 0.82);
 }
 
 .section-bg-alt {
-  background-color: var(--surface-elevated);
+  background-color: rgb(255 255 255 / 0.82);
+}
+
+.site-bg-texture {
+  background-image: url("/images/backgrounds/gemstone-jewelry.jpg");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: contain;
 }
 
 .section-hero {
