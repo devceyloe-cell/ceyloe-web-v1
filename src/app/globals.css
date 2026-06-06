@@ -5,6 +5,7 @@
 /* Ceyloe luxury palette */
 :root {
   --brand-navy: #0a2540;
+  --site-header-height: 6.25rem;
   --brand-blue: #1d4ed8;
   --brand-blue-hover: #1e40af;
   --gold: #d4af37;
@@ -170,6 +171,12 @@ h6 {
 
 .accent-sapphire {
   --accent: var(--sapphire);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --site-header-height: 6.5rem;
+  }
 }
 
 @media print {

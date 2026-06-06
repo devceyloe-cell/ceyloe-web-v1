@@ -69,7 +69,7 @@ export const portfolioItems: PortfolioItem[] = [
     id: "8",
     title: "Custom Sapphire Bracelet",
     description: "Multi-stone bracelet featuring natural Ceylon sapphires.",
-    image: "/images/Jewellery/130723001-6.jpg",
+    image: "/images/hero/slide-3-desktop.webp",
     category: "Bracelets",
     stone: "Mixed Sapphires",
     metal: "18k White Gold",

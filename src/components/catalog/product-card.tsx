@@ -11,15 +11,24 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const darkImage =
+    product.image.includes("/hero/slide-") || product.handle === "custom-sapphire-bracelet";
+
   return (
     <div className="group relative">
       <Link href={`/products/${product.handle}`}>
-        <div className="relative aspect-square overflow-hidden bg-surface-elevated">
+        <div
+          className={`relative aspect-square overflow-hidden ${
+            darkImage ? "bg-neutral-950" : "bg-surface-elevated"
+          }`}
+        >
           <Image
             src={product.image}
             alt={product.title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            className={`transition-transform duration-500 group-hover:scale-[1.03] ${
+              darkImage ? "object-cover object-center" : "object-cover"
+            }`}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
           {product.isNew && (

@@ -20,7 +20,7 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-surface-header/98 backdrop-blur-sm">
       <AnnouncementBar />
-      <div className="border-b border-border">
+      <div className="border-b border-border/60">
       <Container>
         <div className="flex h-16 items-center justify-between md:h-[4.5rem]">
           <Logo size="md" />

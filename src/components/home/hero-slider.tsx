@@ -20,7 +20,7 @@ export function HeroSlider() {
   const current = heroSlides[index];
 
   return (
-    <section className="relative min-h-[85vh] overflow-hidden bg-background">
+    <section className="relative min-h-[calc(85vh-var(--site-header-height))] overflow-hidden bg-transparent">
       <AnimatePresence mode="wait">
         <motion.div
           key={current.id}
@@ -46,7 +46,7 @@ export function HeroSlider() {
         </motion.div>
       </AnimatePresence>
 
-      <Container className="relative z-10 flex min-h-[85vh] flex-col justify-center pb-16 pt-28 md:pt-32">
+      <Container className="relative z-10 flex min-h-[calc(85vh-var(--site-header-height))] flex-col justify-center pb-12 pt-6 md:pb-16 md:pt-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.id}
