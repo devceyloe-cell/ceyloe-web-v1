@@ -2,6 +2,7 @@ export interface HeroSlide {
   id: string;
   eyebrow: string;
   title: string;
+  highlight?: string;
   subtitle: string;
   ctaLabel: string;
   ctaHref: string;
@@ -15,14 +16,15 @@ export interface HeroSlide {
 
 export const heroSlides: HeroSlide[] = [
   {
-    id: "heart-jewelry",
-    eyebrow: "Fine Jewelry",
-    title: "Handcrafted With Heart",
+    id: "hero-main",
+    eyebrow: "Your kind of",
+    title: "Precious Gemstones & Custom Jewellery",
+    highlight: "Extraordinary",
     subtitle:
-      "Delicate sterling silver and gemstone accents — thoughtful pieces designed for everyday elegance and special moments.",
-    ctaLabel: "Shop Jewelry",
-    ctaHref: "/catalog?category=jewelry",
-    alt: "Interlocking silver heart jewelry with crystal accents and a red gemstone drop",
+      "Bringing you some of Earth's finest precious gemstones — the ultimate one-of-a-kind luxury. Whether adding to your collection, searching for fine jewellery, or creating a custom piece, this is the place for you.",
+    ctaLabel: "Explore Collection",
+    ctaHref: "/catalog",
+    alt: "Fine gemstone and jewellery collection",
     images: {
       desktop: "/images/hero/slide-1-desktop.webp",
       tablet: "/images/hero/slide-1-tablet.webp",
@@ -31,12 +33,12 @@ export const heroSlides: HeroSlide[] = [
   },
   {
     id: "ruby-pendant",
-    eyebrow: "Ruby & Diamond",
+    eyebrow: "Fine jewellery",
     title: "Ruby & Diamond Pendant",
     subtitle:
       "A vivid oval ruby surrounded by a brilliant diamond halo — timeless luxury on a fine gold chain.",
     ctaLabel: "Shop Pendants",
-    ctaHref: "/catalog?category=pendants",
+    ctaHref: "/catalog?category=jewellery",
     alt: "Gold ruby and diamond halo pendant necklace on green satin",
     images: {
       desktop: "/images/hero/slide-2-desktop.webp",
@@ -46,12 +48,12 @@ export const heroSlides: HeroSlide[] = [
   },
   {
     id: "gemstone-rings",
-    eyebrow: "Coloured Gemstones",
+    eyebrow: "Coloured gemstones",
     title: "Coloured Gemstone Rings",
     subtitle:
       "Emerald, aquamarine and ruby set in artisan gold — bold colour, distinctive design, and lasting craftsmanship.",
     ctaLabel: "Shop Rings",
-    ctaHref: "/catalog?category=rings",
+    ctaHref: "/catalog?category=jewellery",
     alt: "Three oval gemstone rings in emerald green, aquamarine and ruby red",
     images: {
       desktop: "/images/hero/slide-3-desktop.webp",
@@ -61,7 +63,7 @@ export const heroSlides: HeroSlide[] = [
   },
   {
     id: "gem-collection",
-    eyebrow: "Natural Gemstones",
+    eyebrow: "Natural gemstones",
     title: "Exceptional Natural Gems",
     subtitle:
       "Sapphires, emeralds, rubies and more — a curated spectrum of earth-mined stones in every cut and colour.",
@@ -76,12 +78,12 @@ export const heroSlides: HeroSlide[] = [
   },
   {
     id: "raw-aquamarine",
-    eyebrow: "Raw & Natural",
+    eyebrow: "Raw & natural",
     title: "Raw Aquamarine Beauty",
     subtitle:
       "Uncut aquamarine in its natural form — the raw elegance of Ceylon's finest stones before they become masterpieces.",
     ctaLabel: "Shop Aquamarine",
-    ctaHref: "/catalog?category=aquamarine",
+    ctaHref: "/catalog",
     alt: "Large raw translucent aquamarine crystal on smooth river stones",
     images: {
       desktop: "/images/hero/slide-5-desktop.webp",
@@ -91,7 +93,7 @@ export const heroSlides: HeroSlide[] = [
   },
   {
     id: "teal-bracelet",
-    eyebrow: "Bespoke Creations",
+    eyebrow: "Bespoke creations",
     title: "Teal Gemstone Bracelet",
     subtitle:
       "Polished teal and seafoam stones in sterling silver — a one-of-a-kind bracelet crafted for the discerning collector.",

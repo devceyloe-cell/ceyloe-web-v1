@@ -14,22 +14,19 @@ export function FeaturedCollection({ eyebrow, title, products, viewAllHref }: Fe
   if (products.length === 0) return null;
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="border-b border-border py-16 md:py-24">
       <Container>
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
             {eyebrow && (
-              <p className="mb-2 text-xs uppercase tracking-[0.2em] text-primary">{eyebrow}</p>
+              <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.15em] text-muted">{eyebrow}</p>
             )}
-            <h2 className="font-display text-2xl font-light tracking-tight text-heading sm:text-3xl md:text-4xl">
+            <h2 className="text-2xl font-medium tracking-tight text-heading sm:text-3xl md:text-4xl">
               {title}
             </h2>
           </div>
-          <Link
-            href={viewAllHref}
-            className="text-xs uppercase tracking-widest text-primary underline-offset-4 hover:text-gold hover:underline"
-          >
-            View all
+          <Link href={viewAllHref} className="link-arrow text-heading">
+            View all →
           </Link>
         </div>
 

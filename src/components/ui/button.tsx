@@ -8,20 +8,20 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
   primary:
-    "bg-primary text-white hover:bg-gold hover:text-brand-navy font-normal tracking-wide",
+    "bg-primary text-white hover:bg-[#222222] font-medium uppercase tracking-[0.1em]",
   secondary:
-    "bg-surface-elevated text-heading hover:bg-gold/10 border border-border hover:border-gold/40",
-  ghost: "text-foreground hover:text-gold hover:bg-surface-elevated",
+    "bg-surface-elevated text-heading hover:bg-border border border-border font-medium uppercase tracking-[0.08em]",
+  ghost: "text-foreground hover:opacity-70 font-medium",
   outline:
-    "border border-primary text-primary hover:bg-primary hover:text-white",
+    "border border-primary text-primary hover:bg-primary hover:text-white font-medium uppercase tracking-[0.08em]",
   emerald:
-    "bg-emerald text-white hover:bg-gold hover:text-brand-navy font-normal tracking-wide",
+    "bg-primary text-white hover:bg-[#222222] font-medium uppercase tracking-[0.1em]",
 };
 
 const sizes = {
-  sm: "px-4 py-2 text-xs",
-  md: "px-6 py-3 text-sm",
-  lg: "px-8 py-4 text-sm",
+  sm: "px-4 py-2 text-[11px]",
+  md: "px-6 py-3 text-xs",
+  lg: "px-8 py-4 text-xs",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -29,7 +29,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed",
+        "inline-flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
         variants[variant],
         sizes[size],
         className,

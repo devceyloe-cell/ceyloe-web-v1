@@ -13,7 +13,7 @@ interface LogoProps {
 
 const sizes = {
   sm: { width: 120, height: 40, className: "h-8 w-auto" },
-  md: { width: 150, height: 48, className: "h-10 w-auto md:h-11" },
+  md: { width: 150, height: 48, className: "h-9 w-auto md:h-10 lg:h-9 xl:h-10" },
   lg: { width: 180, height: 58, className: "h-12 w-auto md:h-14" },
 };
 

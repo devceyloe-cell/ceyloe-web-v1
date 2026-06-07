@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import { SiteShell } from "@/components/layout/site-shell";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ThemeScript } from "@/components/providers/theme-script";
@@ -10,12 +10,14 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-accent",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -47,7 +49,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`light ${inter.variable} ${playfair.variable}`}
+      className={`light ${inter.variable} ${cormorant.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-screen text-foreground antialiased">

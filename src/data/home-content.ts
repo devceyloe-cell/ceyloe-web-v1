@@ -61,24 +61,16 @@ export const heritageContent = {
 
 export const trustItems = [
   {
-    title: "Worldwide delivery",
-    description: "Insured shipping to clients around the globe.",
+    title: "Express shipping",
+    description: "Insured worldwide delivery on all orders.",
   },
   {
-    title: "Certified gemstones",
-    description: "GIA and independent certification on premium stones.",
+    title: "Payment secured",
+    description: "Trusted, secure checkout for every purchase.",
   },
   {
-    title: "Expert guidance",
-    description: "Quick, knowledgeable responses to all enquiries.",
-  },
-  {
-    title: "Ethically sourced",
-    description: "Direct relationships with Sri Lankan miners.",
-  },
-  {
-    title: "Secure enquiries",
-    description: "Trusted communication via phone, email, and WhatsApp.",
+    title: "Money back guarantee",
+    description: "Guaranteed refund if there is any issue with your order.",
   },
 ];
 

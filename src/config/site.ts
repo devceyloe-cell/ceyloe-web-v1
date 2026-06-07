@@ -2,9 +2,9 @@ import { images } from "@/config/images";
 
 export const siteConfig = {
   name: "Ceyloe",
-  tagline: "Specialists in Fine Natural Gemstones",
+  tagline: "Precious Gemstones & Custom Jewellery",
   description:
-    "Discover ethically sourced, certified gemstones and fine jewellery. From sapphires to spinel, each stone carries a story of heritage and craftsmanship.",
+    "Bringing you some of Earth's finest precious gemstones — ethically sourced, certified, and curated for collectors and bespoke jewellery lovers worldwide.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://ceyloe.com",
   contact: {
     phone: "0449 938 172",
@@ -25,34 +25,34 @@ export const siteConfig = {
   },
   links: {
     terms: "https://ceyloe.co.nz/terms-conditions/",
+    privacy: "/contact",
     shipping: "/transparency",
     shopifyAuth: "https://shopify.com/authentication",
   },
   nav: [
-    { label: "Loose Gemstones", href: "/catalog" },
-    { label: "Portfolio", href: "/portfolio" },
-    { label: "Journal", href: "/journal" },
-    { label: "About", href: "/about" },
+    { label: "Gemstones", href: "/catalog" },
+    { label: "Jewellery", href: "/catalog?category=jewellery" },
+    { label: "Our Process", href: "/heritage" },
     { label: "Contact", href: "/contact" },
+    { label: "Education", href: "/journal" },
   ],
-  footerNav: [
-    { label: "Loose Gemstones", href: "/catalog" },
-    { label: "Ring Gallery", href: "/portfolio" },
-    { label: "Custom Jewelry", href: "/custom-jewelry" },
-    { label: "AI Recommendations", href: "/recommend" },
-    { label: "Compare Gems", href: "/compare" },
-    { label: "Book Appointment", href: "/book" },
-    { label: "Wholesale / Trade", href: "/wholesale" },
-    { label: "Heritage", href: "/heritage" },
-    { label: "Mine to Market", href: "/transparency" },
-    { label: "Reviews", href: "/reviews" },
-    { label: "Account", href: "/account" },
-    { label: "Journal", href: "/journal" },
-    { label: "Certifications", href: "/certifications" },
-    { label: "FAQ", href: "/faq" },
-    { label: "Contact", href: "/contact" },
-    { label: "Instagram", href: "/instagram" },
-  ],
+  footerNav: {
+    company: [
+      { label: "Gemstones", href: "/catalog" },
+      { label: "Jewellery", href: "/catalog?category=jewellery" },
+      { label: "Our Process", href: "/heritage" },
+      { label: "Contact", href: "/contact" },
+      { label: "Education", href: "/journal" },
+    ],
+    service: [
+      { label: "FAQ", href: "/faq" },
+      { label: "Shipping Policy", href: "/transparency" },
+      { label: "Terms & Conditions", href: "https://ceyloe.co.nz/terms-conditions/" },
+      { label: "Privacy Policy", href: "/contact" },
+      { label: "Custom Jewelry", href: "/custom-jewelry" },
+      { label: "Book Appointment", href: "/book" },
+    ],
+  },
   categories: [
     { name: "Sapphires", slug: "sapphires", image: images.categories.sapphires, accent: "sapphire" as const },
     { name: "Spinel", slug: "spinel", image: images.categories.spinel, accent: "sapphire" as const },

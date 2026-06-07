@@ -11,17 +11,19 @@ export function RecentlyAdded({ products }: RecentlyAddedProps) {
   if (products.length === 0) return null;
 
   return (
-    <section className="section-bg-alt py-16 md:py-24">
+    <section className="border-b border-border bg-surface py-16 md:py-24">
       <Container>
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="mb-2 text-xs uppercase tracking-[0.2em] text-muted">Just arrived</p>
-            <h2 className="font-display text-2xl font-light tracking-tight sm:text-3xl md:text-4xl">
-              Recently Added Gems
+            <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.15em] text-muted">
+              Unrivalled beauty
+            </p>
+            <h2 className="text-2xl font-medium tracking-tight text-heading sm:text-3xl md:text-4xl">
+              Recently Added
             </h2>
           </div>
-          <Link href="/catalog?sort=newest" className="text-xs uppercase tracking-widest underline-offset-4 hover:underline">
-            View all new arrivals
+          <Link href="/catalog?sort=newest" className="link-arrow text-heading">
+            View all →
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4 md:gap-x-6">
