@@ -152,6 +152,12 @@ h6 {
   background-color: var(--background);
 }
 
+.hero-slide-content h1,
+.hero-slide-content p,
+.hero-slide-content span {
+  color: #ffffff;
+}
+
 @media (min-width: 768px) {
   :root {
     --site-header-height: 4.75rem;

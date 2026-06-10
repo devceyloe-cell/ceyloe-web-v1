@@ -20,7 +20,7 @@ export function HeroSlider() {
   const current = heroSlides[index];
 
   return (
-    <section className="relative min-h-[calc(100vh-var(--site-header-height))] overflow-hidden bg-heading">
+    <section className="relative min-h-[calc(100vh-var(--site-header-height))] overflow-hidden bg-black">
       <AnimatePresence mode="wait">
         <motion.div
           key={current.id}
@@ -42,7 +42,8 @@ export function HeroSlider() {
               fetchPriority={index === 0 ? "high" : "auto"}
             />
           </picture>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/10" />
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
         </motion.div>
       </AnimatePresence>
 
@@ -54,31 +55,35 @@ export function HeroSlider() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl text-white"
+            className="hero-slide-content max-w-3xl"
           >
-            <h1 className="text-3xl font-medium leading-tight tracking-tight sm:text-4xl md:text-5xl lg:text-[3.75rem]">
+            <h1 className="text-3xl font-medium leading-tight tracking-tight [text-shadow:0_2px_20px_rgba(0,0,0,0.8)] sm:text-4xl md:text-5xl lg:text-[3.75rem]">
               {current.title}
             </h1>
             {current.highlight ? (
               <>
-                <p className="mt-4 text-sm font-medium uppercase tracking-[0.2em] text-white/80">
+                <p className="mt-4 text-sm font-medium uppercase tracking-[0.2em] [text-shadow:0_1px_10px_rgba(0,0,0,0.7)]">
                   {current.eyebrow}
                 </p>
-                <p className="font-accent mt-1 text-4xl italic leading-none text-white sm:text-5xl md:text-6xl">
+                <p className="font-accent mt-1 text-4xl italic leading-none [text-shadow:0_2px_16px_rgba(0,0,0,0.75)] sm:text-5xl md:text-6xl">
                   {current.highlight}
                 </p>
               </>
             ) : (
-              <p className="mt-4 text-sm font-medium uppercase tracking-[0.2em] text-white/80">
+              <p className="mt-4 text-sm font-medium uppercase tracking-[0.2em] [text-shadow:0_1px_10px_rgba(0,0,0,0.7)]">
                 {current.eyebrow}
               </p>
             )}
-            <p className="mt-6 max-w-xl text-sm font-light leading-relaxed text-white/85 sm:text-base">
+            <p className="mt-6 max-w-xl text-sm font-light leading-relaxed [text-shadow:0_1px_8px_rgba(0,0,0,0.65)] sm:text-base">
               {current.subtitle}
             </p>
             <div className="mt-8">
               <Link href={current.ctaHref}>
-                <Button size="lg" variant="primary">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white bg-transparent text-white hover:bg-white hover:text-black"
+                >
                   {current.ctaLabel}
                 </Button>
               </Link>

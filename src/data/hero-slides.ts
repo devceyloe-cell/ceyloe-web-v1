@@ -7,6 +7,8 @@ export interface HeroSlide {
   ctaLabel: string;
   ctaHref: string;
   alt: string;
+  /** Brighter slide images need a stronger overlay for readable white text */
+  contrast?: "high";
   images: {
     desktop: string;
     tablet: string;
@@ -65,6 +67,7 @@ export const heroSlides: HeroSlide[] = [
     id: "gem-collection",
     eyebrow: "Natural gemstones",
     title: "Exceptional Natural Gems",
+    contrast: "high",
     subtitle:
       "Sapphires, emeralds, rubies and more — a curated spectrum of earth-mined stones in every cut and colour.",
     ctaLabel: "Explore Collection",
