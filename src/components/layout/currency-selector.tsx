@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils";
 interface CurrencySelectorProps {
   className?: string;
   compact?: boolean;
+  light?: boolean;
 }
 
-export function CurrencySelector({ className, compact }: CurrencySelectorProps) {
+export function CurrencySelector({ className, compact, light }: CurrencySelectorProps) {
   const { currency, setCurrencyCode } = useCurrency();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -31,7 +32,12 @@ export function CurrencySelector({ className, compact }: CurrencySelectorProps) 
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.12em] text-muted transition-colors hover:text-gold"
+        className={cn(
+          "label-caps inline-flex items-center gap-1.5 transition-colors",
+          light
+            ? "text-white hover:text-pale-gold"
+            : "text-on-surface-variant hover:text-rich-gold",
+        )}
         aria-expanded={open}
         aria-haspopup="listbox"
       >

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Libre_Caslon_Text, Manrope } from "next/font/google";
 import { SiteShell } from "@/components/layout/site-shell";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ThemeScript } from "@/components/providers/theme-script";
@@ -7,16 +7,16 @@ import { siteConfig } from "@/config/site";
 import { images } from "@/config/images";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "600", "700"],
 });
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-accent",
+const caslon = Libre_Caslon_Text({
+  variable: "--font-caslon",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "700"],
   style: ["normal", "italic"],
 });
 
@@ -49,10 +49,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`light ${inter.variable} ${cormorant.variable}`}
+      className={`light scroll-smooth ${manrope.variable} ${caslon.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen text-foreground antialiased">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,0&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="min-h-screen bg-surface font-manrope text-foreground antialiased">
         <ThemeScript />
         <ThemeProvider>
           <SiteShell>{children}</SiteShell>

@@ -22,7 +22,7 @@ const pathways = [
 export function DualCta() {
   return (
     <section className="border-b border-border bg-surface">
-      <Container wide>
+      <Container>
         <div className="grid divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0">
           {pathways.map((path) => (
             <Link

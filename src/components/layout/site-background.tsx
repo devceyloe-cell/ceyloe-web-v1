@@ -1,12 +1,11 @@
-import { siteBackground } from "@/config/site-background";
+import { images } from "@/config/images";
 
 export function SiteBackground() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 bg-white">
-      <div
-        className="site-bg-texture absolute inset-0"
-        style={{ opacity: siteBackground.opacity }}
-      />
-    </div>
+    <div
+      className="site-background-overlay pointer-events-none fixed inset-0 z-30"
+      style={{ backgroundImage: `url(${images.siteBackground})` }}
+      aria-hidden
+    />
   );
 }

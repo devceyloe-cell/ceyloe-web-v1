@@ -3,6 +3,7 @@ import { heroSlides, getHeroSlideImage } from "@/data/hero-slides";
 export const images = {
   logo: "/images/Home/logo2.png",
   favicon: "/favicon.png",
+  siteBackground: "/images/site-bg-sketch.jpg",
   hero: {
     poster: heroSlides[0].images.desktop,
     slides: heroSlides,

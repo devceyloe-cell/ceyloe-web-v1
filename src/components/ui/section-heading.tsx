@@ -6,6 +6,7 @@ interface SectionHeadingProps {
   description?: string;
   align?: "left" | "center";
   className?: string;
+  italicHighlight?: string;
 }
 
 export function SectionHeading({
@@ -14,25 +15,24 @@ export function SectionHeading({
   description,
   align = "center",
   className,
+  italicHighlight,
 }: SectionHeadingProps) {
   return (
-    <div
-      className={cn(
-        "mb-12 md:mb-16",
-        align === "center" && "text-center",
-        className,
-      )}
-    >
+    <div className={cn("mb-12 md:mb-16", align === "center" && "text-center", className)}>
       {eyebrow && (
-        <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.15em] text-muted">
-          {eyebrow}
-        </p>
+        <p className="subheading-caps mb-4 tracking-[0.2em] text-rich-gold">{eyebrow}</p>
       )}
-      <h2 className="text-2xl font-medium tracking-tight text-heading sm:text-3xl md:text-4xl">
+      <h2 className="font-caslon text-3xl md:text-4xl lg:text-5xl">
         {title}
+        {italicHighlight && <span className="italic"> {italicHighlight}</span>}
       </h2>
       {description && (
-        <p className={cn("mt-4 max-w-2xl font-light text-muted", align === "center" && "mx-auto")}>
+        <p
+          className={cn(
+            "mt-6 max-w-2xl text-on-surface-variant",
+            align === "center" && "mx-auto",
+          )}
+        >
           {description}
         </p>
       )}

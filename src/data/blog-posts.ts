@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/types";
-import { images, getHeroSlideSrc } from "@/config/images";
+import { stitchImages } from "@/config/stitch-images";
 
 export const blogPosts: BlogPost[] = [
   {
@@ -10,7 +10,7 @@ export const blogPosts: BlogPost[] = [
     category: "Education",
     readTime: "6 min read",
     publishedAt: "2025-05-01",
-    image: images.categories.sapphires,
+    image: stitchImages.journal.chanthaburi,
     content: [
       "Ceylon sapphires — gemstones mined in Sri Lanka — have been treasured for over 2,000 years. Their exceptional clarity, vibrant colours, and ethical sourcing make them a favourite among collectors and jewellers worldwide.",
       "When evaluating a Ceylon sapphire, consider the four Cs: colour, clarity, cut, and carat weight. The most sought-after blues display a velvety 'cornflower' hue, while padparadscha sapphires offer a rare pink-orange sunset tone.",
@@ -26,7 +26,7 @@ export const blogPosts: BlogPost[] = [
     category: "Jewellery",
     readTime: "5 min read",
     publishedAt: "2025-04-18",
-    image: images.categories.jewellery,
+    image: stitchImages.journal.sapphireRings,
     content: [
       "Sapphire engagement rings have gained popularity among couples seeking something unique and meaningful. With a Mohs hardness of 9, sapphire is exceptionally durable for daily wear.",
       "Start by selecting your sapphire before designing the ring setting. The stone's shape, size, and colour should guide the overall design — not the other way around.",
@@ -42,7 +42,7 @@ export const blogPosts: BlogPost[] = [
     category: "Education",
     readTime: "7 min read",
     publishedAt: "2025-04-02",
-    image: getHeroSlideSrc(images.hero.slides[1]),
+    image: stitchImages.journal.emeralds,
     content: [
       "Most gemstones undergo some form of treatment to enhance their appearance. Heat treatment of sapphires, for example, is an industry-standard practice that improves colour and clarity.",
       "Untreated stones command premium prices because of their rarity. A GIA report will clearly state whether a stone has been treated and what type of treatment was applied.",
@@ -58,7 +58,7 @@ export const blogPosts: BlogPost[] = [
     category: "Heritage",
     readTime: "8 min read",
     publishedAt: "2025-03-15",
-    image: images.about.main,
+    image: stitchImages.sapphire,
     content: [
       "Sri Lanka, known historically as Ratna Deepa (Island of Gems), has produced some of the world's finest sapphires for over two millennia. The gem gravels of Ratnapura and Elahera have yielded stones fit for royalty.",
       "Traditional pit mining remains common in Sri Lanka, with miners working in small teams to extract gem-bearing gravel from alluvial deposits. This method has minimal environmental impact compared to open-pit industrial mining.",
@@ -74,7 +74,7 @@ export const blogPosts: BlogPost[] = [
     category: "Education",
     readTime: "5 min read",
     publishedAt: "2025-02-28",
-    image: getHeroSlideSrc(images.hero.slides[2]),
+    image: stitchImages.ruby,
     content: [
       "Named after the lotus blossom, padparadscha sapphires display a delicate blend of pink and orange that is found almost exclusively in Sri Lanka.",
       "True padparadscha colour is subtle and balanced — neither too pink nor too orange. Stones with strong saturation and even colour distribution are exceptionally rare and highly valued.",
@@ -90,7 +90,7 @@ export const blogPosts: BlogPost[] = [
     category: "Education",
     readTime: "6 min read",
     publishedAt: "2025-02-10",
-    image: getHeroSlideSrc(images.hero.slides[3]),
+    image: stitchImages.emerald,
     content: [
       "Unlike mass-produced goods, fine natural gemstones are finite resources. As deposits are depleted, quality stones from established sources like Sri Lanka tend to hold or increase in value.",
       "Focus on certified, untreated or minimally treated stones above 1 carat with strong colour and clarity. Documentation from GIA or equivalent laboratories is essential for resale.",

@@ -14,7 +14,7 @@ export function AccountLink({ className, isLoggedIn }: AccountLinkProps) {
     <Link
       href={isLoggedIn ? "/account" : "/api/auth/shopify/login"}
       className={cn(
-        "inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.12em] text-heading transition-opacity hover:opacity-60",
+        "label-caps inline-flex items-center gap-1.5 text-on-surface-variant transition-colors hover:text-rich-gold",
         className,
       )}
     >

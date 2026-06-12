@@ -10,6 +10,7 @@ import {
 } from "react";
 import {
   BASE_CURRENCY,
+  currencyOptions,
   defaultCurrency,
   fallbackRatesFromUsd,
   getCurrencyOption,
@@ -17,7 +18,38 @@ import {
 } from "@/config/currencies";
 import { convertFromUsd } from "@/lib/currency/rates";
 
-const STORAGE_KEY = "ceyloe-currency";
+const STORAGE_KEY = "ceyloe-currency-v2";
+const DEFAULT_CURRENCY_CODE = defaultCurrency.code;
+
+function readStoredCurrencyCode(): string {
+  if (typeof window === "undefined") return DEFAULT_CURRENCY_CODE;
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored && currencyOptions.some((option) => option.code === stored)) {
+    return stored;
+  }
+  return DEFAULT_CURRENCY_CODE;
+}
+
+function localeForCurrency(code: string): string {
+  switch (code) {
+    case "AUD":
+      return "en-AU";
+    case "GBP":
+      return "en-GB";
+    case "EUR":
+      return "de-DE";
+    case "NZD":
+      return "en-NZ";
+    case "CAD":
+      return "en-CA";
+    case "LKR":
+      return "en-LK";
+    case "INR":
+      return "en-IN";
+    default:
+      return "en-US";
+  }
+}
 
 interface CurrencyContextValue {
   currency: CurrencyOption;
@@ -31,13 +63,12 @@ interface CurrencyContextValue {
 const CurrencyContext = createContext<CurrencyContextValue | null>(null);
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
-  const [currencyCode, setCurrencyCodeState] = useState(defaultCurrency.code);
+  const [currencyCode, setCurrencyCodeState] = useState(DEFAULT_CURRENCY_CODE);
   const [rates, setRates] = useState<Record<string, number>>(fallbackRatesFromUsd);
   const [isLoadingRates, setIsLoadingRates] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) setCurrencyCodeState(stored);
+    setCurrencyCodeState(readStoredCurrencyCode());
   }, []);
 
   useEffect(() => {
@@ -66,7 +97,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     (amountUsd: number) => {
       const converted = convertPrice(amountUsd);
       const fractionDigits = ["JPY", "KRW", "LKR"].includes(currency.code) ? 0 : 0;
-      return new Intl.NumberFormat("en-US", {
+      return new Intl.NumberFormat(localeForCurrency(currency.code), {
         style: "currency",
         currency: currency.code,
         minimumFractionDigits: fractionDigits,

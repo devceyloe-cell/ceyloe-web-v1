@@ -9,8 +9,8 @@ export interface CurrencyOption {
 export const BASE_CURRENCY = "USD";
 
 export const currencyOptions: CurrencyOption[] = [
-  { code: "USD", symbol: "$", label: "USD $", country: "United States" },
   { code: "AUD", symbol: "A$", label: "AUD $", country: "Australia" },
+  { code: "USD", symbol: "$", label: "USD $", country: "United States" },
   { code: "GBP", symbol: "£", label: "GBP £", country: "United Kingdom" },
   { code: "EUR", symbol: "€", label: "EUR €", country: "European Union" },
   { code: "CAD", symbol: "C$", label: "CAD $", country: "Canada" },

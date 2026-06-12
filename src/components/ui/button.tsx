@@ -2,26 +2,24 @@ import { cn } from "@/lib/utils";
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "ghost" | "outline" | "emerald";
+  variant?: "primary" | "secondary" | "ghost" | "outline" | "gold";
   size?: "sm" | "md" | "lg";
 }
 
 const variants = {
-  primary:
-    "bg-primary text-white hover:bg-[#222222] font-medium uppercase tracking-[0.1em]",
+  primary: "btn-stitch-primary",
   secondary:
-    "bg-surface-elevated text-heading hover:bg-border border border-border font-medium uppercase tracking-[0.08em]",
-  ghost: "text-foreground hover:opacity-70 font-medium",
+    "border border-deep-navy bg-transparent text-deep-navy font-manrope text-sm font-semibold uppercase tracking-wider px-8 py-4 hover:bg-deep-navy hover:text-white transition-colors",
+  ghost: "link-stitch text-rich-gold hover:text-deep-navy bg-transparent px-0 py-0",
   outline:
-    "border border-primary text-primary hover:bg-primary hover:text-white font-medium uppercase tracking-[0.08em]",
-  emerald:
-    "bg-primary text-white hover:bg-[#222222] font-medium uppercase tracking-[0.1em]",
+    "border border-pale-gold text-pale-gold font-manrope text-xs font-bold uppercase tracking-widest px-8 py-3 hover:bg-pale-gold hover:text-deep-navy transition-all",
+  gold: "btn-stitch-gold",
 };
 
 const sizes = {
-  sm: "px-4 py-2 text-[11px]",
-  md: "px-6 py-3 text-xs",
-  lg: "px-8 py-4 text-xs",
+  sm: "px-6 py-3 text-xs",
+  md: "px-8 py-4 text-sm",
+  lg: "px-10 py-5 text-sm",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -29,9 +27,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
+        "inline-flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50",
         variants[variant],
-        sizes[size],
+        variant !== "ghost" && sizes[size],
         className,
       )}
       {...props}

@@ -1,128 +1,93 @@
 import Link from "next/link";
-import { Phone } from "lucide-react";
-import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/layout/logo";
-import { TrustBar } from "@/components/home/trust-bar";
-import { NewsletterSignup } from "@/components/layout/newsletter-signup";
-import { trustItems } from "@/data/home-content";
+import { PaymentMethods } from "@/components/ui/payment-icons";
 
 const footerLink =
-  "text-sm font-light text-muted transition-opacity hover:opacity-70 hover:text-heading";
+  "font-manrope text-sm text-on-surface-variant transition-colors duration-300 hover:text-rich-gold";
 
 export function Footer() {
   const year = new Date().getFullYear();
   const { contact } = siteConfig;
 
   return (
-    <footer className="mt-auto">
-      <TrustBar items={trustItems} />
-      <NewsletterSignup />
-
-      <div className="border-t border-border bg-surface text-foreground">
-        <Container className="py-16">
-          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-            <div className="lg:col-span-2">
-              <Logo size="lg" />
-              <div className="mt-6 space-y-1 text-sm font-light leading-relaxed text-muted">
-                <p className="font-medium text-heading">{siteConfig.name}</p>
-                <p>{contact.headOffice.lines.join(", ")}</p>
-                <p>{contact.miningOffice.lines.join(", ")}</p>
-                <p className="pt-2">
-                  <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className={footerLink}>
-                    {contact.phone}
-                  </a>
-                </p>
-              </div>
-              <div className="mt-6 flex flex-col gap-3">
-                <a
-                  href={siteConfig.social.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(footerLink, "inline-flex items-center gap-2")}
-                  aria-label="Follow Ceyloe on Instagram"
-                >
-                  <InstagramIcon />
-                  @ceyloegemstones
+    <footer className="site-footer border-t border-border bg-[#f5f5f5] pt-20 pb-10 text-on-surface-variant">
+      <Container>
+        <div className="mb-20 grid grid-cols-1 gap-8 md:grid-cols-4 md:gap-[var(--gutter)]">
+          <div>
+            <Logo size="lg" className="mb-8" />
+            <address className="font-manrope space-y-2 text-sm not-italic leading-relaxed opacity-80">
+              <p className="font-semibold text-rich-gold">{contact.headOffice.label}</p>
+              <p>{contact.headOffice.lines.join(", ")}</p>
+              <p className="pt-2 font-semibold text-rich-gold">{contact.miningOffice.label}</p>
+              <p>{contact.miningOffice.lines.join(", ")}</p>
+              <p className="pt-2">
+                <a href={`tel:${contact.phoneInternational.replace(/\s/g, "")}`} className={footerLink}>
+                  {contact.phoneInternational}
                 </a>
-                <a
-                  href={siteConfig.social.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={footerLink}
-                  aria-label="Follow Ceyloe on Facebook"
-                >
-                  Facebook · @ceyloegemstone
-                </a>
-              </div>
-            </div>
+              </p>
+            </address>
+          </div>
 
-            <div>
-              <h3 className="mb-4 text-[11px] font-medium uppercase tracking-[0.12em] text-heading">
-                Company
-              </h3>
-              <ul className="space-y-3">
-                {siteConfig.footerNav.company.map((item) => (
-                  <li key={item.label}>
-                    <Link href={item.href} className={footerLink}>
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="mb-4 text-[11px] font-medium uppercase tracking-[0.12em] text-heading">
-                Service
-              </h3>
-              <ul className="space-y-3">
-                {siteConfig.footerNav.service.map((item) => (
-                  <li key={item.label}>
-                    <Link href={item.href} className={footerLink}>
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <h3 className="mb-4 mt-8 text-[11px] font-medium uppercase tracking-[0.12em] text-heading">
-                Contact
-              </h3>
-              <ul className="space-y-3 text-sm font-light text-muted">
-                <li className="flex items-start gap-2">
-                  <Phone className="mt-0.5 h-4 w-4 shrink-0" />
-                  <div>
-                    <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className={footerLink}>
-                      {contact.phone}
-                    </a>
-                    <br />
-                    <span className="text-xs">Overseas: </span>
-                    <a
-                      href={`tel:${contact.phoneInternational.replace(/\s/g, "")}`}
-                      className={footerLink}
-                    >
-                      {contact.phoneInternational}
-                    </a>
-                  </div>
+          <div>
+            <h4 className="label-caps mb-8 text-rich-gold">Company</h4>
+            <ul className="space-y-4">
+              {siteConfig.footerNav.company.map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href} className={footerLink}>
+                    {item.label}
+                  </Link>
                 </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
           </div>
 
-          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
-            <p className="text-xs font-light text-muted">
-              &copy; {year} {siteConfig.name}. All content copyright {siteConfig.name}.
-            </p>
-            <p className="text-xs font-light text-muted">
-              <Link href={siteConfig.links.terms} target="_blank" rel="noopener noreferrer" className={footerLink}>
-                Terms &amp; Conditions
-              </Link>
-            </p>
+          <div>
+            <h4 className="label-caps mb-8 text-rich-gold">Service</h4>
+            <ul className="space-y-4">
+              {siteConfig.footerNav.service.map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href} className={footerLink}>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
-        </Container>
-      </div>
+
+          <div>
+            <h4 className="label-caps mb-8 text-rich-gold">Follow Us</h4>
+            <div className="flex gap-4">
+              <a
+                href={siteConfig.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-surface-dim transition-all duration-300 hover:border-rich-gold hover:bg-rich-gold hover:text-white"
+                aria-label="Facebook"
+              >
+                <span className="material-symbols-outlined text-lg">thumb_up</span>
+              </a>
+              <a
+                href={siteConfig.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-on-surface-variant transition-all duration-300 hover:border-rich-gold hover:bg-rich-gold hover:text-white"
+                aria-label="Instagram"
+              >
+                <span className="material-symbols-outlined text-lg">photo_camera</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center justify-between gap-6 border-t border-border pt-10 md:flex-row">
+          <p className="font-manrope text-xs uppercase tracking-widest text-on-surface-variant/70">
+            &copy; {year} {siteConfig.name.toUpperCase()}. All rights reserved.
+          </p>
+          <PaymentMethods />
+        </div>
+      </Container>
     </footer>
   );
 }

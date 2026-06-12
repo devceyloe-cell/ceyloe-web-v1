@@ -1,4 +1,5 @@
 import { images } from "@/config/images";
+import { mainNavigation } from "@/config/navigation";
 
 export const siteConfig = {
   name: "Ceyloe",
@@ -29,13 +30,7 @@ export const siteConfig = {
     shipping: "/transparency",
     shopifyAuth: "https://shopify.com/authentication",
   },
-  nav: [
-    { label: "Gemstones", href: "/catalog" },
-    { label: "Jewellery", href: "/catalog?category=jewellery" },
-    { label: "Our Process", href: "/heritage" },
-    { label: "Contact", href: "/contact" },
-    { label: "Education", href: "/journal" },
-  ],
+  nav: mainNavigation.map(({ label, href }) => ({ label, href })),
   footerNav: {
     company: [
       { label: "Gemstones", href: "/catalog" },
