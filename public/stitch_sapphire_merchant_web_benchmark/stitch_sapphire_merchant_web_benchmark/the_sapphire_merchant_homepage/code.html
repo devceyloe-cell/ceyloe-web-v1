@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Sapphire Merchant | Precious Gemstones &amp; Bespoke Jewellery</title>
+<meta content="New Zealand's leading precious gemstone collection, curated by world-class gem experts." name="description"/>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#fcdeb5",
+                        "primary-container": "#131b2e",
+                        "surface-dim": "#dcd9db",
+                        "surface-tint": "#565e74",
+                        "surface-bright": "#fcf8fa",
+                        "on-secondary-container": "#785a1a",
+                        "secondary-container": "#fed488",
+                        "on-tertiary-fixed": "#271901",
+                        "surface-container-high": "#eae7e9",
+                        "error-container": "#ffdad6",
+                        "surface": "#fcf8fa",
+                        "ruby-red": "#7F1D1D",
+                        "inverse-primary": "#bec6e0",
+                        "stone-gray": "#F8F9FA",
+                        "outline": "#76777d",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "inverse-on-surface": "#f3f0f2",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#1b1b1d",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e4e2e4",
+                        "on-error-container": "#93000a",
+                        "secondary": "#775a19",
+                        "primary": "#000000",
+                        "on-secondary-fixed": "#261900",
+                        "rich-gold": "#B38B3F",
+                        "inverse-surface": "#303032",
+                        "surface-container-low": "#f6f3f5",
+                        "on-surface-variant": "#45464d",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#131b2e",
+                        "on-primary-container": "#7c839b",
+                        "deep-navy": "#020617",
+                        "secondary-fixed": "#ffdea5",
+                        "pale-gold": "#E5D5B7",
+                        "tertiary-container": "#271901",
+                        "on-secondary-fixed-variant": "#5d4201",
+                        "emerald-green": "#064E3B",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c6c6cd",
+                        "tertiary": "#000000",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "background": "#fcf8fa",
+                        "primary-fixed-dim": "#bec6e0",
+                        "secondary-fixed-dim": "#e9c176",
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary-container": "#98805d",
+                        "sapphire-blue": "#082F49",
+                        "surface-variant": "#e4e2e4",
+                        "on-background": "#1b1b1d",
+                        "surface-container": "#f0edef",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "32px",
+                        "margin-mobile": "20px",
+                        "section-padding": "120px",
+                        "unit": "8px",
+                        "margin-desktop": "80px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "headline-md": ["Libre Caslon Text"],
+                        "button-text": ["Manrope"],
+                        "headline-lg": ["Libre Caslon Text"],
+                        "subheading": ["Manrope"],
+                        "label-caps": ["Manrope"],
+                        "display-hero-mobile": ["Libre Caslon Text"],
+                        "body-md": ["Manrope"],
+                        "display-hero": ["Libre Caslon Text"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "button-text": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["48px", {"lineHeight": "56px", "fontWeight": "400"}],
+                        "subheading": ["14px", {"lineHeight": "20px", "letterSpacing": "0.15em", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "display-hero-mobile": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-hero": ["80px", {"lineHeight": "88px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24; }
+        .text-stroke { -webkit-text-stroke: 1px currentColor; -webkit-text-fill-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-transparent" id="main-header">
+<nav class="flex justify-between items-center px-margin-desktop py-6 w-full max-w-[1440px] mx-auto">
+<!-- Left Navigation -->
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-label-caps text-label-caps text-primary border-b border-rich-gold pb-1 transition-all duration-300" href="#">Gemstones</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Jewellery</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Our Process</a>
+</div>
+<!-- Logo -->
+<a class="flex-shrink-0" href="/">
+<img alt="SAPPHIRE MERCHANT" class="h-12 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLuLlRfYHHyW1MjWA8UzWSYlxHzwo2S51r3q-QC2OVxZwVb28I0P5xer63i_7TXrp2NTs4UcuDOK5zwf2lXa5XhdPlLZ_WvSkYcRZhswpsciWH4RPCxXUWzUuwFPVxJCLlqkfHNqSwh0sX3NdxVClzE4acBHAE4tv1Je8SMFLmQS_mFIcQArxIPyunMfmswhJodbTWB2zkzMDHp1V7bi41n96XaSKQ-k91rzPAWohibmm_-Whpf1DRX0to0m"/>
+</a>
+<!-- Right Navigation & Actions -->
+<div class="flex gap-8 items-center">
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Education</a>
+</div>
+<div class="flex gap-4 items-center">
+<button class="material-symbols-outlined text-primary hover:text-rich-gold transition-all duration-300">search</button>
+<button class="material-symbols-outlined text-primary hover:text-rich-gold transition-all duration-300">shopping_bag</button>
+<button class="md:hidden material-symbols-outlined text-primary">menu</button>
+</div>
+</div>
+</nav>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative h-screen min-h-[700px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover" data-alt="A luxurious, high-contrast close-up of a deep blue sapphire ring nestled in a dark, textured jewellery box. The lighting is cinematic, with sharp highlights catching the facets of the gemstone and the polished gold of the band. The background is a sophisticated mix of deep shadows and soft amber glints, reflecting the refined and exclusive boutique aesthetic of Sapphire Merchant." src="https://lh3.googleusercontent.com/aida/AP1WRLuBsZh-iV34fxY9TcDP5LU1bz3zH3vx1SPrqGYmcCbt7CrNEiNLX7QEBC3enSHVXJDcvXYl33pK2qFDyV4lxV1ii2JOKMGnwsbLLZiMDigqEEkTWvnTV9UaIisbe5qYkwGe9jZlt8V8P1WKlZwQdXMVGiKG7hZWtnjsxR2Bw6EVNtjQZefbntVeuvSqTnTLEj-mVb-MeygkErdp1dCquf2JGGrRijQSpgNWomPQWREVlIOX5fvLsbodC-vk"/>
+<div class="absolute inset-0 bg-gradient-to-r from-deep-navy/60 via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10 w-full max-w-[1440px] mx-auto px-margin-desktop">
+<div class="max-w-2xl text-white">
+<p class="font-subheading text-subheading uppercase tracking-[0.3em] mb-6 text-pale-gold">Precious Gemstones &amp; Custom Jewellery</p>
+<h1 class="font-display-hero text-display-hero leading-tight mb-8 italic">
+                        Your Kind of <span class="block not-italic font-bold">Extraordinary</span>
+</h1>
+<p class="font-body-lg text-body-lg mb-10 text-surface-bright/80 max-w-lg">
+                        Bringing you some of Earth's finest precious gemstones, the ultimate one-of-a-kind luxury. Curated for the discerning collector.
+                    </p>
+<div class="flex flex-wrap gap-6">
+<a class="bg-deep-navy text-white font-button-text text-button-text px-10 py-5 uppercase hover:bg-rich-gold transition-colors duration-300" href="#">Explore Collection</a>
+<a class="border border-white/30 text-white font-button-text text-button-text px-10 py-5 uppercase backdrop-blur-sm hover:bg-white hover:text-deep-navy transition-all duration-300" href="#">Bespoke Design</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Categories Bento Grid -->
+<section class="py-section-padding bg-surface">
+<div class="max-w-[1440px] mx-auto px-margin-desktop">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+<div class="max-w-xl">
+<h2 class="font-headline-lg text-headline-lg mb-6">Explore <span class="italic">Collections</span></h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Sourced from across the globe, we bring you the world's finest sapphires, rubies, emeralds and other precious gemstones. Millions of years in the making, curated for today.</p>
+</div>
+<a class="font-label-caps text-label-caps text-rich-gold flex items-center gap-2 group" href="#">
+                        VIEW ALL GEMSTONES <span class="material-symbols-outlined text-[14px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-[800px] md:h-[600px]">
+<!-- Sapphire -->
+<div class="md:col-span-2 group relative overflow-hidden bg-sapphire-blue">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="Close-up of a vibrant blue sapphire with exquisite faceting, radiating deep azure and cornflower blue tones. The stone is set against a dark, velvet-like background that emphasizes its clarity and internal fire. The overall mood is one of royal elegance and mystery, aligning with the premium Sapphire Merchant branding." src="https://lh3.googleusercontent.com/aida/AP1WRLtWSBA6UHHjsibzZ9-0suH3tAKqSO8ojYdiaLyMGFOIFYwNFegg3BZh9mGXMWQt6H95Y8tzUqX2kUusfDqgqZrCU0Ib3kHGxveOOVNxwR1IyY5ZbDBOSu1Oc1m667p6wbNzHbyLTtuYzmjsbpKLwBbXZk4I3fVuZsfwOZe7hOkWSicR--HRaPIkRBOoN6Pg49i1s7316k0aoJdG1epHEf0f-6aqdz9YsBVw3KPlRq2TvmbIuzzAkybOn-Qe"/>
+<div class="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/80 to-transparent">
+<h3 class="font-headline-md text-headline-md text-white mb-2">Sapphire</h3>
+<span class="font-label-caps text-label-caps text-pale-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300">DISCOVER MORE →</span>
+</div>
+</div>
+<!-- Ruby -->
+<div class="group relative overflow-hidden bg-ruby-red">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="A deep pigeon-blood red ruby glowing with internal brilliance. The gemstone is captured in high-detail, showing its complex crystalline structure. The lighting is focused and dramatic, casting soft shadows that give the stone three-dimensional depth against a luxurious dark burgundy backdrop." src="https://lh3.googleusercontent.com/aida/AP1WRLte7hXR5JkjpU3-mMOrRkGEfq1aCs2rWK49tgQEdtOFVSGFyvziFaTVE9CVv_c8-Uqm7uBNFJ6qHv_R5S9HoP9WQKKqZm6guW1WXfFgNnp7SBC16jvYmuPwWJZXdJoJ7SioQ2ANZZjyhcU692SeR_ESHK1m4y0zSA1OIj0RM12BL4OJToM7Rg2bL6pKEfPv2I3_zQMLnLNE0Mg8RxmUq8m7hs1eLuIZZ2B87R4gEDg972DEIK3f5a9Q-H4"/>
+<div class="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/80 to-transparent">
+<h3 class="font-headline-md text-headline-md text-white mb-2">Ruby</h3>
+<span class="font-label-caps text-label-caps text-pale-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300">EXPLORE →</span>
+</div>
+</div>
+<!-- Emerald -->
+<div class="group relative overflow-hidden bg-emerald-green">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="A lush, forest-green emerald featuring a traditional rectangular step-cut. The gemstone is vividly saturated, with subtle natural inclusions that tell a story of geological history. It is presented on a minimalist stone-gray surface, creating a modern and sophisticated contrast that highlights the stone's organic beauty." src="https://lh3.googleusercontent.com/aida/AP1WRLs_LSwSyV9vX4DVhCd_V5Jmiwh__NO6jsWAP32lnUarrdbzl65oQBuB1b4m2S0EUK5AcvFIfwRp0bAGgXJjEs8zTH7_LXXqbnFWNcH3bmzGyea6B1ZtHL2tcS94n7863J0VpmQnXWJrNJYWr0HGNpDPX_w83pNdwogWk2ImxwxfG2j1gYVL3SLzcEL2te8gd5GIOCqZN9bHkeiBwmfdmk6DxX1a1cCRroXI3qNoqS2sRLkKNIuUbUZUsbSn"/>
+<div class="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/80 to-transparent">
+<h3 class="font-headline-md text-headline-md text-white mb-2">Emerald</h3>
+<span class="font-label-caps text-label-caps text-pale-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300">EXPLORE →</span>
+</div>
+</div>
+<!-- All Precious -->
+<div class="md:col-span-4 group relative overflow-hidden bg-deep-navy">
+<img class="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700" data-alt="A curated collection of various high-end gemstones including garnets, tourmalines, and spinels scattered artistically on a dark reflective surface. The colors range from deep oranges to fiery reds and cool magentas, creating a kaleidoscopic display of Earth's rarest treasures. High-key lighting creates sparkling highlights and elegant bokeh." src="https://lh3.googleusercontent.com/aida/AP1WRLtH1W42iCsUPft_TFjFliB_DSVdoJ-YwJLdIFxFs5BcEYHKUV_6LU9V_dNzZ-Kux0C5Zo9ZVCHw6Fd5AyHbUfB4a8qnBhaSwFy1X0cwuhG3Hf-st4h8ODMtkZR4Af68q1BEnILyEWsKlGDjSRwScc8yFH15la0zWgQXckV4Cc6ZX2gSXhdk4qQIcVJ2MyG4Zp0IJ79t2MF-I5bw2Roq9jJ7ZzwaSTJKYYV3S93A_Y-aFDvRZSiy_5gj7B8"/>
+<div class="absolute inset-0 flex flex-col justify-center items-center text-center p-8 bg-black/30">
+<h3 class="font-headline-md text-headline-md text-white mb-4">All Precious Gemstones</h3>
+<p class="font-body-md text-white/80 max-w-md mb-8">An unrivaled collection curated by world-class experts.</p>
+<a class="border border-pale-gold text-pale-gold px-8 py-3 font-label-caps text-label-caps hover:bg-pale-gold hover:text-deep-navy transition-all duration-300" href="#">VIEW FULL CATALOGUE</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Products -->
+<section class="py-section-padding bg-stone-gray">
+<div class="max-w-[1440px] mx-auto px-margin-desktop">
+<div class="text-center mb-20">
+<p class="font-subheading text-subheading text-rich-gold uppercase tracking-[0.2em] mb-4">T.S.M Fine Jewellery</p>
+<h2 class="font-headline-lg text-headline-lg">Exclusive <span class="italic">Designs</span></h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Product 1 -->
+<div class="group">
+<div class="aspect-[2/3] overflow-hidden bg-white mb-8 transition-transform duration-500 hover:-translate-y-2">
+<img class="w-full h-full object-cover" data-alt="A breathtaking ruby ring featuring a large, oval-cut central stone surrounded by a halo of brilliant diamonds. The setting is crafted in high-polish white gold, radiating luxury and timeless appeal. The product is photographed in an editorial style against a soft-focus minimalist background, emphasizing its exquisite craftsmanship." src="https://lh3.googleusercontent.com/aida/AP1WRLvNJzl7ML7cov11JTbChhhLMqwW_hHn5JtN822HIT7bdLSD7dgpHJ3oHhv4oMlotpP47Ok0cRoqAk3ByVLiHl0VOsNIHI-XGjg8biuLRBjVQpdDwFDlJ_7Hv2D7IxfYtD3pvrkAKFmGitxsMDHRXUSx_2ki5cCtxOZBzUdkDbwOWpzguiMQw0vznpwi0D7BdDF9vkSQbulieyQ7ZoDIFv_lsrEtKv-Kd53D9ep8L2bsBX4wGorn0Nz_BYM"/>
+</div>
+<div class="text-center">
+<h3 class="font-headline-md text-[24px] mb-2">2.77ct Ruby Ring</h3>
+<div class="w-12 h-[1px] bg-rich-gold mx-auto mb-3"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-6">$10,119.00 NZD</p>
+<button class="bg-deep-navy text-white font-button-text text-button-text px-8 py-4 w-full hover:bg-rich-gold transition-colors">ADD TO CART</button>
+</div>
+</div>
+<!-- Product 2 -->
+<div class="group">
+<div class="aspect-[2/3] overflow-hidden bg-white mb-8 transition-transform duration-500 hover:-translate-y-2">
+<img class="w-full h-full object-cover" data-alt="A stunning Tsavorite Garnet ring with a vibrant, forest-green cushion-cut gemstone. The band is intricate gold filigree, showcasing bespoke craftsmanship. Shot with shallow depth of field on a white marble surface, the image exudes an air of modern sophistication and environmental luxury." src="https://lh3.googleusercontent.com/aida/AP1WRLuShZLkTKJzxSVIkb7DcSrhFr0eN1tLIhjN5FgNAtx1xnY13sSNP4HqI0I4lzsa3-YebLW4lRLMBM7xl-e155nxxSCsdw9C7SKf4UdZXq1iXKpm--BQ-BQVWZ0CabHW7-zzKLuRNbIUz5PJ34ZwFQXqXRNfvez4kRGaPK3nYRy3AOKwFT-p9cOrdQm-JzPZ7jPfcm_9ZLUZuPnAMCdYMe60WkfXsieDhCXuHHQdmCQY73it0pyslE1uQgM"/>
+</div>
+<div class="text-center">
+<h3 class="font-headline-md text-[24px] mb-2">3.02ct Tsavorite Garnet Ring</h3>
+<div class="w-12 h-[1px] bg-rich-gold mx-auto mb-3"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-6">$9,499.00 NZD</p>
+<button class="bg-deep-navy text-white font-button-text text-button-text px-8 py-4 w-full hover:bg-rich-gold transition-colors">ADD TO CART</button>
+</div>
+</div>
+<!-- Product 3 -->
+<div class="group">
+<div class="aspect-[2/3] overflow-hidden bg-white mb-8 transition-transform duration-500 hover:-translate-y-2">
+<img class="w-full h-full object-cover" data-alt="A magnificent 5.19ct Ceylon Cornflower Blue Sapphire ring, displaying a rare and sought-after saturated blue hue. The classic four-prong setting allows the gemstone to take center stage, catching every glint of light. The photography is clean, sharp, and high-end, fitting for a premier jewelry merchant." src="https://lh3.googleusercontent.com/aida/AP1WRLu2_MBZk7JZKkLIG0bUh8zUCqpHnrPs4ZuA879AYch11le2w5DoUEqHzu6MM1Ymgw9lD-cOVekox02vv97VIH3ipikPhvzrTpoddJNLFqmBsaqWAYdbeofw9hfyLPh8dTk9lvA4WY84VDHsjau1mfBEOlQ4fWg1FZkcBpczt_WsSgF-iUR1Iypf6NXIDGU78QrUBlAA4XMU2zRVOfO2F2B67Tw6kALo2l3OrE1sDrjTldeGoixlE8ZfHV0G"/>
+</div>
+<div class="text-center">
+<h3 class="font-headline-md text-[24px] mb-2">5.19ct Blue Sapphire Ring</h3>
+<div class="w-12 h-[1px] bg-rich-gold mx-auto mb-3"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-6">$19,617.00 NZD</p>
+<button class="bg-deep-navy text-white font-button-text text-button-text px-8 py-4 w-full hover:bg-rich-gold transition-colors">ADD TO CART</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Custom Bespoke Section -->
+<section class="relative bg-deep-navy py-section-padding text-white overflow-hidden">
+<div class="absolute inset-0 z-0 opacity-40">
+<img class="w-full h-full object-cover" data-alt="A wide-angle, atmospheric shot of a master jeweler's workbench illuminated by a single warm desk lamp. Various precision tools, design sketches, and loose gemstones are scattered in an organized, artistic disarray. The mood is one of focused creativity and centuries-old tradition, conveying the artisan nature of the Sapphire Merchant's bespoke process." src="https://lh3.googleusercontent.com/aida/AP1WRLunOfmu6CwZCW5aE7bafvFncF9uYgrUl4FHVTzKkRx-xOkNR-aRSQEWmV6HXmMwkHChybFEL4vpD4SG7pHLcOrcANNbdim4vgoSu_2pq8YQb4INnGh9rrAR8KZj1-choo4IHK2PROAkqBNkeS_yELtimkdKUiz9_-_f0qccV_BHEN110wvYDhNEG8wei1OgGMX3Y0OUZBl_LZjLayndQGVSKMoPL65LTnbB2oUV63wVfty2qCmNRb9Lx_I"/>
+</div>
+<div class="max-w-[1440px] mx-auto px-margin-desktop relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+<div>
+<h2 class="font-headline-lg text-headline-lg mb-8 italic">CUSTOM <span class="not-italic">Made For You</span></h2>
+<p class="font-body-lg text-body-lg mb-10 text-surface-dim max-w-lg">
+                            In an act of rebellion against the sea-of-same, we’re fiercely passionate about connecting you with your very own piece of the extraordinary. Bespoke is the ultimate statement of style and personality.
+                        </p>
+<div class="space-y-6 mb-12">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-rich-gold">diamond</span>
+<div>
+<h4 class="font-label-caps text-label-caps text-pale-gold mb-1">UNRIVALLED SELECTION</h4>
+<p class="text-sm text-surface-dim">Choose from our exclusive design catalogue or create a unique concept.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-rich-gold">edit_note</span>
+<div>
+<h4 class="font-label-caps text-label-caps text-pale-gold mb-1">EXPERT CURATION</h4>
+<p class="text-sm text-surface-dim">Direct sourcing ensures you get the finest quality gemstones at the best value.</p>
+</div>
+</div>
+</div>
+<a class="inline-block bg-rich-gold text-white font-button-text text-button-text px-10 py-5 uppercase hover:bg-white hover:text-deep-navy transition-all duration-300" href="#">Start Your Journey</a>
+</div>
+<div class="relative">
+<div class="aspect-square bg-white/5 backdrop-blur-md p-1 border border-white/10">
+<img class="w-full h-full object-cover" data-alt="A portrait-oriented artistic shot of a woman's hand wearing a custom-designed gemstone ring. The hand is elegantly posed against a dark silk background, and the focus is sharp on the intricate details of the jewelry. Soft light wraps around the scene, emphasizing the luxury and personal connection of custom-made jewelry." src="https://lh3.googleusercontent.com/aida/AP1WRLsKQ71NnO20mRYAho-VcGac4MFTDlBPAh3PWM0g9LVna-zWj2LLQZVzVWzv_zjCn6Pry9XfSUKz5I04VWoL_EgkS688LOSr7xoafL6M9wgk7fWX9B5gzrRePfDW2soyX4b_qyNvUWZASqgUIceyxkXQyEFC6y1N34KIRpFYoULA7k5sdicx-kRHf7mt4PHNxYGTULp-PrnkudyITww4U-eiu0eY209QFLhN3spOi1xAVVspemLTSqMTjZNy"/>
+</div>
+<!-- Decorative element -->
+<div class="absolute -bottom-10 -right-10 w-40 h-40 border-r border-b border-rich-gold/40 hidden md:block"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Meet the Founder -->
+<section class="py-section-padding bg-white overflow-hidden">
+<div class="max-w-[1440px] mx-auto px-margin-desktop">
+<div class="flex flex-col md:flex-row gap-20 items-center">
+<div class="w-full md:w-1/2">
+<img class="w-full object-cover border border-pale-gold/20 shadow-2xl" data-alt="A high-end editorial portrait of Gemma Brain, the founder of The Sapphire Merchant, in a bright, modern studio. She is engaged in her work, examining a loose gemstone with professional focus. The image conveys expertise, trustworthiness, and a deep personal passion for the craft. The lighting is soft and airy, creating a professional yet approachable atmosphere." src="https://lh3.googleusercontent.com/aida/AP1WRLtRGiW0rHo4XzudJVuQ4LXrxEtpamn4nM9nUzdDqnbv_t668_KzcyXErM6PgeQwnPxzMiXDwFyhwwL1-xzheNpxr1gor3yA0AA7a_PDkHJ1trscmZMhNeA6HPB7hneJhx7P9GPKj4cNt-G6DeE92p0foTtH_fnQZYc9szuCPRwZHgUa-7WevI6HIcSPawzMmWl1Scc7-AK-03sN_0rUGixwqFmvc227SSixWkTYD0B1Uhst4Opa2KEYRUMm"/>
+</div>
+<div class="w-full md:w-1/2">
+<p class="font-subheading text-subheading text-rich-gold uppercase tracking-[0.2em] mb-6">The Curator</p>
+<h2 class="font-headline-lg text-headline-lg mb-8">MEET <span class="italic">Our Founder</span></h2>
+<p class="font-body-lg text-body-lg mb-8 text-on-surface-variant italic">"I believe every individual deserves a piece of the Earth's history that reflects their unique soul."</p>
+<p class="font-body-md text-body-md mb-10 text-on-surface-variant">
+                            Combining a deep knowledge of gemstones, direct to source purchasing, and a truly custom design process, Gemma Brain is the gemstone matchmaker you want on your team. Her passion for transparency and ethical sourcing defines every piece at The Sapphire Merchant.
+                        </p>
+<a class="font-label-caps text-label-caps border-b-2 border-rich-gold pb-1 hover:text-rich-gold transition-colors" href="#">BOOK A CONSULTATION →</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Blog Section -->
+<section class="py-section-padding bg-surface">
+<div class="max-w-[1440px] mx-auto px-margin-desktop">
+<div class="flex justify-between items-end mb-16">
+<div>
+<p class="font-subheading text-subheading text-rich-gold uppercase tracking-[0.2em] mb-4">Educational Journal</p>
+<h2 class="font-headline-lg text-headline-lg italic">BEYOND <span class="not-italic">The Facet</span></h2>
+</div>
+<a class="hidden md:block font-label-caps text-label-caps text-rich-gold border border-rich-gold px-8 py-3 hover:bg-rich-gold hover:text-white transition-all" href="#">VISIT THE BLOG</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<!-- Post 1 -->
+<div class="group cursor-pointer">
+<div class="aspect-video overflow-hidden mb-6">
+<div class="w-full h-full bg-deep-navy relative">
+<div class="absolute inset-0 flex items-center justify-center text-white/20 font-headline-lg text-[60px] opacity-10 group-hover:scale-110 transition-transform duration-700">01</div>
+<div class="absolute inset-0 bg-gradient-to-br from-sapphire-blue/40 to-transparent"></div>
+</div>
+</div>
+<h3 class="font-headline-md text-[24px] mb-4 group-hover:text-rich-gold transition-colors">Buying Sapphires at Chanthaburi Gem Market</h3>
+<p class="font-body-md text-on-surface-variant mb-6 line-clamp-2">Join us on an adventure to Thailand's most famous gemstone market, uncovering the secrets of the trade.</p>
+<span class="font-label-caps text-label-caps text-rich-gold">READ MORE →</span>
+</div>
+<!-- Post 2 -->
+<div class="group cursor-pointer">
+<div class="aspect-video overflow-hidden mb-6">
+<div class="w-full h-full bg-ruby-red relative">
+<div class="absolute inset-0 flex items-center justify-center text-white/20 font-headline-lg text-[60px] opacity-10 group-hover:scale-110 transition-transform duration-700">02</div>
+<div class="absolute inset-0 bg-gradient-to-br from-ruby-red/40 to-transparent"></div>
+</div>
+</div>
+<h3 class="font-headline-md text-[24px] mb-4 group-hover:text-rich-gold transition-colors">Beyond Diamonds - Why Sapphires Win</h3>
+<p class="font-body-md text-on-surface-variant mb-6 line-clamp-2">Discover why sapphires are becoming the ultimate choice for modern engagement rings.</p>
+<span class="font-label-caps text-label-caps text-rich-gold">READ MORE →</span>
+</div>
+<!-- Post 3 -->
+<div class="group cursor-pointer">
+<div class="aspect-video overflow-hidden mb-6">
+<div class="w-full h-full bg-emerald-green relative">
+<div class="absolute inset-0 flex items-center justify-center text-white/20 font-headline-lg text-[60px] opacity-10 group-hover:scale-110 transition-transform duration-700">03</div>
+<div class="absolute inset-0 bg-gradient-to-br from-emerald-green/40 to-transparent"></div>
+</div>
+</div>
+<h3 class="font-headline-md text-[24px] mb-4 group-hover:text-rich-gold transition-colors">Emeralds: Everything You Need To Know</h3>
+<p class="font-body-md text-on-surface-variant mb-6 line-clamp-2">An in-depth guide to the rarest and most coveted green gemstone in the world.</p>
+<span class="font-label-caps text-label-caps text-rich-gold">READ MORE →</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Newsletter -->
+<section class="bg-deep-navy py-24 text-white">
+<div class="max-w-4xl mx-auto px-margin-mobile text-center">
+<h2 class="font-headline-lg text-headline-lg mb-6">Sign Up To Our <span class="italic">Newsletter</span></h2>
+<p class="font-body-md text-surface-dim mb-10 max-w-2xl mx-auto">
+                    Sign up to our newsletter for fascinating insights into rare and precious gemstones, exclusive access to our latest offerings, and special members-only offers.
+                </p>
+<form class="flex flex-col md:flex-row gap-4 items-center justify-center">
+<input class="w-full md:w-96 bg-white/10 border-b border-pale-gold/30 text-white px-0 py-4 focus:outline-none focus:border-pale-gold transition-colors placeholder:text-surface-dim/40" placeholder="Your email address" type="email"/>
+<button class="bg-rich-gold text-white px-10 py-4 font-label-caps text-label-caps uppercase hover:bg-white hover:text-deep-navy transition-all duration-300 w-full md:w-auto" type="submit">Subscribe</button>
+</form>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-deep-navy text-surface-dim border-t border-pale-gold/10 pt-20 pb-10">
+<div class="max-w-[1440px] mx-auto px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-20">
+<!-- Brand Info -->
+<div class="md:col-span-1">
+<img alt="SAPPHIRE MERCHANT" class="h-10 w-auto mb-8 brightness-200 contrast-100" src="https://lh3.googleusercontent.com/aida/AP1WRLuLlRfYHHyW1MjWA8UzWSYlxHzwo2S51r3q-QC2OVxZwVb28I0P5xer63i_7TXrp2NTs4UcuDOK5zwf2lXa5XhdPlLZ_WvSkYcRZhswpsciWH4RPCxXUWzUuwFPVxJCLlqkfHNqSwh0sX3NdxVClzE4acBHAE4tv1Je8SMFLmQS_mFIcQArxIPyunMfmswhJodbTWB2zkzMDHp1V7bi41n96XaSKQ-k91rzPAWohibmm_-Whpf1DRX0to0m"/>
+<address class="not-italic font-body-md text-sm space-y-2 opacity-70">
+                        3/18 Bernard Street, Addington<br/>
+                        Christchurch 8024, New Zealand<br/>
+                        Phone: +64 27 503 9126<br/>
+                        Info@thesapphiremerchant.com
+                    </address>
+</div>
+<!-- Navigation -->
+<div>
+<h4 class="font-label-caps text-label-caps text-pale-gold mb-8">COMPANY</h4>
+<ul class="space-y-4 font-body-md text-sm">
+<li><a class="hover:text-rich-gold transition-colors" href="#">Gemstones</a></li>
+<li><a class="hover:text-rich-gold transition-colors" href="#">Jewellery</a></li>
+<li><a class="hover:text-rich-gold transition-colors" href="#">Our Process</a></li>
+<li><a class="hover:text-rich-gold transition-colors" href="#">Contact</a></li>
+<li><a class="hover:text-rich-gold transition-colors" href="#">Education</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-caps text-label-caps text-pale-gold mb-8">SERVICE</h4>
+<ul class="space-y-4 font-body-md text-sm">
+<li><a class="hover:text-rich-gold transition-colors" href="#">FAQs</a></li>
+<li><a class="hover:text-rich-gold transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-rich-gold transition-colors" href="#">Shipping Policy</a></li>
+<li><a class="hover:text-rich-gold transition-colors" href="#">Returns &amp; Refunds</a></li>
+<li><a class="hover:text-rich-gold transition-colors" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+<!-- Socials -->
+<div>
+<h4 class="font-label-caps text-label-caps text-pale-gold mb-8">FOLLOW US</h4>
+<div class="flex gap-6">
+<a class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-rich-gold hover:border-rich-gold transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-lg">face_nod</span>
+</a>
+<a class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-rich-gold hover:border-rich-gold transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-lg">photo_camera</span>
+</a>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center pt-10 border-t border-white/5 gap-6 text-xs opacity-50 uppercase tracking-widest">
+<p>© 2024 THE SAPPHIRE MERCHANT. ALL RIGHTS RESERVED.</p>
+<div class="flex gap-4 items-center">
+<span>AMEX</span>
+<span>APPLE PAY</span>
+<span>GOOGLE PAY</span>
+<span>MASTERCARD</span>
+<span>VISA</span>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+                header.classList.remove('bg-transparent');
+            } else {
+                header.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+                header.classList.add('bg-transparent');
+            }
+        });
+    </script>
+</body></html>
