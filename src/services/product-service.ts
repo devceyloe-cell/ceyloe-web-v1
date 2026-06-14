@@ -1,11 +1,19 @@
 import { mockProducts } from "@/data/mock/products";
 import { isShopifyConfigured } from "@/config/env";
+import { getCeyloeProductVideoUrl } from "@/config/ceyloe-youtube-videos";
 import {
   fetchShopifyProductByHandle,
   fetchShopifyProducts,
 } from "@/lib/shopify/products";
 import { getProductCaratWeight, getProductShape } from "@/lib/product-utils";
 import type { CatalogFilters, Product, RecommendRequest } from "@/types";
+
+function withCeyloeVideo(product: Product): Product {
+  return {
+    ...product,
+    videoUrl: product.videoUrl ?? getCeyloeProductVideoUrl(product.handle),
+  };
+}
 
 function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
   let result = [...products];
@@ -91,7 +99,7 @@ export async function getProducts(filters: CatalogFilters = {}): Promise<Product
   let products: Product[];
 
   if (isShopifyConfigured()) {
-    products = await fetchShopifyProducts();
+    products = (await fetchShopifyProducts()).map(withCeyloeVideo);
   } else {
     products = mockProducts;
   }
@@ -102,7 +110,7 @@ export async function getProducts(filters: CatalogFilters = {}): Promise<Product
 export async function getProductByHandle(handle: string): Promise<Product | null> {
   if (isShopifyConfigured()) {
     const product = await fetchShopifyProductByHandle(handle);
-    if (product) return product;
+    if (product) return withCeyloeVideo(product);
   }
 
   return mockProducts.find((p) => p.handle === handle) ?? null;
@@ -132,7 +140,7 @@ export async function getProductCategories(): Promise<string[]> {
 
 export async function getAllProductsForFilters(): Promise<Product[]> {
   if (isShopifyConfigured()) {
-    return fetchShopifyProducts();
+    return (await fetchShopifyProducts()).map(withCeyloeVideo);
   }
   return mockProducts;
 }
