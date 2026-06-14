@@ -6,7 +6,6 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductGallery } from "@/components/product/product-gallery";
-import { ProductVideo } from "@/components/product/product-video";
 import { ProductSpecs } from "@/components/product/product-specs";
 import { CertificationDisplay } from "@/components/product/certification-display";
 import { CompareButton } from "@/components/compare/compare-button";
@@ -53,7 +52,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <ProductGallery
             images={product.images}
             title={product.title}
-            viewer360Images={product.viewer360Images}
+            videoUrl={product.videoUrl}
+            poster={product.image}
           />
 
           <div className="flex flex-col">
@@ -101,7 +101,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <CertificationDisplay product={product} />
-            <ProductVideo videoUrl={product.videoUrl} poster={product.image} title={product.title} />
           </div>
         </div>
       </Container>

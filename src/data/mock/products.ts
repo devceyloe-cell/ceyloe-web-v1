@@ -1,5 +1,6 @@
 import type { Product } from "@/types";
 import { parseCaratWeight } from "@/lib/product-utils";
+import { env } from "@/config/env";
 
 const baseProducts: Product[] = [
   {
@@ -17,6 +18,7 @@ const baseProducts: Product[] = [
       "/images/Sapphires/15_2_web.jpg",
       "/images/Sapphires/12-1_web.jpg",
     ],
+    videoUrl: "https://www.youtube.com/watch?v=ZZ6hwjHV7m0",
     featured: true,
     isNew: true,
     createdAt: "2025-05-12",
@@ -309,12 +311,11 @@ const baseProducts: Product[] = [
 function enrichProduct(product: Product): Product {
   const caratWeight = product.specs.caratWeight ?? parseCaratWeight(product.specs.carat);
   const shape = product.specs.shape ?? product.specs.cut;
-  const frames = product.viewer360Images ?? product.images;
 
   return {
     ...product,
     specs: { ...product.specs, caratWeight, shape },
-    viewer360Images: frames.length >= 2 ? frames : [...frames, ...frames],
+    videoUrl: product.videoUrl ?? (env.product.videoUrl || undefined),
     certificationUrl: product.certificationUrl ?? `/certificates/${product.handle}`,
     createdAt: product.createdAt ?? "2024-06-01",
   };

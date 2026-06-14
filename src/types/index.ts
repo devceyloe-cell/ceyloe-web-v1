@@ -21,7 +21,6 @@ export interface Product {
   category: string;
   image: string;
   images: string[];
-  viewer360Images?: string[];
   videoUrl?: string;
   featured?: boolean;
   isNew?: boolean;

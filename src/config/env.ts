@@ -17,6 +17,12 @@ export const env = {
     videoUrl: process.env.NEXT_PUBLIC_HERO_VIDEO_URL ?? "",
     posterUrl: process.env.NEXT_PUBLIC_HERO_POSTER_URL ?? images.hero.poster,
   },
+  product: {
+    /** Default sample: GIA/Master Cut Gems — natural Sri Lankan sapphires showcase */
+    videoUrl:
+      process.env.NEXT_PUBLIC_PRODUCT_VIDEO_URL ??
+      "https://www.youtube.com/watch?v=YdxxruGgkro",
+  },
 } as const;
 
 export function isShopifyConfigured(): boolean {

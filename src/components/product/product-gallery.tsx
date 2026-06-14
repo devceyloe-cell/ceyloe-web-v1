@@ -4,20 +4,21 @@ import { useState } from "react";
 import Image from "next/image";
 import { Maximize2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Viewer360 } from "@/components/product/viewer-360";
+import { ProductVideo } from "@/components/product/product-video";
 
 interface ProductGalleryProps {
   images: string[];
   title: string;
-  viewer360Images?: string[];
+  videoUrl?: string;
+  poster?: string;
 }
 
-export function ProductGallery({ images, title, viewer360Images }: ProductGalleryProps) {
+export function ProductGallery({ images, title, videoUrl, poster }: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
-  const [mode, setMode] = useState<"photo" | "360">("photo");
+  const [mode, setMode] = useState<"photo" | "video">("photo");
 
-  const frames = viewer360Images ?? images;
+  const videoPoster = poster ?? images[0];
 
   return (
     <>
@@ -33,22 +34,20 @@ export function ProductGallery({ images, title, viewer360Images }: ProductGaller
           >
             Photos
           </button>
-          {frames.length >= 2 && (
-            <button
-              type="button"
-              onClick={() => setMode("360")}
-              className={cn(
-                "px-3 py-1.5 text-[10px] uppercase tracking-widest",
-                mode === "360" ? "bg-primary text-white" : "border border-border text-muted hover:text-primary",
-              )}
-            >
-              360° View
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setMode("video")}
+            className={cn(
+              "px-3 py-1.5 text-[10px] uppercase tracking-widest",
+              mode === "video" ? "bg-primary text-white" : "border border-border text-muted hover:text-primary",
+            )}
+          >
+            Video
+          </button>
         </div>
 
-        {mode === "360" ? (
-          <Viewer360 images={frames} title={title} />
+        {mode === "video" ? (
+          <ProductVideo variant="gallery" videoUrl={videoUrl} poster={videoPoster} title={title} />
         ) : (
           <div className="relative aspect-square overflow-hidden bg-surface-elevated">
             <Image

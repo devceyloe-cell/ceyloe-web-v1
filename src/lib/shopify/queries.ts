@@ -1,3 +1,34 @@
+const METAFIELD_IDENTIFIERS = `
+  { namespace: "custom", key: "carat" },
+  { namespace: "custom", key: "color" },
+  { namespace: "custom", key: "clarity" },
+  { namespace: "custom", key: "cut" },
+  { namespace: "custom", key: "origin" },
+  { namespace: "custom", key: "treatment" },
+  { namespace: "custom", key: "certification" },
+  { namespace: "custom", key: "video_url" }
+`;
+
+const PRODUCT_MEDIA_FIELDS = `
+  media(first: 8) {
+    edges {
+      node {
+        mediaContentType
+        ... on Video {
+          sources {
+            url
+            mimeType
+          }
+        }
+        ... on ExternalVideo {
+          embedUrl
+          host
+        }
+      }
+    }
+  }
+`;
+
 export const PRODUCTS_QUERY = `
   query GetProducts($first: Int!) {
     products(first: $first) {
@@ -22,6 +53,7 @@ export const PRODUCTS_QUERY = `
               }
             }
           }
+          ${PRODUCT_MEDIA_FIELDS}
           priceRange {
             minVariantPrice {
               amount
@@ -29,13 +61,7 @@ export const PRODUCTS_QUERY = `
             }
           }
           metafields(identifiers: [
-            { namespace: "custom", key: "carat" },
-            { namespace: "custom", key: "color" },
-            { namespace: "custom", key: "clarity" },
-            { namespace: "custom", key: "cut" },
-            { namespace: "custom", key: "origin" },
-            { namespace: "custom", key: "treatment" },
-            { namespace: "custom", key: "certification" }
+            ${METAFIELD_IDENTIFIERS}
           ]) {
             key
             value
@@ -68,6 +94,7 @@ export const PRODUCT_BY_HANDLE_QUERY = `
           }
         }
       }
+      ${PRODUCT_MEDIA_FIELDS}
       priceRange {
         minVariantPrice {
           amount
@@ -75,13 +102,7 @@ export const PRODUCT_BY_HANDLE_QUERY = `
         }
       }
       metafields(identifiers: [
-        { namespace: "custom", key: "carat" },
-        { namespace: "custom", key: "color" },
-        { namespace: "custom", key: "clarity" },
-        { namespace: "custom", key: "cut" },
-        { namespace: "custom", key: "origin" },
-        { namespace: "custom", key: "treatment" },
-        { namespace: "custom", key: "certification" }
+        ${METAFIELD_IDENTIFIERS}
       ]) {
         key
         value

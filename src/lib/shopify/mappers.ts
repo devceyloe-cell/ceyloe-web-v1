@@ -10,6 +10,18 @@ interface ShopifyImage {
   altText: string | null;
 }
 
+interface ShopifyVideoSource {
+  url: string;
+  mimeType: string;
+}
+
+interface ShopifyMediaNode {
+  mediaContentType: string;
+  sources?: ShopifyVideoSource[];
+  embedUrl?: string;
+  host?: string;
+}
+
 interface ShopifyProductNode {
   id: string;
   handle: string;
@@ -20,6 +32,7 @@ interface ShopifyProductNode {
   availableForSale: boolean;
   featuredImage: ShopifyImage | null;
   images: { edges: Array<{ node: ShopifyImage }> };
+  media?: { edges: Array<{ node: ShopifyMediaNode }> };
   priceRange: {
     minVariantPrice: { amount: string; currencyCode: string };
   };
@@ -28,6 +41,25 @@ interface ShopifyProductNode {
 
 function getMetafield(metafields: (ShopifyMetafield | null)[], key: string): string | undefined {
   return metafields.find((m) => m?.key === key)?.value;
+}
+
+function getVideoUrl(node: ShopifyProductNode): string | undefined {
+  const metafieldVideo = getMetafield(node.metafields, "video_url");
+  if (metafieldVideo) return metafieldVideo;
+
+  for (const edge of node.media?.edges ?? []) {
+    const media = edge.node;
+    if (media.mediaContentType === "VIDEO" && media.sources?.length) {
+      const mp4 =
+        media.sources.find((source) => source.mimeType.includes("mp4")) ?? media.sources[0];
+      return mp4.url;
+    }
+    if (media.mediaContentType === "EXTERNAL_VIDEO" && media.embedUrl) {
+      return media.embedUrl;
+    }
+  }
+
+  return undefined;
 }
 
 export function mapShopifyProduct(node: ShopifyProductNode): Product {
@@ -44,6 +76,7 @@ export function mapShopifyProduct(node: ShopifyProductNode): Product {
     category: node.productType.toLowerCase() || "gemstones",
     image: featured,
     images: images.length ? images : [featured],
+    videoUrl: getVideoUrl(node),
     featured: node.tags.includes("featured"),
     specs: {
       carat: getMetafield(node.metafields, "carat"),
