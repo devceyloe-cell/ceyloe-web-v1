@@ -3,9 +3,9 @@ import { images } from "@/config/images";
 
 export const mockSiteContent: SiteContent = {
   hero: {
-    headline: "Specialists in Fine Natural Gemstones",
+    headline: "Rare by Nature. Treasured for Generations.",
     subheadline:
-      "Every bespoke creation begins with choosing an extraordinary natural gemstone — ethically sourced and certified from Sri Lanka.",
+      "From our family-owned mines in Sri Lanka to your collection, discover exceptional natural gemstones and bespoke jewellery designed to become tomorrow's heirlooms.",
     ctaLabel: "Explore Collection",
     ctaHref: "/catalog",
   },

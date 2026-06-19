@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { HeroTypingText } from "@/components/home/hero-typing-text";
 import { stitchImages } from "@/config/stitch-images";
@@ -26,17 +27,28 @@ export function StitchHero() {
           <HeroTypingText text={HERO_EYEBROW} />
 
           <h1 className="hero-headline-glow font-caslon mt-5 text-[2.25rem] font-normal leading-[1.2] tracking-[-0.02em] text-white sm:text-5xl sm:leading-[1.15] lg:text-[3.25rem]">
-            Crafted for Those Who{" "}
-            <span className="italic">Appreciate Rarity</span>
+            Rare by Nature.{" "}
+            <span className="italic">Treasured for Generations.</span>
           </h1>
 
           <div className="mt-7 h-px w-14 bg-white/35" aria-hidden />
 
           <p className="font-manrope mt-8 max-w-md text-[15px] leading-[1.75] text-white/90 sm:text-base">
-            From breathtaking sapphires to handcrafted jewellery, we offer timeless treasures
-            designed to reflect your unique style. Explore our collection or create a bespoke
-            masterpiece that will be cherished for generations.
+            From our family-owned mines in Sri Lanka to your collection, discover exceptional
+            natural gemstones and bespoke jewellery designed to become tomorrow&apos;s heirlooms.
           </p>
+
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+            <Link href="/catalog" className="btn-stitch-gold inline-flex items-center justify-center px-10 py-4 text-center sm:min-w-[220px]">
+              Explore Gemstone
+            </Link>
+            <Link
+              href="/book"
+              className="btn-stitch-ghost inline-flex items-center justify-center px-10 py-4 text-center sm:min-w-[220px]"
+            >
+              Book a Private Viewing
+            </Link>
+          </div>
         </div>
       </Container>
     </section>
