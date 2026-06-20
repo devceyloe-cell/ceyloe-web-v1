@@ -1,23 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { HeroTypingText } from "@/components/home/hero-typing-text";
-import { stitchImages } from "@/config/stitch-images";
+import { StitchHeroBackground } from "@/components/home/stitch-hero-background";
 
 const HERO_EYEBROW = "Fine Ceylon Gemstones & Custom Creations";
 
 export function StitchHero() {
   return (
-    <section className="relative min-h-screen min-h-[700px] overflow-hidden">
-      <Image
-        src={stitchImages.hero}
-        alt="Handcrafted gold ring with moss agate on velvet"
-        fill
-        unoptimized
-        className="object-cover object-right"
-        priority
-        sizes="100vw"
-      />
+    <section className="relative min-h-screen min-h-[700px] overflow-hidden bg-black">
+      <StitchHeroBackground />
 
       {/* Light left vignette — keeps text readable without darkening the whole image */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
