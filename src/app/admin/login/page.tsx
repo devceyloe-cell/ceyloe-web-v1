@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ export default function AdminLoginPage() {
     const res = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ username, password }),
     });
 
     if (res.ok) {
@@ -37,9 +38,23 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md border border-border bg-surface p-8">
         <p className="text-xs uppercase tracking-[0.2em] text-gold">Ceyloe Admin</p>
         <h1 className="mt-2 font-display text-3xl font-light">Sign in</h1>
-        <p className="mt-2 text-sm text-muted">Manage pages, content, and images</p>
+        <p className="mt-2 text-sm text-muted">Manage gems, pages, and content</p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <div>
+            <label htmlFor="username" className="mb-2 block text-xs uppercase tracking-widest text-muted">
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full border border-border bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+              required
+            />
+          </div>
           <div>
             <label htmlFor="password" className="mb-2 block text-xs uppercase tracking-widest text-muted">
               Password
@@ -47,6 +62,7 @@ export default function AdminLoginPage() {
             <input
               id="password"
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full border border-border bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"

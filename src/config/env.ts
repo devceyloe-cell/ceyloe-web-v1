@@ -23,6 +23,14 @@ export const env = {
       process.env.NEXT_PUBLIC_PRODUCT_VIDEO_URL ??
       "https://www.youtube.com/watch?v=LPNf_ZPPGXg",
   },
+  mongodb: {
+    uri: process.env.MONGODB_URI ?? "",
+    dbName: process.env.MONGODB_DB_NAME ?? "ceyloe",
+  },
+  stripe: {
+    secretKey: process.env.STRIPE_SECRET_KEY ?? "",
+    publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "",
+  },
 } as const;
 
 export function isShopifyConfigured(): boolean {
@@ -31,4 +39,12 @@ export function isShopifyConfigured(): boolean {
 
 export function isSanityConfigured(): boolean {
   return Boolean(env.sanity.projectId);
+}
+
+export function isMongoConfigured(): boolean {
+  return Boolean(env.mongodb.uri);
+}
+
+export function isStripeConfigured(): boolean {
+  return Boolean(env.stripe.secretKey);
 }

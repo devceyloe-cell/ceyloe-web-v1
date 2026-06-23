@@ -3,7 +3,7 @@ import { SignJWT, jwtVerify } from "jose";
 import type { ShopifyCustomerSession } from "@/lib/shopify/customer-auth";
 
 const secret = new TextEncoder().encode(
-  process.env.SHOPIFY_CUSTOMER_SESSION_SECRET ?? process.env.ADMIN_PASSWORD ?? "ceyloe-dev-secret",
+  process.env.SHOPIFY_CUSTOMER_SESSION_SECRET ?? process.env.ADMIN_JWT_SECRET ?? "ceyloe-dev-secret",
 );
 
 export async function sealCustomerSession(session: ShopifyCustomerSession): Promise<string> {

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate:hero": "node scripts/generate-hero-webp.mjs"
+    "generate:hero": "node scripts/generate-hero-webp.mjs",
+    "admin:create": "node --env-file=.env.local scripts/create-admin.mjs"
   },
   "dependencies": {
     "@sanity/client": "^7.22.1",
@@ -16,11 +17,13 @@
     "framer-motion": "^12.40.0",
     "jose": "^6.2.3",
     "lucide-react": "^1.17.0",
+    "mongodb": "^7.3.0",
     "next": "16.2.6",
     "next-sanity": "^13.0.7",
     "next-themes": "^0.4.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "stripe": "^22.2.3",
     "tailwind-merge": "^3.6.0",
     "uuid": "^14.0.0"
   },

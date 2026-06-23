@@ -47,7 +47,8 @@ The site works **out of the box** without API keys using mock product and conten
 | UI | React 19, Tailwind CSS 4 |
 | Animation | Framer Motion |
 | Icons | Lucide React |
-| Commerce API | Shopify Storefront API |
+| Commerce API | Shopify Storefront API (optional) |
+| Product database | **MongoDB Atlas** (recommended for self-managed catalog) |
 | CMS | Sanity (`@sanity/client`, `next-sanity`) |
 | Admin auth | Password + JWT (`jose`) |
 | Customer auth | Shopify Customer Account OAuth |
@@ -74,7 +75,8 @@ flowchart TB
     end
 
     subgraph External["External Services"]
-        Shopify["Shopify<br/>Products & Checkout"]
+        MongoDB["MongoDB Atlas<br/>Product Catalog"]
+        Shopify["Shopify (optional)<br/>Checkout"]
         Sanity["Sanity CMS<br/>Marketing Content"]
     end
 
@@ -88,7 +90,8 @@ flowchart TB
     BFF --> LocalCMS
     BFF --> Uploads
 
-    Services -->|configured| Shopify
+    Services -->|configured| MongoDB
+    Services -->|optional| Shopify
     Services -->|configured| Sanity
     Services -->|not configured| Mock
 ```
@@ -148,7 +151,21 @@ ceyloe-web/
 
 ## Data Sources
 
-### 1. Shopify (products — production)
+### 1. MongoDB (products — recommended for client-managed catalog)
+
+| Item | Detail |
+|---|---|
+| Purpose | Gem catalog: images, prices, specs, stock status |
+| Used by | `/catalog`, `/products/[handle]`, `/admin/products` |
+| Config | `MONGODB_URI`, optional `MONGODB_DB_NAME` (default: `ceyloe`) |
+| Collection | `products` |
+| Admin | `/admin/products` — add, edit, delete, upload images |
+
+**Priority:** When MongoDB is configured and has products, the catalog uses MongoDB **instead of** Shopify or mock data. The storefront UI does not change.
+
+**Why MongoDB:** Flexible schema for gemstone fields (carat, color, clarity, origin, etc.), easy document storage, free tier on [MongoDB Atlas](https://www.mongodb.com/atlas), works well with Next.js.
+
+### 2. Shopify (products — optional alternative)
 
 | Item | Detail |
 |---|---|
@@ -159,7 +176,9 @@ ceyloe-web/
 
 **No traditional database** — Shopify is the product database.
 
-### 2. Sanity CMS (marketing content)
+**No Shopify required** if using MongoDB for catalog management.
+
+### 3. Sanity CMS (marketing content)
 
 | Item | Detail |
 |---|---|
@@ -168,7 +187,7 @@ ceyloe-web/
 | Config | `NEXT_PUBLIC_SANITY_PROJECT_ID`, `SANITY_API_READ_TOKEN` |
 | Schemas | `siteSettings`, `testimonial`, `certification` |
 
-### 3. Mock data (development fallback)
+### 4. Mock data (development fallback)
 
 | Item | Detail |
 |---|---|
@@ -176,7 +195,7 @@ ceyloe-web/
 | When used | Shopify or Sanity credentials not set |
 | Purpose | Local dev without external accounts |
 
-### 4. Local JSON CMS (custom pages)
+### 5. Local JSON CMS (custom pages)
 
 | Item | Detail |
 |---|---|
@@ -185,7 +204,7 @@ ceyloe-web/
 | Purpose | Dynamic pages at `/p/[slug]` |
 | Managed via | `/admin` dashboard |
 
-### 5. Static content files
+### 6. Static content files
 
 Blog posts, FAQ, about copy, hero slides, portfolio — in `src/data/`.
 
@@ -251,7 +270,9 @@ Blog posts, FAQ, about copy, hero slides, portfolio — in `src/data/`.
 | `/admin/login` | Admin sign-in |
 | `/admin` | Dashboard (page list) |
 | `/admin/pages/new` | Create page |
-| `/admin/pages/[id]` | Edit page |
+| `/admin/products` | Gem catalog list |
+| `/admin/products/new` | Add gemstone |
+| `/admin/products/[id]` | Edit gemstone |
 
 ---
 
@@ -270,8 +291,10 @@ Blog posts, FAQ, about copy, hero slides, portfolio — in `src/data/`.
 | `/api/admin/logout` | POST | Admin | Admin logout |
 | `/api/admin/pages` | GET, POST | Admin | List/create CMS pages |
 | `/api/admin/pages/[id]` | GET, PUT, DELETE | Admin | CRUD single page |
+| `/api/admin/products` | GET, POST | Admin | List/create catalog products |
+| `/api/admin/products/[id]` | GET, PUT, DELETE | Admin | CRUD single product |
+| `/api/admin/products/seed` | POST | Admin | Import sample products (empty DB only) |
 | `/api/admin/upload` | POST | Admin | Image upload (max 5MB) |
-| `/api/auth/shopify/login` | GET | Public | Shopify OAuth start |
 | `/api/auth/shopify/callback` | GET | Public | Shopify OAuth callback |
 | `/api/auth/shopify/logout` | POST | Public | Customer logout |
 
@@ -286,6 +309,14 @@ Blog posts, FAQ, about copy, hero slides, portfolio — in `src/data/`.
 3. Filters applied from URL query params
 4. `ProductGrid` + `CatalogFilters` rendered
 5. User can compare gems or open product detail
+
+### Manage catalog product (admin)
+
+1. Admin logs in at `/admin/login`
+2. Opens **Gem products** at `/admin/products`
+3. Clicks **New product** or edits existing
+4. Uploads images, sets price, carat, color, clarity, origin, etc.
+5. Saves → product appears on `/catalog` immediately (same UI as before)
 
 ### Add CMS page (admin)
 
@@ -313,7 +344,11 @@ NEXT_PUBLIC_SITE_URL=https://ceyloe.com
 # Admin
 ADMIN_PASSWORD=your-secure-password
 
-# Shopify Storefront API
+# MongoDB (recommended for self-managed catalog)
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/
+MONGODB_DB_NAME=ceyloe
+
+# Shopify Storefront API (optional — only if using Shopify instead of MongoDB)
 NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
 SHOPIFY_STOREFRONT_ACCESS_TOKEN=shpat_...
 SHOPIFY_API_VERSION=2024-10
@@ -376,7 +411,17 @@ npm run generate:hero  # Generate responsive hero WebP images from public/images
 
 ## Connecting External Services
 
-### Shopify (catalog products)
+### MongoDB Atlas (self-managed catalog — no Shopify)
+
+1. Create free account at [mongodb.com/atlas](https://www.mongodb.com/atlas)
+2. Create a cluster (M0 free tier is fine to start)
+3. Database Access → create user with read/write password
+4. Network Access → allow your IP (or `0.0.0.0/0` for Vercel)
+5. Connect → copy connection string → add to `.env.local` as `MONGODB_URI`
+6. Log in to `/admin` → **Gem products** → **Import sample products** (optional) or add gems manually
+7. Products appear on `/catalog` — UI unchanged
+
+### Shopify (optional — if you want Shopify checkout instead)
 
 1. Create a Shopify store
 2. In Shopify Admin → Settings → Apps → develop apps → create Storefront API access token
@@ -402,6 +447,7 @@ npm run generate:hero  # Generate responsive hero WebP images from public/images
 
 ### What admin can do today
 
+- **Manage gem catalog** — add/edit/delete products with images, prices, specs
 - Create/edit/delete **CMS pages**
 - Upload **images** (stored in `public/cms-uploads/`)
 - Build pages with sections: hero, text, image, text+image
@@ -409,8 +455,8 @@ npm run generate:hero  # Generate responsive hero WebP images from public/images
 
 ### What admin cannot do today
 
-- **Add/edit catalog products** (gems, prices, specs)
-- Product management is via **Shopify Admin** (or not built yet for custom DB)
+- **Online checkout** without Shopify (inquiry/contact forms only)
+- Multi-user roles (single shared password)
 
 ---
 
@@ -460,19 +506,19 @@ npm run generate:hero
 
 | Area | Status | Recommendation |
 |---|---|---|
-| Product admin in `/admin` | Not built | Use Shopify Admin, or build product CRUD + DB |
-| Traditional database | None | Add PostgreSQL/Supabase if custom product admin needed |
-| CMS persistence on Vercel | File-based | Move to Sanity or DB for production |
-| Customer checkout | Via Shopify | Connect Shopify when ready to sell |
-| Multi-user admin | Single password | Add proper auth (NextAuth, Clerk) if needed |
+| Product admin in `/admin` | **Built** (MongoDB) | Connect MongoDB Atlas |
+| Product database | MongoDB Atlas | Free tier for small catalogs |
+| CMS persistence on Vercel | File-based | Move page CMS to Sanity or DB for production |
+| Customer checkout | Not built | Add Shopify or Stripe later if needed |
+| Multi-user admin | Single password | Add NextAuth or Clerk if needed |
 
 ### Suggested roadmap
 
-1. **Phase 1:** Launch with mock data + custom design (current state)
-2. **Phase 2:** Connect Shopify for real products and checkout
+1. **Phase 1:** Launch with custom design + MongoDB catalog (client manages gems in `/admin`)
+2. **Phase 2:** Production deploy on Vercel with MongoDB Atlas + domain
 3. **Phase 3:** Connect Sanity for editable marketing content
-4. **Phase 4:** Build product admin OR train staff on Shopify Admin
-5. **Phase 5:** Production deploy on Vercel with domain
+4. **Phase 4:** Add checkout (Shopify or Stripe) when ready to sell online
+5. **Phase 5:** Multi-user admin if team grows
 
 ---
 

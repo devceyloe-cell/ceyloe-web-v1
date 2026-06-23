@@ -2,14 +2,65 @@
 
 import Link from "next/link";
 import type { CmsPage } from "@/lib/cms/types";
+import type { AdminSession } from "@/lib/admin/auth";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
 
-export function AdminDashboard({ pages }: { pages: CmsPage[] }) {
+function formatRole(role: string) {
+  return role === "admin" ? "Administrator" : role;
+}
+
+export function AdminDashboard({
+  pages,
+  session,
+}: {
+  pages: CmsPage[];
+  session: AdminSession | null;
+}) {
   return (
     <>
       <AdminHeader />
       <div className="mx-auto max-w-4xl px-4 py-8">
+        {session && (
+          <div className="mb-8 border border-gold/25 bg-gradient-to-r from-gold/10 via-transparent to-transparent px-6 py-5">
+            <p className="text-xs uppercase tracking-[0.22em] text-gold">Signed in</p>
+            <h1 className="mt-2 font-display text-2xl font-light">
+              Welcome back, <span className="text-gold">{session.username}</span>
+            </h1>
+            <p className="mt-1 text-sm text-muted">
+              You are logged in as <span className="text-foreground">{formatRole(session.role)}</span>
+            </p>
+          </div>
+        )}
+
+        <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Link
+            href="/admin/products"
+            className="border border-border bg-surface p-6 transition hover:border-gold"
+          >
+            <p className="text-xs uppercase tracking-[0.2em] text-gold">Catalog</p>
+            <h2 className="mt-2 font-display text-2xl font-light">Gem products</h2>
+            <p className="mt-2 text-sm text-muted">
+              Add gemstones with images, prices, and specs for /catalog
+            </p>
+          </Link>
+          <Link
+            href="/admin/appointments"
+            className="border border-border bg-surface p-6 transition hover:border-gold"
+          >
+            <p className="text-xs uppercase tracking-[0.2em] text-gold">Bookings</p>
+            <h2 className="mt-2 font-display text-2xl font-light">Appointments</h2>
+            <p className="mt-2 text-sm text-muted">
+              View and manage Book an Appointment requests
+            </p>
+          </Link>
+          <div className="border border-border bg-surface p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-gold">Content</p>
+            <h2 className="mt-2 font-display text-2xl font-light">Custom pages</h2>
+            <p className="mt-2 text-sm text-muted">Build landing pages with text and images</p>
+          </div>
+        </div>
+
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-display text-3xl font-light">Pages</h1>

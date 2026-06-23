@@ -1,31 +1,60 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { isMongoConfigured } from "@/config/env";
+import { authenticateAdminUser } from "@/lib/mongodb/admin-users";
 
 const COOKIE_NAME = "ceyloe-admin-session";
 
-function getSecret() {
-  const secret = process.env.ADMIN_PASSWORD;
+function getJwtSecret() {
+  const secret = process.env.ADMIN_JWT_SECRET;
   if (!secret) return null;
   return new TextEncoder().encode(secret);
 }
 
 export function isAdminConfigured(): boolean {
-  return Boolean(process.env.ADMIN_PASSWORD);
+  return isMongoConfigured() && Boolean(process.env.ADMIN_JWT_SECRET);
 }
 
-export async function createSessionToken(): Promise<string | null> {
-  const secret = getSecret();
+export async function createSessionToken(userId: string, username: string): Promise<string | null> {
+  const secret = getJwtSecret();
   if (!secret) return null;
 
-  return new SignJWT({ role: "admin" })
+  return new SignJWT({ role: "admin", sub: userId, username })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
     .sign(secret);
 }
 
+export type AdminSession = {
+  id: string;
+  username: string;
+  role: string;
+};
+
+export async function getAdminSession(): Promise<AdminSession | null> {
+  const secret = getJwtSecret();
+  if (!secret) return null;
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_NAME)?.value;
+  if (!token) return null;
+
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    const username = typeof payload.username === "string" ? payload.username : "";
+    const role = typeof payload.role === "string" ? payload.role : "admin";
+    const id = typeof payload.sub === "string" ? payload.sub : "";
+
+    if (!username || !id) return null;
+    return { id, username, role };
+  } catch {
+    return null;
+  }
+}
+
 export async function verifySessionToken(token: string): Promise<boolean> {
-  const secret = getSecret();
+  const secret = getJwtSecret();
   if (!secret) return false;
 
   try {
@@ -53,14 +82,12 @@ export async function clearSessionCookie() {
 }
 
 export async function isAuthenticated(): Promise<boolean> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
-  if (!token) return false;
-  return verifySessionToken(token);
+  const session = await getAdminSession();
+  return Boolean(session);
 }
 
-export function validatePassword(password: string): boolean {
-  const expected = process.env.ADMIN_PASSWORD;
-  if (!expected) return false;
-  return password === expected;
+export async function loginAdmin(username: string, password: string): Promise<string | null> {
+  const user = await authenticateAdminUser(username, password);
+  if (!user) return null;
+  return createSessionToken(user.id, user.username);
 }

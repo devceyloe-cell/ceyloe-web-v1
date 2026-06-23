@@ -1,10 +1,14 @@
 import { mockProducts } from "@/data/mock/products";
-import { isShopifyConfigured } from "@/config/env";
+import { isMongoConfigured, isShopifyConfigured } from "@/config/env";
 import { getCeyloeProductVideoUrl } from "@/config/ceyloe-youtube-videos";
 import {
   fetchShopifyProductByHandle,
   fetchShopifyProducts,
 } from "@/lib/shopify/products";
+import {
+  getAllProductsFromDb,
+  getProductByHandleFromDb,
+} from "@/lib/mongodb/products";
 import { getProductCaratWeight, getProductShape } from "@/lib/product-utils";
 import type { CatalogFilters, Product, RecommendRequest } from "@/types";
 
@@ -95,19 +99,32 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
   return result;
 }
 
-export async function getProducts(filters: CatalogFilters = {}): Promise<Product[]> {
-  let products: Product[];
-
-  if (isShopifyConfigured()) {
-    products = (await fetchShopifyProducts()).map(withCeyloeVideo);
-  } else {
-    products = mockProducts;
+async function loadAllProducts(): Promise<Product[]> {
+  if (isMongoConfigured()) {
+    const products = await getAllProductsFromDb();
+    if (products.length > 0) {
+      return products.map(withCeyloeVideo);
+    }
   }
 
+  if (isShopifyConfigured()) {
+    return (await fetchShopifyProducts()).map(withCeyloeVideo);
+  }
+
+  return mockProducts;
+}
+
+export async function getProducts(filters: CatalogFilters = {}): Promise<Product[]> {
+  const products = await loadAllProducts();
   return applyFilters(products, filters);
 }
 
 export async function getProductByHandle(handle: string): Promise<Product | null> {
+  if (isMongoConfigured()) {
+    const product = await getProductByHandleFromDb(handle);
+    if (product) return withCeyloeVideo(product);
+  }
+
   if (isShopifyConfigured()) {
     const product = await fetchShopifyProductByHandle(handle);
     if (product) return withCeyloeVideo(product);
@@ -139,10 +156,7 @@ export async function getProductCategories(): Promise<string[]> {
 }
 
 export async function getAllProductsForFilters(): Promise<Product[]> {
-  if (isShopifyConfigured()) {
-    return (await fetchShopifyProducts()).map(withCeyloeVideo);
-  }
-  return mockProducts;
+  return loadAllProducts();
 }
 
 export function recommendProducts(

@@ -1,28 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  createSessionToken,
-  isAdminConfigured,
-  setSessionCookie,
-  validatePassword,
-} from "@/lib/admin/auth";
+import { isAdminConfigured, loginAdmin, setSessionCookie } from "@/lib/admin/auth";
 
 export async function POST(request: NextRequest) {
   if (!isAdminConfigured()) {
     return NextResponse.json(
-      { error: "Admin is not configured. Set ADMIN_PASSWORD in environment variables." },
+      {
+        error:
+          "Admin is not configured. Set MONGODB_URI and ADMIN_JWT_SECRET, then create an admin user.",
+      },
       { status: 503 },
     );
   }
 
-  const { password } = await request.json();
+  const { username, password } = await request.json();
 
-  if (!validatePassword(password)) {
-    return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+  if (!username?.trim() || !password) {
+    return NextResponse.json({ error: "Username and password are required" }, { status: 400 });
   }
 
-  const token = await createSessionToken();
+  const token = await loginAdmin(username, password);
   if (!token) {
-    return NextResponse.json({ error: "Could not create session" }, { status: 500 });
+    return NextResponse.json({ error: "Invalid username or password" }, { status: 401 });
   }
 
   await setSessionCookie(token);

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Libre_Caslon_Text, Manrope } from "next/font/google";
 import { SiteShell } from "@/components/layout/site-shell";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { ThemeScript } from "@/components/providers/theme-script";
 import { siteConfig } from "@/config/site";
 import { images } from "@/config/images";
 import "./globals.css";
@@ -59,7 +58,6 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-surface font-manrope text-foreground antialiased">
-        <ThemeScript />
         <ThemeProvider>
           <SiteShell>{children}</SiteShell>
         </ThemeProvider>

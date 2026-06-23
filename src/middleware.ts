@@ -4,7 +4,7 @@ import { jwtVerify } from "jose";
 const COOKIE_NAME = "ceyloe-admin-session";
 
 async function verifyToken(token: string): Promise<boolean> {
-  const secret = process.env.ADMIN_PASSWORD;
+  const secret = process.env.ADMIN_JWT_SECRET;
   if (!secret) return false;
   try {
     await jwtVerify(token, new TextEncoder().encode(secret));

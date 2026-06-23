@@ -15,7 +15,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const isHome = pathname === "/";
 
   if (isAdmin) {
-    return <>{children}</>;
+    return <CurrencyProvider>{children}</CurrencyProvider>;
   }
 
   return (

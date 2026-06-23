@@ -11,10 +11,12 @@ import { CertificationDisplay } from "@/components/product/certification-display
 import { CompareButton } from "@/components/compare/compare-button";
 import { getProductByHandle } from "@/services/product-service";
 import { ProductPrice } from "@/components/product/product-price";
+import { BuyButton } from "@/components/product/buy-button";
 import { siteConfig } from "@/config/site";
 
 interface ProductPageProps {
   params: Promise<{ handle: string }>;
+  searchParams: Promise<{ checkout?: string }>;
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
@@ -28,10 +30,13 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({ params, searchParams }: ProductPageProps) {
   const { handle } = await params;
+  const { checkout } = await searchParams;
   const product = await getProductByHandle(handle);
   if (!product) notFound();
+
+  const checkoutCancelled = checkout === "cancelled";
 
   const whatsappMessage = encodeURIComponent(
     `Hi, I'm interested in the ${product.title} listed on Ceyloe.com`,
@@ -47,6 +52,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <ArrowLeft className="h-4 w-4" />
           Back to Catalog
         </Link>
+
+        {checkoutCancelled && (
+          <div className="mb-8 border border-border bg-surface-elevated px-5 py-4 text-sm text-muted">
+            Checkout was cancelled. You can try again or contact us if you need help with this
+            gemstone.
+          </div>
+        )}
 
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
           <ProductGallery
@@ -78,6 +90,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <BuyButton handle={product.handle} inStock={product.inStock} />
               <a
                 href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${whatsappMessage}`}
                 target="_blank"
