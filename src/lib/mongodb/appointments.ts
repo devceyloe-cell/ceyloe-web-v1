@@ -53,13 +53,17 @@ export async function getAllAppointments(): Promise<Appointment[]> {
   const db = await getDb();
   if (!db) return [];
 
-  const docs = await db
-    .collection<StoredAppointment>(COLLECTION)
-    .find({})
-    .sort({ createdAt: -1 })
-    .toArray();
+  try {
+    const docs = await db
+      .collection<StoredAppointment>(COLLECTION)
+      .find({})
+      .sort({ createdAt: -1 })
+      .toArray();
 
-  return docs.map((doc) => toAppointment(doc as StoredAppointment & { _id: ObjectId }));
+    return docs.map((doc) => toAppointment(doc as StoredAppointment & { _id: ObjectId }));
+  } catch {
+    return [];
+  }
 }
 
 export async function updateAppointmentStatus(

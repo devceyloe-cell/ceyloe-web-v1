@@ -8,6 +8,8 @@ import { NewsletterSignup } from "@/components/layout/newsletter-signup";
 import { blogPosts } from "@/data/blog-posts";
 import { getFeaturedProductsByCategory } from "@/services/product-service";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const jewelleryProducts = await getFeaturedProductsByCategory("jewellery", 3);
 

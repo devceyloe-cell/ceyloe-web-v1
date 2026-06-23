@@ -24,13 +24,17 @@ export async function getAllProductsFromDb(): Promise<Product[]> {
   const db = await getDb();
   if (!db) return [];
 
-  const docs = await db
-    .collection<StoredProduct>(COLLECTION)
-    .find({})
-    .sort({ createdAt: -1 })
-    .toArray();
+  try {
+    const docs = await db
+      .collection<StoredProduct>(COLLECTION)
+      .find({})
+      .sort({ createdAt: -1 })
+      .toArray();
 
-  return docs.map((doc) => toProduct(doc as StoredProductDoc));
+    return docs.map((doc) => toProduct(doc as StoredProductDoc));
+  } catch {
+    return [];
+  }
 }
 
 export async function getProductByIdFromDb(id: string): Promise<Product | null> {
