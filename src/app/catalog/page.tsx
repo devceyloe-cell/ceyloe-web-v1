@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: "Browse our collection of certified, ethically sourced gemstones from Sri Lanka.",
 };
 
+export const dynamic = "force-dynamic";
+
 interface CatalogPageProps {
   searchParams: Promise<{
     category?: string;

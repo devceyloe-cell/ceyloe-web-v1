@@ -41,16 +41,24 @@ export async function getProductByIdFromDb(id: string): Promise<Product | null> 
   const db = await getDb();
   if (!db || !ObjectId.isValid(id)) return null;
 
-  const doc = await db.collection<StoredProduct>(COLLECTION).findOne({ _id: new ObjectId(id) });
-  return doc ? toProduct(doc as StoredProductDoc) : null;
+  try {
+    const doc = await db.collection<StoredProduct>(COLLECTION).findOne({ _id: new ObjectId(id) });
+    return doc ? toProduct(doc as StoredProductDoc) : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getProductByHandleFromDb(handle: string): Promise<Product | null> {
   const db = await getDb();
   if (!db) return null;
 
-  const doc = await db.collection<StoredProduct>(COLLECTION).findOne({ handle });
-  return doc ? toProduct(doc as StoredProductDoc) : null;
+  try {
+    const doc = await db.collection<StoredProduct>(COLLECTION).findOne({ handle });
+    return doc ? toProduct(doc as StoredProductDoc) : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function isHandleTakenInDb(handle: string, excludeId?: string): Promise<boolean> {

@@ -18,6 +18,8 @@ interface ProductPageProps {
   searchParams: Promise<{ checkout?: string }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { handle } = await params;
   const product = await getProductByHandle(handle);
