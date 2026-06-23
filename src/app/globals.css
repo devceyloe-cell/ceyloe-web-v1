@@ -211,6 +211,23 @@ h6 {
   background-color: var(--rich-gold);
 }
 
+.btn-stitch-outline {
+  border: 1px solid var(--deep-navy);
+  background-color: transparent;
+  color: var(--deep-navy);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.btn-stitch-outline:hover {
+  background-color: var(--deep-navy);
+  color: #fff;
+}
+
 .btn-stitch-ghost {
   border: 1px solid rgb(255 255 255 / 0.3);
   color: #fff;

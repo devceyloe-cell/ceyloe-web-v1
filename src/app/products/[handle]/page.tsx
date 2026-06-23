@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, MessageCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductSpecs } from "@/components/product/product-specs";
@@ -11,7 +10,7 @@ import { CertificationDisplay } from "@/components/product/certification-display
 import { CompareButton } from "@/components/compare/compare-button";
 import { getProductByHandle } from "@/services/product-service";
 import { ProductPrice } from "@/components/product/product-price";
-import { BuyButton } from "@/components/product/buy-button";
+import { ProductActions } from "@/components/product/product-actions";
 import { siteConfig } from "@/config/site";
 
 interface ProductPageProps {
@@ -89,25 +88,11 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
               <CompareButton handle={product.handle} />
             </div>
 
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <BuyButton handle={product.handle} inStock={product.inStock} />
-              <a
-                href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${whatsappMessage}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1"
-              >
-                <Button size="lg" className="w-full">
-                  <MessageCircle className="h-4 w-4" />
-                  Inquire on WhatsApp
-                </Button>
-              </a>
-              <Link href="/custom-jewelry" className="flex-1">
-                <Button variant="outline" size="lg" className="w-full">
-                  Custom Jewelry Inquiry
-                </Button>
-              </Link>
-            </div>
+            <ProductActions
+              handle={product.handle}
+              inStock={product.inStock}
+              whatsappHref={`https://wa.me/${siteConfig.contact.whatsapp}?text=${whatsappMessage}`}
+            />
 
             <div className="mt-10">
               <ProductSpecs specs={product.specs} />
