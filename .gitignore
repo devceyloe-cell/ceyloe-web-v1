@@ -19,6 +19,8 @@
 
 # production
 /build
+/azure-deploy
+/ceyloe-azure.zip
 
 # misc
 .DS_Store

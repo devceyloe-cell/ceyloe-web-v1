@@ -46,5 +46,5 @@ export function isMongoConfigured(): boolean {
 }
 
 export function isStripeConfigured(): boolean {
-  return Boolean(env.stripe.secretKey);
+  return Boolean(process.env.STRIPE_SECRET_KEY?.trim());
 }
