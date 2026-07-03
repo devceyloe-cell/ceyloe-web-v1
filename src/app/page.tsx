@@ -1,36 +1,26 @@
-import { StitchHero } from "@/components/home/stitch-hero";
-import { StitchBentoGrid } from "@/components/home/stitch-bento-grid";
-import { StitchFeaturedProducts } from "@/components/home/stitch-featured-products";
-import { StitchBespoke } from "@/components/home/stitch-bespoke";
-import { StitchFounder } from "@/components/home/stitch-founder";
-import { StitchJournal } from "@/components/home/stitch-journal";
-import { NewsletterSignup } from "@/components/layout/newsletter-signup";
-import { blogPosts } from "@/data/blog-posts";
-import { getFeaturedProductsByCategory } from "@/services/product-service";
+import { LandingHero } from "@/components/landing/landing-hero";
+import { LandingValueBar } from "@/components/landing/landing-value-bar";
+import { LandingGemstones } from "@/components/landing/landing-gemstones";
+import { LandingQuality } from "@/components/landing/landing-quality";
+import { LandingBespoke } from "@/components/landing/landing-bespoke";
+import { LandingStory } from "@/components/landing/landing-story";
+import { LandingTestimonials } from "@/components/landing/landing-testimonials";
+import { LandingAppointmentCta } from "@/components/landing/landing-appointment-cta";
+import { facebookReviews } from "@/data/facebook-reviews";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
-  const jewelleryProducts = await getFeaturedProductsByCategory("jewellery", 3);
-
-  const journalPosts = blogPosts.slice(0, 3).map((p) => ({
-    title: p.title,
-    excerpt: p.excerpt,
-    href: `/journal/${p.slug}`,
-    image: p.image,
-    category: p.category,
-    readTime: p.readTime,
-  }));
-
+export default function HomePage() {
   return (
     <>
-      <StitchHero />
-      <StitchBentoGrid />
-      <StitchFeaturedProducts products={jewelleryProducts} />
-      <StitchBespoke />
-      <StitchFounder />
-      <StitchJournal posts={journalPosts} />
-      <NewsletterSignup />
+      <LandingHero />
+      <LandingValueBar />
+      <LandingGemstones />
+      <LandingQuality />
+      <LandingBespoke />
+      <LandingStory />
+      <LandingTestimonials testimonials={facebookReviews} />
+      <LandingAppointmentCta />
     </>
   );
 }

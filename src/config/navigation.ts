@@ -82,3 +82,13 @@ export const mainNavigation: NavItem[] = [
   { label: "Contact", href: "/contact" },
   { label: "Education", href: "/journal" },
 ];
+
+/** Flat nav used on the main marketing layout (matches homepage mockup). */
+export const landingNavigation: NavLink[] = [
+  { label: "Home", href: "/" },
+  { label: "Gemstones", href: "/catalog" },
+  { label: "Bespoke Jewellery", href: "/custom-jewelry" },
+  { label: "Our Story", href: "/about" },
+  { label: "Education", href: "/journal" },
+  { label: "Contact", href: "/contact" },
+];

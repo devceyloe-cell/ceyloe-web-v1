@@ -150,9 +150,10 @@ h6 {
 .hero-headline-glow {
   color: #fff;
   text-shadow:
-    0 0 12px rgb(255 255 255 / 0.10),
-    0 0 28px rgb(255 255 255 / 0.55),
-    0 0 56px rgb(255 255 255 / 0.3);
+    0 0 8px rgb(255 255 255 / 0.15),
+    0 0 20px rgb(255 255 255 / 0.45),
+    0 0 40px rgb(255 255 255 / 0.35),
+    0 0 64px rgb(255 255 255 / 0.2);
 }
 
 .hero-typing-text {
