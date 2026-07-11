@@ -1,0 +1,6 @@
+azure-deploy
+ceyloe-azure.zip
+.next
+node_modules
+coverage
+*.log
