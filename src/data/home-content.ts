@@ -12,7 +12,7 @@ export const homeEditorialBlocks = [
     image: images.categories.sapphires,
     imagePosition: "right" as const,
     links: [
-      { label: "Loose Gemstones", href: "/catalog?category=sapphires" },
+      { label: "Loose Gemstones", href: "/gemstones" },
       { label: "View Catalog", href: "/catalog" },
     ],
   },
@@ -42,7 +42,7 @@ export const homeEditorialBlocks = [
     image: getHeroSlideSrc(images.hero.slides[2]),
     imagePosition: "right" as const,
     links: [
-      { label: "Select a Sapphire", href: "/catalog?category=sapphires" },
+      { label: "Select a Sapphire", href: "/gemstones/sapphires" },
       { label: "About Us", href: "/about" },
     ],
   },

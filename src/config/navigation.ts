@@ -18,24 +18,28 @@ export interface NavItem {
 export const mainNavigation: NavItem[] = [
   {
     label: "Gemstones",
-    href: "/catalog",
+    href: "/gemstones",
     children: [
       {
-        label: "Search All Gemstones",
-        href: "/catalog",
-        children: [{ label: "Search All Gemstones", href: "/catalog" }],
+        label: "Natural Gemstones",
+        href: "/gemstones",
+        children: [
+          { label: "Natural Gemstones", href: "/gemstones" },
+          { label: "View All Gemstones", href: "/catalog" },
+        ],
       },
       {
         label: "Gemstones by Type",
-        href: "/catalog",
+        href: "/gemstones",
         children: [
-          { label: "Sapphire", href: "/catalog?category=sapphires" },
-          { label: "Ruby", href: "/catalog?category=ruby" },
-          { label: "Emerald", href: "/catalog" },
+          { label: "Sapphire", href: "/gemstones/sapphires" },
           { label: "Spinel", href: "/catalog?category=spinel" },
           { label: "Garnet", href: "/catalog?category=garnet" },
+          { label: "Topaz", href: "/catalog?category=topaz" },
+          { label: "Citrine", href: "/catalog?category=citrine" },
+          { label: "Tourmaline", href: "/catalog?category=tourmaline" },
           { label: "Zircon", href: "/catalog?category=zircon" },
-          { label: "Rare Gems", href: "/catalog" },
+          { label: "Other Gemstones", href: "/catalog?category=other" },
         ],
       },
       {
@@ -86,7 +90,7 @@ export const mainNavigation: NavItem[] = [
 /** Flat nav used on the main marketing layout (matches homepage mockup). */
 export const landingNavigation: NavLink[] = [
   { label: "Home", href: "/" },
-  { label: "Gemstones", href: "/catalog" },
+  { label: "Gemstones", href: "/gemstones" },
   { label: "Bespoke Jewellery", href: "/custom-jewelry" },
   { label: "Our Story", href: "/about" },
   { label: "Education", href: "/journal" },

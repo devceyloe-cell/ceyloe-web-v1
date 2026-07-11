@@ -33,7 +33,7 @@ export const siteConfig = {
   nav: mainNavigation.map(({ label, href }) => ({ label, href })),
   footerNav: {
     company: [
-      { label: "Gemstones", href: "/catalog" },
+      { label: "Gemstones", href: "/gemstones" },
       { label: "Jewellery", href: "/catalog?category=jewellery" },
       { label: "Our Process", href: "/heritage" },
       { label: "Contact", href: "/contact" },

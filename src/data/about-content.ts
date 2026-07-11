@@ -1,3 +1,9 @@
+import type { LucideIcon } from "lucide-react";
+import { Award, Leaf, ShieldCheck, Sparkles } from "lucide-react";
+import { images } from "@/config/images";
+import { stitchImages } from "@/config/stitch-images";
+
+/** Legacy sections still used by /heritage */
 export interface AboutSection {
   id: string;
   eyebrow: string;
@@ -6,11 +12,6 @@ export interface AboutSection {
   image?: string;
   imageAlt?: string;
 }
-
-export const aboutPageIntro = {
-  tagline: "We take Pride & Joy Knowing Gem",
-  breadcrumb: "About",
-};
 
 export const aboutSections: AboutSection[] = [
   {
@@ -65,5 +66,104 @@ export const aboutSections: AboutSection[] = [
   },
 ];
 
-export const aboutClosing =
-  "Here at Ceyloe our products are ethically mined. They are cleaned and cut before being shipped to us and the gems we purchase are directly from local miners hence the low price.";
+export const aboutHero = {
+  title: "Our Story",
+  introduction:
+    "Ceyloe was founded with a passion for sharing the beauty of natural Sri Lankan gemstones with Australia. As a family business, we are committed to quality, honesty, transparency and personalised service. Every gemstone is carefully selected to help create jewellery that will be treasured for generations.",
+  image: "/images/stitch/hero-jewelry.png",
+  imageAlt: "Jewellery design desk with sapphire ring, loose gemstones and tweezers",
+};
+
+export const aboutJourney = {
+  title: "Our Journey",
+  description:
+    "Our journey began with a love for natural gemstones and a vision to bring genuine Ceylon gemstones directly to customers in Australia. Today, Ceyloe proudly offers hand-selected gemstones and custom jewellery services with a personal touch.",
+  image: images.about.main,
+  imageAlt: "Sri Lankan landscape with natural gemstones",
+};
+
+export interface AboutTeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+}
+
+export const aboutTeamIntro =
+  "We are a family of four, working together to bring you the best in natural gemstones and custom jewellery.";
+
+export const aboutTeam: AboutTeamMember[] = [
+  {
+    id: "ireka",
+    name: "Ireka",
+    role: "Founder & Gemstone Specialist",
+    bio: "With deep roots in Sri Lankan gem culture, Ireka carefully selects every stone for beauty, quality and lasting value.",
+    image: "/images/stitch/founder-portrait.jpg",
+  },
+  {
+    id: "nalendra",
+    name: "Nalendra",
+    role: "Co-Founder & Jewellery Designer",
+    bio: "Nalendra brings design vision and craftsmanship together, creating bespoke pieces around each chosen gemstone.",
+    image: "/images/stitch/founder.jpg",
+  },
+  {
+    id: "binal",
+    name: "Binal",
+    role: "Gemstone Enthusiast",
+    bio: "Binal shares a passion for natural colour and rarity, helping customers discover stones that feel truly special.",
+    image: "/images/stitch/founder-heritage.png",
+  },
+  {
+    id: "keimi",
+    name: "Keimi",
+    role: "Creative & Customer Cheerleader",
+    bio: "Keimi keeps every client experience warm, personal and memorable — from first enquiry to finished jewellery.",
+    image: "/images/stitch/founder-brain.jpg",
+  },
+];
+
+export interface AboutValue {
+  id: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+}
+
+export const aboutValues: AboutValue[] = [
+  {
+    id: "quality",
+    title: "Quality",
+    description: "We carefully select only the finest natural gemstones.",
+    icon: Award,
+  },
+  {
+    id: "trust",
+    title: "Trust",
+    description: "Honesty and transparency in everything we do.",
+    icon: ShieldCheck,
+  },
+  {
+    id: "ethical",
+    title: "Ethical Sourcing",
+    description: "Responsibly sourced gemstones from Sri Lanka.",
+    icon: Leaf,
+  },
+  {
+    id: "craftsmanship",
+    title: "Craftsmanship",
+    description: "Beautiful jewellery, crafted with care and precision.",
+    icon: Sparkles,
+  },
+];
+
+export const aboutValuesImage = {
+  src: stitchImages.bespokeRing,
+  alt: "Sapphire and diamond ring on natural stone",
+};
+
+export const aboutCta = {
+  title: "Ready to Find Your Perfect Gemstone?",
+  description: "Browse our gemstone collection or book a private appointment with our team.",
+};

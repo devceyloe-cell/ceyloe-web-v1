@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { CatalogFilters } from "@/components/catalog/catalog-filters";
@@ -11,6 +13,7 @@ import {
   getAllProductsForFilters,
 } from "@/services/product-service";
 import { getFilterOptions } from "@/lib/product-utils";
+import { PRODUCT_CATEGORIES } from "@/config/product-categories";
 import type { CatalogFilters as Filters } from "@/types";
 
 export const metadata: Metadata = {
@@ -33,6 +36,63 @@ interface CatalogPageProps {
     minCarat?: string;
     maxCarat?: string;
   }>;
+}
+
+function titleCase(value: string) {
+  return value
+    .split(/[\s-_]+/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function getCatalogHeading(filters: Filters) {
+  const categoryLabel =
+    PRODUCT_CATEGORIES.find((c) => c.value === filters.category)?.label ??
+    (filters.category ? titleCase(filters.category) : undefined);
+
+  if (filters.category === "sapphires" && filters.color) {
+    const colorLabel = titleCase(filters.color);
+    return {
+      eyebrow: "Sapphires",
+      title: `${colorLabel} Sapphire Collection`,
+      backHref: "/gemstones/sapphires",
+      backLabel: "Sapphire varieties",
+    };
+  }
+
+  if (filters.category === "sapphires") {
+    return {
+      eyebrow: "Sapphires",
+      title: "All Sapphire Collection",
+      backHref: "/gemstones/sapphires",
+      backLabel: "Sapphire varieties",
+    };
+  }
+
+  if (categoryLabel) {
+    return {
+      eyebrow: "Collection",
+      title: `${categoryLabel} Collection`,
+      backHref: "/gemstones",
+      backLabel: "All gemstones",
+    };
+  }
+
+  if (filters.color) {
+    return {
+      eyebrow: "Collection",
+      title: `${titleCase(filters.color)} Gemstones`,
+      backHref: "/gemstones",
+      backLabel: "All gemstones",
+    };
+  }
+
+  return {
+    eyebrow: "Collection",
+    title: "All Gemstones",
+    backHref: "/gemstones",
+    backLabel: "Natural gemstones",
+  };
 }
 
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
@@ -58,13 +118,22 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   ]);
 
   const filterOptions = getFilterOptions(allProducts);
+  const heading = getCatalogHeading(filters);
 
   return (
     <div className="section-bg">
       <Container className="py-12 md:py-20">
+        <Link
+          href={heading.backHref}
+          className="mb-8 inline-flex items-center gap-2 text-sm uppercase tracking-widest text-muted transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {heading.backLabel}
+        </Link>
+
         <SectionHeading
-          eyebrow="Collection"
-          title="Loose Gemstones & Jewellery"
+          eyebrow={heading.eyebrow}
+          title={heading.title}
           description={`${products.length} exceptional pieces available`}
           align="left"
         />

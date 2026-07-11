@@ -6,16 +6,24 @@ import { images } from "@/config/images";
 import { stitchImages } from "@/config/stitch-images";
 
 const gemstones = [
-  { name: "Blue Sapphire", href: "/catalog?category=sapphires", image: images.categories.sapphires },
+  {
+    name: "Blue Sapphire",
+    href: "/catalog?category=sapphires&color=blue",
+    image: images.categories.sapphires,
+  },
   {
     name: "Padparadscha Sapphire",
-    href: "/catalog?category=sapphires&color=pink",
+    href: "/catalog?category=sapphires&color=padparadscha",
     image: stitchImages.sapphire,
   },
-  { name: "Pink Sapphire", href: "/catalog?category=sapphires&color=pink", image: stitchImages.ruby },
+  {
+    name: "Pink Sapphire",
+    href: "/catalog?category=sapphires&color=pink",
+    image: stitchImages.ruby,
+  },
   { name: "Spinel", href: "/catalog?category=spinel", image: images.categories.spinel },
   { name: "Garnet", href: "/catalog?category=garnet", image: images.categories.garnet },
-  { name: "Fine Gemstones", href: "/catalog", image: stitchImages.allGems },
+  { name: "Fine Gemstones", href: "/gemstones", image: stitchImages.allGems },
 ];
 
 export function LandingGemstones() {

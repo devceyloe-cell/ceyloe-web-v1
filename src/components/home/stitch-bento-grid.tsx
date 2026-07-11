@@ -8,7 +8,7 @@ const gemTiles = [
   {
     title: "Sapphire",
     subtitle: "Ceylon blues & cornflower hues",
-    href: "/catalog?category=sapphires",
+    href: "/gemstones/sapphires",
     image: stitchImages.sapphire,
     bg: "bg-sapphire-blue",
     span: "md:col-span-2 md:row-span-1",
