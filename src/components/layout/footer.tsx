@@ -19,7 +19,7 @@ export function Footer() {
   const { contact } = siteConfig;
 
   return (
-    <footer className="border-t border-white/10 bg-[#111111] pt-16 pb-8 text-white">
+    <footer className="border-t border-white/10 bg-[#111111] pt-8 pb-8 text-white md:pt-10">
       <Container>
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
           <div>

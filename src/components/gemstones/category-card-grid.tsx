@@ -22,7 +22,7 @@ export function CategoryCardGrid({ categories, ctaLabel = "Explore" }: CategoryC
             key={category.id}
             href={category.href}
             className={cn(
-              "group relative min-h-[280px] overflow-hidden bg-black md:min-h-[320px]",
+              "group relative min-h-[280px] overflow-hidden bg-[#2a2a2a] md:min-h-[320px]",
               category.featured && "sm:col-span-2 xl:col-span-1",
             )}
           >
@@ -30,10 +30,10 @@ export function CategoryCardGrid({ categories, ctaLabel = "Explore" }: CategoryC
               src={category.image}
               alt={`${category.title} collection`}
               fill
-              className="object-cover opacity-70 transition-transform duration-700 group-hover:scale-105"
+              className="object-cover opacity-95 transition-transform duration-700 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/25 transition-colors duration-500 group-hover:from-black group-hover:via-black/80" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent transition-colors duration-500 group-hover:from-black/65 group-hover:via-black/25" />
 
             <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
               {shortEyebrow && (

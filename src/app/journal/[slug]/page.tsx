@@ -29,7 +29,7 @@ export default async function JournalPostPage({ params }: PageProps) {
     <div className="section-bg">
       <Container className="py-12 md:py-20">
         <nav className="mb-8 text-sm text-muted">
-          <Link href="/journal" className="hover:text-foreground">Journal</Link>
+          <Link href="/journal" className="hover:text-foreground">Education</Link>
           <span className="mx-2">/</span>
           <span className="text-foreground">{post.title}</span>
         </nav>

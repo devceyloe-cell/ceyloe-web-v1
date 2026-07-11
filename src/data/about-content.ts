@@ -1,8 +1,3 @@
-import type { LucideIcon } from "lucide-react";
-import { Award, Leaf, ShieldCheck, Sparkles } from "lucide-react";
-import { images } from "@/config/images";
-import { stitchImages } from "@/config/stitch-images";
-
 /** Legacy sections still used by /heritage */
 export interface AboutSection {
   id: string;
@@ -70,16 +65,17 @@ export const aboutHero = {
   title: "Our Story",
   introduction:
     "Ceyloe was founded with a passion for sharing the beauty of natural Sri Lankan gemstones with Australia. As a family business, we are committed to quality, honesty, transparency and personalised service. Every gemstone is carefully selected to help create jewellery that will be treasured for generations.",
-  image: "/images/stitch/hero-jewelry.png",
-  imageAlt: "Jewellery design desk with sapphire ring, loose gemstones and tweezers",
+  image: "/images/about/our-story-hero.webp",
+  imageAlt:
+    "Luxury jewellery design desk with sapphire ring, loose gemstones, tweezers and a ring sketch",
 };
 
 export const aboutJourney = {
   title: "Our Journey",
   description:
     "Our journey began with a love for natural gemstones and a vision to bring genuine Ceylon gemstones directly to customers in Australia. Today, Ceyloe proudly offers hand-selected gemstones and custom jewellery services with a personal touch.",
-  image: images.about.main,
-  imageAlt: "Sri Lankan landscape with natural gemstones",
+  image: "/images/about/our-journey.webp",
+  imageAlt: "Sri Lankan mountains with gemstones and a jewellery loupe in the foreground",
 };
 
 export interface AboutTeamMember {
@@ -88,6 +84,8 @@ export interface AboutTeamMember {
   role: string;
   bio: string;
   image: string;
+  /** CSS object-position for fine-tuning crop (default: center center) */
+  objectPosition?: string;
 }
 
 export const aboutTeamIntro =
@@ -98,29 +96,33 @@ export const aboutTeam: AboutTeamMember[] = [
     id: "ireka",
     name: "Ireka",
     role: "Founder & Gemstone Specialist",
-    bio: "With deep roots in Sri Lankan gem culture, Ireka carefully selects every stone for beauty, quality and lasting value.",
-    image: "/images/stitch/founder-portrait.jpg",
+    bio: "The heart behind Ceyloe. Ireka hand-selects each gemstone with a focus on quality, beauty and authenticity.",
+    image: "/images/team/ireka-v2.webp",
+    objectPosition: "center center",
   },
   {
     id: "nalendra",
     name: "Nalendra",
     role: "Co-Founder & Jewellery Designer",
-    bio: "Nalendra brings design vision and craftsmanship together, creating bespoke pieces around each chosen gemstone.",
-    image: "/images/stitch/founder.jpg",
+    bio: "Brings designs to life with creativity and precision, ensuring every piece is crafted to perfection.",
+    image: "/images/team/nalendra-v2.webp",
+    objectPosition: "center center",
   },
   {
     id: "binal",
     name: "Binal",
     role: "Gemstone Enthusiast",
-    bio: "Binal shares a passion for natural colour and rarity, helping customers discover stones that feel truly special.",
-    image: "/images/stitch/founder-heritage.png",
+    bio: "Our young gem collector with a curious eye and passion for learning about gemstones.",
+    image: "/images/team/binal-v2.webp",
+    objectPosition: "center center",
   },
   {
     id: "keimi",
     name: "Keimi",
     role: "Creative & Customer Cheerleader",
-    bio: "Keimi keeps every client experience warm, personal and memorable — from first enquiry to finished jewellery.",
-    image: "/images/stitch/founder-brain.jpg",
+    bio: "The creative spark of our team who loves connecting with customers and spreading joy.",
+    image: "/images/team/keimi-v2.webp",
+    objectPosition: "center center",
   },
 ];
 
@@ -128,7 +130,7 @@ export interface AboutValue {
   id: string;
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: "quality" | "trust" | "ethical" | "craftsmanship";
 }
 
 export const aboutValues: AboutValue[] = [
@@ -136,31 +138,31 @@ export const aboutValues: AboutValue[] = [
     id: "quality",
     title: "Quality",
     description: "We carefully select only the finest natural gemstones.",
-    icon: Award,
+    icon: "quality",
   },
   {
     id: "trust",
     title: "Trust",
     description: "Honesty and transparency in everything we do.",
-    icon: ShieldCheck,
+    icon: "trust",
   },
   {
     id: "ethical",
     title: "Ethical Sourcing",
     description: "Responsibly sourced gemstones from Sri Lanka.",
-    icon: Leaf,
+    icon: "ethical",
   },
   {
     id: "craftsmanship",
     title: "Craftsmanship",
     description: "Beautiful jewellery, crafted with care and precision.",
-    icon: Sparkles,
+    icon: "craftsmanship",
   },
 ];
 
 export const aboutValuesImage = {
-  src: stitchImages.bespokeRing,
-  alt: "Sapphire and diamond ring on natural stone",
+  src: "/images/about/our-values-ring.webp",
+  alt: "Luxury sapphire diamond halo ring resting on natural stone",
 };
 
 export const aboutCta = {
