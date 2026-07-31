@@ -17,6 +17,7 @@ export const RESERVED_SLUGS = new Set([
   "custom-jewelry",
   "how-it-works",
   "book",
+  "cart",
   "recommend",
   "compare",
   "heritage",

@@ -5,6 +5,7 @@ export interface GemstoneSpec {
   clarity?: string;
   cut?: string;
   shape?: string;
+  dimensions?: string;
   origin?: string;
   treatment?: string;
   certification?: string;

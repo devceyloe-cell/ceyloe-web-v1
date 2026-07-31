@@ -3,16 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, ShoppingBag, X } from "lucide-react";
 import { landingNavigation } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/layout/logo";
 import { CurrencySelector } from "@/components/layout/currency-selector";
+import { useCart } from "@/contexts/cart-context";
 
 export function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { itemCount } = useCart();
 
   useEffect(() => {
     const header = document.querySelector("header");
@@ -68,6 +70,19 @@ export function Header() {
               className="hidden border border-rich-gold px-4 py-2.5 font-manrope text-[10px] font-bold uppercase tracking-[0.14em] text-rich-gold transition-colors hover:bg-rich-gold hover:text-black sm:inline-flex"
             >
               Book Appointment
+            </Link>
+
+            <Link
+              href="/cart"
+              className="relative text-white transition-colors hover:text-rich-gold"
+              aria-label={`Cart${itemCount > 0 ? `, ${itemCount} items` : ""}`}
+            >
+              <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
+              {itemCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center bg-rich-gold px-1 font-manrope text-[9px] font-bold text-black">
+                  {itemCount > 9 ? "9+" : itemCount}
+                </span>
+              )}
             </Link>
 
             <button

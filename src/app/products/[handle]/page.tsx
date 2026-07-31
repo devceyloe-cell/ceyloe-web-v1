@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { Container } from "@/components/ui/container";
-import { Badge } from "@/components/ui/badge";
-import { ProductGallery } from "@/components/product/product-gallery";
-import { ProductSpecs } from "@/components/product/product-specs";
-import { CertificationDisplay } from "@/components/product/certification-display";
-import { CompareButton } from "@/components/compare/compare-button";
-import { getProductByHandle } from "@/services/product-service";
-import { ProductPrice } from "@/components/product/product-price";
-import { ProductActions } from "@/components/product/product-actions";
+import { ProductDetailsView } from "@/components/product/product-details-view";
+import {
+  buildProductSpecifications,
+  getProductTypeLabel,
+} from "@/lib/product-detail";
+import { getProductByHandle, getSimilarProducts } from "@/services/product-service";
 import { siteConfig } from "@/config/site";
 
 interface ProductPageProps {
@@ -27,7 +22,11 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   return {
     title: product.title,
     description: product.description,
-    openGraph: { title: product.title, description: product.description, images: [{ url: product.image }] },
+    openGraph: {
+      title: product.title,
+      description: product.description,
+      images: [{ url: product.image }],
+    },
   };
 }
 
@@ -37,73 +36,71 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
   const product = await getProductByHandle(handle);
   if (!product) notFound();
 
-  const checkoutCancelled = checkout === "cancelled";
+  const similarProducts = await getSimilarProducts(product, 5);
+  const specifications = buildProductSpecifications(product);
+  const typeLabel = getProductTypeLabel(product);
+  const productUrl = `${siteConfig.url}/products/${product.handle}`;
 
-  const whatsappMessage = encodeURIComponent(
-    `Hi, I'm interested in the ${product.title} listed on Ceyloe.com`,
-  );
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description,
+    image: product.images,
+    sku: product.handle,
+    brand: { "@type": "Brand", name: siteConfig.name },
+    offers: {
+      "@type": "Offer",
+      url: productUrl,
+      priceCurrency: product.currency || "USD",
+      price: product.price,
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+    },
+    ...(product.specs.origin
+      ? { countryOfOrigin: product.specs.origin }
+      : {}),
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Gemstones",
+        item: `${siteConfig.url}/gemstones`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.title,
+        item: productUrl,
+      },
+    ],
+  };
 
   return (
-    <div className="section-bg">
-      <Container className="py-12 md:py-20">
-        <Link
-          href="/catalog"
-          className="mb-8 inline-flex items-center gap-2 text-sm uppercase tracking-widest text-muted transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Catalog
-        </Link>
-
-        {checkoutCancelled && (
-          <div className="mb-8 border border-border bg-surface-elevated px-5 py-4 text-sm text-muted">
-            Checkout was cancelled. You can try again or contact us if you need help with this
-            gemstone.
-          </div>
-        )}
-
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
-          <ProductGallery
-            images={product.images}
-            title={product.title}
-            videoUrl={product.videoUrl}
-            poster={product.image}
-          />
-
-          <div className="flex flex-col">
-            <div className="mb-2 flex flex-wrap gap-2">
-              <Badge variant="muted">{product.category}</Badge>
-              {product.isNew && <Badge variant="sapphire">New Arrival</Badge>}
-              {product.specs.certification && (
-                <Badge variant="sapphire">{product.specs.certification} Certified</Badge>
-              )}
-            </div>
-
-            <h1 className="font-display text-3xl font-light tracking-tight sm:text-4xl">
-              {product.title}
-            </h1>
-
-            <ProductPrice amount={product.price} />
-
-            <p className="mt-6 text-base leading-relaxed text-muted">{product.description}</p>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <CompareButton handle={product.handle} />
-            </div>
-
-            <ProductActions
-              handle={product.handle}
-              inStock={product.inStock}
-              whatsappHref={`https://wa.me/${siteConfig.contact.whatsapp}?text=${whatsappMessage}`}
-            />
-
-            <div className="mt-10">
-              <ProductSpecs specs={product.specs} />
-            </div>
-
-            <CertificationDisplay product={product} />
-          </div>
-        </div>
-      </Container>
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <ProductDetailsView
+        product={product}
+        typeLabel={typeLabel}
+        specifications={specifications}
+        similarProducts={similarProducts}
+        productUrl={productUrl}
+        checkoutCancelled={checkout === "cancelled"}
+      />
+    </>
   );
 }

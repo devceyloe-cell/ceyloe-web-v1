@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { CategoryCardGrid } from "@/components/gemstones/category-card-grid";
+import { CustomJewelryForm } from "@/components/forms/custom-jewelry-form";
 import { bespokeLandingCards } from "@/data/bespoke-content";
+import { Price } from "@/components/ui/price";
 
 export const metadata: Metadata = {
   title: "Bespoke Jewellery",
@@ -11,7 +14,23 @@ export const metadata: Metadata = {
     "Create a one-of-a-kind jewellery piece with a natural gemstone from our collection — engagement rings, pendants, earrings and more.",
 };
 
-export default function CustomJewelryPage() {
+interface CustomJewelryPageProps {
+  searchParams: Promise<{
+    stone?: string;
+    handle?: string;
+    price?: string;
+    image?: string;
+  }>;
+}
+
+export default async function CustomJewelryPage({ searchParams }: CustomJewelryPageProps) {
+  const params = await searchParams;
+  const stone = params.stone?.trim() || "";
+  const handle = params.handle?.trim() || "";
+  const image = params.image?.trim() || "";
+  const price = params.price ? Number(params.price) : NaN;
+  const hasSelectedGem = Boolean(stone);
+
   return (
     <div className="section-bg">
       <Container className="py-12 md:py-20">
@@ -21,6 +40,40 @@ export default function CustomJewelryPage() {
           description="Create a one-of-a-kind jewellery piece with a natural gemstone from our collection. Whether you're dreaming of an engagement ring, pendant, earrings or another special piece, we'll work with you to bring your vision to life."
           align="left"
         />
+
+        {hasSelectedGem && (
+          <div className="mb-12 border border-border bg-white p-5 md:p-6">
+            <p className="font-manrope text-[11px] font-semibold tracking-[0.16em] text-rich-gold uppercase">
+              Selected Gemstone
+            </p>
+            <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
+              {image && (
+                <div className="relative h-20 w-20 shrink-0 overflow-hidden bg-black">
+                  <Image src={image} alt={stone} fill className="object-cover" sizes="80px" />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <h2 className="font-caslon text-xl md:text-2xl">{stone}</h2>
+                {!Number.isNaN(price) && (
+                  <p className="font-manrope mt-1 text-sm text-rich-gold">
+                    <Price amount={price} />
+                  </p>
+                )}
+                {handle && (
+                  <Link
+                    href={`/products/${handle}`}
+                    className="font-manrope mt-2 inline-block text-xs text-muted underline-offset-2 hover:text-rich-gold hover:underline"
+                  >
+                    View gemstone details
+                  </Link>
+                )}
+              </div>
+            </div>
+            <div className="mt-8">
+              <CustomJewelryForm defaultStone={stone} />
+            </div>
+          </div>
+        )}
 
         <CategoryCardGrid categories={bespokeLandingCards} />
       </Container>

@@ -10,6 +10,7 @@ import {
   getProductByHandleFromDb,
 } from "@/lib/mongodb/products";
 import { getProductCaratWeight, getProductShape } from "@/lib/product-utils";
+import { scoreSimilarProduct } from "@/lib/product-detail";
 import type { CatalogFilters, Product, RecommendRequest } from "@/types";
 
 function withCeyloeVideo(product: Product): Product {
@@ -144,6 +145,16 @@ export async function getFeaturedProductsByCategory(
 ): Promise<Product[]> {
   const products = await getProducts({ category, sort: "featured" });
   return products.slice(0, limit);
+}
+
+export async function getSimilarProducts(product: Product, limit = 5): Promise<Product[]> {
+  const products = await loadAllProducts();
+  return products
+    .map((candidate) => ({ candidate, score: scoreSimilarProduct(product, candidate) }))
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((entry) => withCeyloeVideo(entry.candidate));
 }
 
 export async function getRecentlyAddedProducts(limit = 4): Promise<Product[]> {

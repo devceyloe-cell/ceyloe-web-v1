@@ -10,9 +10,16 @@ interface ProductVideoProps {
   poster: string;
   title: string;
   variant?: "gallery" | "section";
+  showHeading?: boolean;
 }
 
-export function ProductVideo({ videoUrl, poster, title, variant = "section" }: ProductVideoProps) {
+export function ProductVideo({
+  videoUrl,
+  poster,
+  title,
+  variant = "section",
+  showHeading = true,
+}: ProductVideoProps) {
   const isGallery = variant === "gallery";
   const youtubeEmbed = videoUrl && isYouTubeUrl(videoUrl) ? getYouTubeEmbedUrl(videoUrl) : null;
 
@@ -63,7 +70,7 @@ export function ProductVideo({ videoUrl, poster, title, variant = "section" }: P
 
   return (
     <div className={cn(!isGallery && "mt-8")}>
-      {!isGallery && (
+      {!isGallery && showHeading && (
         <h3 className="mb-3 text-xs uppercase tracking-[0.15em] text-muted">Gemstone Video</h3>
       )}
       <div
