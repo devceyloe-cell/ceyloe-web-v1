@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FaqItem } from "@/data/faq-content";
-import { termsUrl } from "@/data/faq-content";
+import { returnsPolicyUrl, termsUrl } from "@/data/faq-content";
 
 interface FaqAccordionProps {
   items: FaqItem[];
@@ -44,7 +45,7 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
               <div className="overflow-hidden">
                 <p className="px-6 pb-6 text-base leading-relaxed text-muted">
                   {item.answer}
-                  {(item.id === "shipping" || item.id === "refund") && (
+                  {item.id === "shipping" && (
                     <>
                       {" "}
                       <a
@@ -55,6 +56,17 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
                       >
                         Terms &amp; Conditions
                       </a>
+                    </>
+                  )}
+                  {(item.id === "returns" || item.id === "refund") && (
+                    <>
+                      {" "}
+                      <Link
+                        href={returnsPolicyUrl}
+                        className="text-gold underline-offset-2 hover:underline"
+                      >
+                        Returns &amp; Refunds Policy
+                      </Link>
                     </>
                   )}
                 </p>

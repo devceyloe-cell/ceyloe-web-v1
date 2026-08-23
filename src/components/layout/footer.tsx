@@ -10,7 +10,7 @@ const footerLink =
 const customerCare = [
   { label: "FAQ", href: "/faq" },
   { label: "Shipping & Delivery", href: "/transparency" },
-  { label: "Returns", href: "/contact" },
+  { label: "Returns", href: "/returns" },
   { label: "Care Guide", href: "/certifications" },
 ];
 
