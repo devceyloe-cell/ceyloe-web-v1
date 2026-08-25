@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Mail } from "lucide-react";
 import { Container } from "@/components/ui/container";
+import { WebCoverHero } from "@/components/layout/web-cover-hero";
 import { siteConfig } from "@/config/site";
+import { webCovers } from "@/config/web-covers";
 
 export const metadata: Metadata = {
   title: "Order confirmed",
@@ -21,7 +23,8 @@ const nextSteps = [
 export default function CheckoutSuccessPage() {
   return (
     <div className="section-bg">
-      <Container className="flex min-h-[calc(100vh-var(--site-header-height))] items-center py-16 md:py-24">
+      <WebCoverHero id="thank-you-hero" {...webCovers.thankYou} compact />
+      <Container className="flex items-center py-16 md:py-24">
         <div className="mx-auto w-full max-w-lg border border-border bg-surface-elevated p-8 md:p-12">
           <p className="text-xs uppercase tracking-[0.28em] text-rich-gold">Order confirmed</p>
 

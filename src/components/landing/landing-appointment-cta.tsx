@@ -1,32 +1,42 @@
 import Link from "next/link";
-import { Calendar } from "lucide-react";
-import { Container } from "@/components/ui/container";
+import Image from "next/image";
+import { webCovers } from "@/config/web-covers";
 
 export function LandingAppointmentCta() {
-  return (
-    <section className="border-y border-border bg-[#f8f8f8] py-12 md:py-14">
-      <Container>
-        <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:gap-12">
-          <div className="flex items-start gap-5 md:max-w-2xl">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-rich-gold/30 text-rich-gold">
-              <Calendar className="h-5 w-5" strokeWidth={1.5} />
-            </div>
-            <div>
-              <h2 className="font-caslon text-2xl text-heading md:text-3xl">
-                Looking for something truly exceptional?
-              </h2>
-              <p className="font-manrope mt-2 text-sm leading-relaxed text-muted">
-                Book a private appointment — in person or by video — and let our experts guide you
-                to the perfect gemstone or bespoke design.
-              </p>
-            </div>
-          </div>
+  const cover = webCovers.showroom;
 
-          <Link href="/book" className="btn-stitch-gold shrink-0 px-10 py-4">
-            Book an Appointment
-          </Link>
+  return (
+    <section className="relative isolate overflow-hidden bg-[#141414]">
+      <div className="absolute inset-0">
+        <Image
+          src={cover.image}
+          alt=""
+          fill
+          className="object-cover opacity-40"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" aria-hidden />
+      </div>
+
+      <div className="relative z-10 mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-[var(--margin-mobile)] py-14 md:flex-row md:items-center md:px-[var(--margin-desktop)] md:py-16">
+        <div className="max-w-xl">
+          <p className="font-poppins text-[10px] font-semibold uppercase tracking-[0.28em] text-rich-gold">
+            Private Appointments
+          </p>
+          <h2 className="font-bell mt-2 text-2xl font-bold uppercase !text-[#C09A4A] md:text-3xl">
+            View our gemstones in person
+          </h2>
+          <p className="font-poppins mt-2 text-sm leading-relaxed text-white/85">
+            {cover.description}
+          </p>
         </div>
-      </Container>
+        <Link
+          href="/book"
+          className="font-poppins shrink-0 bg-[#C09A4A] px-10 py-4 text-[11px] font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#d0ab5c]"
+        >
+          Book Appointment
+        </Link>
+      </div>
     </section>
   );
 }

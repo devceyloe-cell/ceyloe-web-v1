@@ -62,6 +62,8 @@ html.dark {
 
   --font-sans: var(--font-manrope);
   --font-display: var(--font-caslon);
+  --font-cover-serif: var(--font-bell);
+  --font-cover-sans: var(--font-poppins);
 }
 
 * {
@@ -106,6 +108,14 @@ h6 {
 
 .font-manrope {
   font-family: var(--font-manrope), system-ui, sans-serif;
+}
+
+.font-bell {
+  font-family: var(--font-bell), Georgia, "Times New Roman", serif;
+}
+
+.font-poppins {
+  font-family: var(--font-poppins), system-ui, sans-serif;
 }
 
 .site-background-overlay {

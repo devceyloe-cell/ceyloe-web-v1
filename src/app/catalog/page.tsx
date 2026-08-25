@@ -3,10 +3,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { SectionHeading } from "@/components/ui/section-heading";
 import { CatalogFilters } from "@/components/catalog/catalog-filters";
 import { ProductGrid } from "@/components/catalog/product-grid";
 import { CompareBar } from "@/components/compare/compare-bar";
+import { WebCoverHero } from "@/components/layout/web-cover-hero";
 import {
   getProducts,
   getProductCategories,
@@ -14,6 +14,7 @@ import {
 } from "@/services/product-service";
 import { getFilterOptions } from "@/lib/product-utils";
 import { PRODUCT_CATEGORIES } from "@/config/product-categories";
+import { getCatalogCoverKey, getWebCover } from "@/config/web-covers";
 import type { CatalogFilters as Filters } from "@/types";
 
 export const metadata: Metadata = {
@@ -45,54 +46,11 @@ function titleCase(value: string) {
     .join(" ");
 }
 
-function getCatalogHeading(filters: Filters) {
-  const categoryLabel =
-    PRODUCT_CATEGORIES.find((c) => c.value === filters.category)?.label ??
-    (filters.category ? titleCase(filters.category) : undefined);
-
-  if (filters.category === "sapphires" && filters.color) {
-    const colorLabel = titleCase(filters.color);
-    return {
-      eyebrow: "Sapphires",
-      title: `${colorLabel} Sapphire Collection`,
-      backHref: "/gemstones/sapphires",
-      backLabel: "Sapphire varieties",
-    };
-  }
-
+function getCatalogBackLink(filters: Filters) {
   if (filters.category === "sapphires") {
-    return {
-      eyebrow: "Sapphires",
-      title: "All Sapphire Collection",
-      backHref: "/gemstones/sapphires",
-      backLabel: "Sapphire varieties",
-    };
+    return { href: "/gemstones/sapphires", label: "Sapphire varieties" };
   }
-
-  if (categoryLabel) {
-    return {
-      eyebrow: "Collection",
-      title: `${categoryLabel} Collection`,
-      backHref: "/gemstones",
-      backLabel: "All gemstones",
-    };
-  }
-
-  if (filters.color) {
-    return {
-      eyebrow: "Collection",
-      title: `${titleCase(filters.color)} Gemstones`,
-      backHref: "/gemstones",
-      backLabel: "All gemstones",
-    };
-  }
-
-  return {
-    eyebrow: "Collection",
-    title: "All Gemstones",
-    backHref: "/gemstones",
-    backLabel: "Natural gemstones",
-  };
+  return { href: "/gemstones", label: "All gemstones" };
 }
 
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
@@ -118,25 +76,27 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   ]);
 
   const filterOptions = getFilterOptions(allProducts);
-  const heading = getCatalogHeading(filters);
+  const cover = getWebCover(getCatalogCoverKey(filters.category, filters.color));
+  const back = getCatalogBackLink(filters);
+  const categoryLabel =
+    PRODUCT_CATEGORIES.find((c) => c.value === filters.category)?.label ??
+    (filters.category ? titleCase(filters.category) : "Gemstones");
 
   return (
     <div className="section-bg">
+      <WebCoverHero
+        id="catalog-hero"
+        {...cover}
+        description={`${products.length} exceptional ${categoryLabel.toLowerCase()} available`}
+      />
       <Container className="py-12 md:py-20">
         <Link
-          href={heading.backHref}
+          href={back.href}
           className="mb-8 inline-flex items-center gap-2 text-sm uppercase tracking-widest text-muted transition-colors hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          {heading.backLabel}
+          {back.label}
         </Link>
-
-        <SectionHeading
-          eyebrow={heading.eyebrow}
-          title={heading.title}
-          description={`${products.length} exceptional pieces available`}
-          align="left"
-        />
 
         <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
           <aside className="lg:sticky lg:top-28 lg:self-start">
