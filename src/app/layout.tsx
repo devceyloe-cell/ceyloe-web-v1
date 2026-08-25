@@ -4,6 +4,7 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { siteConfig } from "@/config/site";
 import { images } from "@/config/images";
+import { bellMt, poppins } from "@/fonts/cover-fonts";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -48,7 +49,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`light scroll-smooth ${manrope.variable} ${caslon.variable}`}
+      className={`light scroll-smooth ${manrope.variable} ${caslon.variable} ${bellMt.variable} ${poppins.variable}`}
       suppressHydrationWarning
     >
       <head>

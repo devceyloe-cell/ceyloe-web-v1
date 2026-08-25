@@ -10,6 +10,17 @@ export interface GemstoneCategoryCard {
   featured?: boolean;
 }
 
+const covers = {
+  blue: "/images/covers/blue-sapphires.webp",
+  pink: "/images/covers/pink-sapphires.webp",
+  yellow: "/images/covers/yellow-sapphires.webp",
+  teal: "/images/covers/teal-sapphires.webp",
+  parti: "/images/covers/parti-sapphires.webp",
+  padparadscha: "/images/covers/padparadscha.webp",
+  allSapphires: "/images/covers/all-sapphires.webp",
+  other: "/images/covers/other-gemstones.webp",
+} as const;
+
 /** Top-level gemstone landing categories. */
 export const gemstoneLandingCategories: GemstoneCategoryCard[] = [
   {
@@ -85,68 +96,68 @@ export const sapphireLandingCategories: GemstoneCategoryCard[] = [
     id: "blue",
     title: "Blue Sapphire",
     href: "/catalog?category=sapphires&color=blue",
-    image: images.categories.sapphires,
+    image: covers.blue,
   },
   {
     id: "pink",
     title: "Pink Sapphire",
     href: "/catalog?category=sapphires&color=pink",
-    image: stitchImages.ruby,
+    image: covers.pink,
   },
   {
     id: "yellow",
     title: "Yellow Sapphire",
     href: "/catalog?category=sapphires&color=yellow",
-    image: "/images/Sapphires/05-3.jpg",
+    image: covers.yellow,
   },
   {
     id: "white",
     title: "White Sapphire",
     href: "/catalog?category=sapphires&color=white",
-    image: stitchImages.sapphire,
+    image: covers.allSapphires,
   },
   {
     id: "teal",
     title: "Teal Sapphire",
     href: "/catalog?category=sapphires&color=teal",
-    image: "/images/Sapphires/14-2_web-1.jpg",
+    image: covers.teal,
   },
   {
     id: "parti",
     title: "Parti Sapphire",
     href: "/catalog?category=sapphires&color=parti",
-    image: stitchImages.allGems,
+    image: covers.parti,
   },
   {
     id: "padparadscha",
     title: "Padparadscha Sapphire",
     href: "/catalog?category=sapphires&color=padparadscha",
-    image: "/images/Sapphires/1112023001-9.jpg",
+    image: covers.padparadscha,
   },
   {
     id: "green",
     title: "Green Sapphire",
     href: "/catalog?category=sapphires&color=green",
-    image: stitchImages.emerald,
+    image: covers.other,
   },
   {
     id: "purple",
     title: "Purple Sapphire",
     href: "/catalog?category=sapphires&color=purple",
-    image: stitchImages.sapphire,
+    image: covers.pink,
   },
   {
     id: "star",
     title: "Star Sapphire",
     href: "/catalog?category=sapphires&color=star",
-    image: stitchImages.productSapphire,
+    image: covers.blue,
   },
   {
     id: "all-sapphires",
     title: "View All Sapphires",
     description: "Browse every sapphire in our collection",
     href: "/catalog?category=sapphires",
-    image: stitchImages.allGems,
+    image: covers.allSapphires,
     featured: true,
   },
 ];

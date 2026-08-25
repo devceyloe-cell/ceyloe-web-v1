@@ -39,7 +39,7 @@ export const faqItems: FaqItem[] = [
     id: "returns",
     question: "If we don't like the product, can it be returned?",
     answer:
-      "Before purchasing our products, please consider the hard work and time and effort that goes into getting these beautiful gems this far, as we do not accept returns if it is not a product you no longer want. Store credit can be offered in lieu of a return. Please contact Nalendra to initiate this process.",
+      "Please choose carefully before purchasing. We do not accept change-of-mind returns, though store credit may be offered at our discretion. See our Returns & Refunds Policy for full details.",
   },
   {
     id: "loose-gems",
@@ -69,8 +69,9 @@ export const faqItems: FaqItem[] = [
     id: "refund",
     question: "What is the refund policy?",
     answer:
-      "Please refer to our terms and conditions for full details on refunds and returns.",
+      "Please see our Returns & Refunds Policy for full details on refunds, remedies, and your rights under Australian Consumer Law.",
   },
 ];
 
 export const termsUrl = "https://ceyloe.co.nz/terms-conditions/";
+export const returnsPolicyUrl = "/returns";

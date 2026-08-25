@@ -28,6 +28,7 @@ export const siteConfig = {
     terms: "https://ceyloe.co.nz/terms-conditions/",
     privacy: "/contact",
     shipping: "/transparency",
+    returns: "/returns",
     shopifyAuth: "https://shopify.com/authentication",
   },
   nav: mainNavigation.map(({ label, href }) => ({ label, href })),
@@ -42,6 +43,7 @@ export const siteConfig = {
     service: [
       { label: "FAQ", href: "/faq" },
       { label: "Shipping Policy", href: "/transparency" },
+      { label: "Returns & Refunds", href: "/returns" },
       { label: "Terms & Conditions", href: "https://ceyloe.co.nz/terms-conditions/" },
       { label: "Privacy Policy", href: "/contact" },
       { label: "Custom Jewelry", href: "/custom-jewelry" },

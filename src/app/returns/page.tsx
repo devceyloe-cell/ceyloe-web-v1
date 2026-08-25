@@ -1,0 +1,115 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Container } from "@/components/ui/container";
+import {
+  returnsPolicyContact,
+  returnsPolicyIntro,
+  returnsPolicyMeta,
+  returnsPolicySections,
+} from "@/data/returns-policy-content";
+
+export const metadata: Metadata = {
+  title: returnsPolicyMeta.title,
+  description:
+    "Ceyloe Gemstones returns and refunds policy — change of mind, custom jewellery, natural gemstones, and your rights under Australian Consumer Law.",
+};
+
+export default function ReturnsPolicyPage() {
+  const { businessName, address, phone, website, websiteUrl, intro } = returnsPolicyContact;
+
+  return (
+    <>
+      <section className="border-b border-border bg-surface py-12 md:py-16">
+        <Container>
+          <nav className="mb-6 text-sm text-muted" aria-label="Breadcrumb">
+            <Link href="/" className="transition-colors hover:text-gold">
+              Home
+            </Link>
+            <span className="mx-2">/</span>
+            <span className="text-foreground">{returnsPolicyMeta.title}</span>
+          </nav>
+          <h1 className="font-display text-4xl font-light tracking-tight text-foreground sm:text-5xl">
+            {returnsPolicyMeta.title}
+          </h1>
+          <p className="mt-4 text-sm text-muted">Last updated: {returnsPolicyMeta.lastUpdated}</p>
+        </Container>
+      </section>
+
+      <section className="py-16 md:py-24">
+        <Container className="max-w-4xl">
+          <div className="space-y-4 text-base leading-relaxed text-muted">
+            {returnsPolicyIntro.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+
+          <div className="mt-12 space-y-12">
+            {returnsPolicySections.map((section) => (
+              <article key={section.id} className="border-b border-border pb-12 last:border-b-0">
+                <h2 className="font-display text-2xl font-light text-foreground">{section.title}</h2>
+                <div className="mt-4 space-y-4 text-base leading-relaxed text-muted">
+                  {section.intro?.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                  {section.paragraphs?.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                  {section.listItems && (
+                    <ul className="list-disc space-y-2 pl-6">
+                      {section.listItems.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {section.outro?.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              </article>
+            ))}
+
+            <article>
+              <h2 className="font-display text-2xl font-light text-foreground">Contact Us</h2>
+              <div className="mt-4 space-y-4 text-base leading-relaxed text-muted">
+                <p>{intro}</p>
+                <address className="not-italic">
+                  <p className="font-medium text-foreground">{businessName}</p>
+                  {address.map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                  <p className="mt-2">
+                    Phone:{" "}
+                    <a
+                      href={`tel:${phone.replace(/\s/g, "")}`}
+                      className="text-gold underline-offset-2 hover:underline"
+                    >
+                      {phone}
+                    </a>
+                  </p>
+                  <p>
+                    Website:{" "}
+                    <a
+                      href={websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gold underline-offset-2 hover:underline"
+                    >
+                      {website}
+                    </a>
+                  </p>
+                </address>
+              </div>
+            </article>
+          </div>
+
+          <p className="mt-12 text-center text-sm text-muted">
+            Need help with an order?{" "}
+            <Link href="/contact" className="text-gold hover:underline">
+              Contact us
+            </Link>
+          </p>
+        </Container>
+      </section>
+    </>
+  );
+}

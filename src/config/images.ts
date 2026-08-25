@@ -14,11 +14,11 @@ export const images = {
     team: "/images/about/2.jpg",
   },
   categories: {
-    sapphires: "/images/Sapphires/14-2_web-1.jpg",
-    spinel: "/images/Spinel/110423001-14.jpg",
-    garnet: "/images/Garnet/1112023001-1.jpg",
-    zircon: "/images/Zircon/110423001-24.jpg",
-    jewellery: "/images/Jewellery/130723001-1.jpg",
+    sapphires: "/images/covers/sapphires.webp",
+    spinel: "/images/covers/spinels.webp",
+    garnet: "/images/covers/garnets.webp",
+    zircon: "/images/covers/other-gemstones.webp",
+    jewellery: "/images/covers/bespoke-jewelry.webp",
   },
 } as const;
 

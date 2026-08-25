@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { SectionHeading } from "@/components/ui/section-heading";
 import { CategoryCardGrid } from "@/components/gemstones/category-card-grid";
+import { WebCoverHero } from "@/components/layout/web-cover-hero";
 import { sapphireLandingCategories } from "@/data/gemstone-categories";
+import { webCovers } from "@/config/web-covers";
 
 export const metadata: Metadata = {
   title: "Sapphires",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 export default function SapphiresLandingPage() {
   return (
     <div className="section-bg">
+      <WebCoverHero id="sapphires-hero" {...webCovers.sapphires} />
       <Container className="py-12 md:py-20">
         <Link
           href="/gemstones"
@@ -23,14 +25,6 @@ export default function SapphiresLandingPage() {
           <ArrowLeft className="h-4 w-4" />
           All Gemstones
         </Link>
-
-        <SectionHeading
-          eyebrow="Sapphires"
-          title="Sapphire Collection"
-          description="Explore our sapphire varieties by colour. Each collection features natural stones selected for beauty, rarity and quality — ready for collectors or bespoke jewellery."
-          align="left"
-        />
-
         <CategoryCardGrid categories={sapphireLandingCategories} />
       </Container>
     </div>

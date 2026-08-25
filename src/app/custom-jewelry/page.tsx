@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
-import { SectionHeading } from "@/components/ui/section-heading";
 import { CategoryCardGrid } from "@/components/gemstones/category-card-grid";
 import { CustomJewelryForm } from "@/components/forms/custom-jewelry-form";
+import { WebCoverHero } from "@/components/layout/web-cover-hero";
 import { bespokeLandingCards } from "@/data/bespoke-content";
+import { webCovers } from "@/config/web-covers";
 import { Price } from "@/components/ui/price";
 
 export const metadata: Metadata = {
@@ -33,14 +34,8 @@ export default async function CustomJewelryPage({ searchParams }: CustomJewelryP
 
   return (
     <div className="section-bg">
+      <WebCoverHero id="bespoke-hero" {...webCovers.bespokeJewelry} />
       <Container className="py-12 md:py-20">
-        <SectionHeading
-          eyebrow="Custom Design"
-          title="Bespoke Jewellery"
-          description="Create a one-of-a-kind jewellery piece with a natural gemstone from our collection. Whether you're dreaming of an engagement ring, pendant, earrings or another special piece, we'll work with you to bring your vision to life."
-          align="left"
-        />
-
         {hasSelectedGem && (
           <div className="mb-12 border border-border bg-white p-5 md:p-6">
             <p className="font-manrope text-[11px] font-semibold tracking-[0.16em] text-rich-gold uppercase">
@@ -72,6 +67,12 @@ export default async function CustomJewelryPage({ searchParams }: CustomJewelryP
             <div className="mt-8">
               <CustomJewelryForm defaultStone={stone} />
             </div>
+          </div>
+        )}
+
+        {!hasSelectedGem && (
+          <div className="mb-12">
+            <CustomJewelryForm />
           </div>
         )}
 
