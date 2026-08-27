@@ -4,9 +4,8 @@ import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { CategoryCardGrid } from "@/components/gemstones/category-card-grid";
 import { CustomJewelryForm } from "@/components/forms/custom-jewelry-form";
-import { WebCoverHero } from "@/components/layout/web-cover-hero";
+import { BespokeLandingHero } from "@/components/bespoke/bespoke-landing-hero";
 import { bespokeLandingCards } from "@/data/bespoke-content";
-import { webCovers } from "@/config/web-covers";
 import { Price } from "@/components/ui/price";
 
 export const metadata: Metadata = {
@@ -33,9 +32,10 @@ export default async function CustomJewelryPage({ searchParams }: CustomJewelryP
   const hasSelectedGem = Boolean(stone);
 
   return (
-    <div className="section-bg">
-      <WebCoverHero id="bespoke-hero" {...webCovers.bespokeJewelry} />
-      <Container className="py-12 md:py-20">
+    <div className="bg-white">
+      <BespokeLandingHero />
+
+      <Container id="design-form" className="scroll-mt-28 py-12 md:py-20">
         {hasSelectedGem && (
           <div className="mb-12 border border-border bg-white p-5 md:p-6">
             <p className="font-manrope text-[11px] font-semibold tracking-[0.16em] text-rich-gold uppercase">

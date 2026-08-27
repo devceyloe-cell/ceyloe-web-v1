@@ -9,7 +9,8 @@ import { aboutJourney } from "@/data/about-content";
 export function AboutJourney() {
   return (
     <section
-      className="bg-[#F8F6F2] py-8 md:py-10 lg:py-12"
+      id="our-journey"
+      className="scroll-mt-28 bg-[#F8F6F2] py-8 md:py-10 lg:py-12"
       aria-labelledby="journey-heading"
     >
       <AboutContainer>

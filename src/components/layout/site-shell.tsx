@@ -13,7 +13,10 @@ import { LiveChatWidget } from "@/components/widgets/live-chat-widget";
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
-  const isGemstonesLanding = pathname === "/gemstones";
+  const hideSketchBackground =
+    pathname === "/gemstones" ||
+    pathname === "/custom-jewelry" ||
+    pathname === "/about";
 
   if (isAdmin) {
     return <CurrencyProvider>{children}</CurrencyProvider>;
@@ -28,7 +31,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <main className="flex-1 pt-[var(--site-header-height)]">{children}</main>
             <Footer />
           </div>
-          {!isGemstonesLanding && <SiteBackground />}
+          {!hideSketchBackground && <SiteBackground />}
           <WhatsAppFab />
           <LiveChatWidget />
         </CartProvider>

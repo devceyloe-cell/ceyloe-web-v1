@@ -51,21 +51,20 @@ const ourGemstones: WebCoverContent = {
 const bespokeJewelry: WebCoverContent = {
   image: coverPath("bespoke-jewelry.webp"),
   titleLines: ["Bespoke", "Jewellery"],
-  lead: "Your vision. Our craftsmanship.",
-  description:
-    "Create a one-of-a-kind piece with ethically sourced Ceylon gemstones and expert design.",
-  primaryCta: { label: "Design Your Piece", href: "/custom-jewelry" },
-  overlay: "dark",
+  description: "Your vision. Our craftsmanship. Timeless jewellery, made just for you.",
+  primaryCta: { label: "Design Your Piece", href: "/custom-jewelry#design-form" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const ourStory: WebCoverContent = {
   image: coverPath("our-story.webp"),
-  eyebrow: "Our Story",
-  titleLines: ["From mine to", "heirloom"],
+  titleLines: ["Our Story"],
   description:
-    "A family business bringing genuine Ceylon gemstones from Sri Lanka to Australia.",
-  primaryCta: { label: "Read Our Story", href: "/about" },
-  overlay: "dark",
+    "From our family mines in Sri Lanka to you in Australia. A journey of passion, heritage and trust.",
+  primaryCta: { label: "Our Journey", href: "/about#journey-heading" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const education: WebCoverContent = {

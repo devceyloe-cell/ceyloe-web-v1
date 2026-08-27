@@ -16,7 +16,7 @@ export function GemstonesLandingHero() {
       className="relative isolate overflow-hidden bg-white"
       aria-labelledby="gemstones-landing-title"
     >
-      <div className="relative mx-auto aspect-[1920/800] w-full max-w-[1440px]">
+      <div className="relative h-[clamp(300px,32vw,520px)] w-full">
         <div className="absolute inset-0 z-0" aria-hidden>
           <Image
             src={HERO_ART}
@@ -24,8 +24,8 @@ export function GemstonesLandingHero() {
             fill
             priority
             quality={95}
-            sizes="(max-width: 1440px) 100vw, 1440px"
-            className="object-contain object-right"
+            sizes="100vw"
+            className="object-cover object-right"
           />
         </div>
 
@@ -34,7 +34,7 @@ export function GemstonesLandingHero() {
           aria-hidden
         />
 
-        <div className="relative z-10 flex h-full items-start px-[var(--margin-mobile)] pt-8 pb-10 md:px-[var(--margin-desktop)] md:pt-10 lg:pt-12 xl:pt-14">
+        <div className="relative z-10 mx-auto flex h-full w-full max-w-[1440px] items-start px-[var(--margin-mobile)] pt-8 pb-10 md:px-[var(--margin-desktop)] md:pt-10 lg:pt-12 xl:pt-14">
           <div className="max-w-[520px] text-left lg:pl-[2%]">
             <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
