@@ -23,7 +23,7 @@ export function Footer() {
       <Container>
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
           <div>
-            <Logo size="lg" className="mb-6 brightness-0 invert" />
+            <Logo size="lg" variant="white" className="mb-6" />
             <p className="font-manrope max-w-xs text-sm leading-relaxed text-white/60">
               Fine Ceylon gemstones and bespoke jewellery — ethically sourced, certified, and
               curated for collectors worldwide.

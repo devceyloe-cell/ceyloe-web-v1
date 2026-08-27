@@ -42,7 +42,7 @@ export function Header() {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black">
       <Container>
         <nav className="flex h-20 items-center justify-between gap-4">
-          <Logo size="md" className="brightness-0 invert" />
+          <Logo size="md" variant="white" />
 
           <div className="hidden flex-1 items-center justify-center gap-8 lg:flex xl:gap-10">
             {landingNavigation.map((item) => {

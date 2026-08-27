@@ -31,11 +31,11 @@ const home: WebCoverContent = {
   image: coverPath("home-hero.webp"),
   eyebrow: "Sri Lanka's Finest Treasures",
   titleLines: ["Natural Ceylon", "Gemstones"],
-  description:
-    "Exceptional natural Ceylon gemstones sourced from Sri Lanka and curated in Australia.",
+  tagline: "Curated in Australia | Sourced in Sri Lanka",
   primaryCta: { label: "Explore Gemstones", href: "/gemstones" },
   secondaryCta: { label: "Book a Private Appointment", href: "/book" },
   overlay: "dark",
+  imagePosition: "right center",
 };
 
 const ourGemstones: WebCoverContent = {

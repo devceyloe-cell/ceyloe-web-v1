@@ -3,31 +3,43 @@ import Link from "next/link";
 import { images } from "@/config/images";
 import { cn } from "@/lib/utils";
 
-const LOGO_PATH = images.logo;
+type LogoVariant = "color" | "white";
 
 interface LogoProps {
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "hero";
   showLink?: boolean;
+  variant?: LogoVariant;
 }
 
 const sizes = {
-  sm: { width: 120, height: 40, className: "h-8 w-auto" },
-  md: { width: 150, height: 48, className: "h-9 w-auto md:h-10 lg:h-9 xl:h-10" },
-  lg: { width: 180, height: 58, className: "h-12 w-auto md:h-14" },
+  sm: { width: 140, height: 42, className: "h-7 w-auto max-w-[140px]" },
+  md: { width: 170, height: 52, className: "h-8 w-auto max-w-[170px] md:h-9 md:max-w-[190px]" },
+  lg: { width: 210, height: 64, className: "h-10 w-auto max-w-[210px] md:h-11 md:max-w-[240px]" },
+  hero: {
+    width: 361,
+    height: 109,
+    className: "h-auto w-[clamp(180px,16vw,260px)] max-w-none",
+  },
 };
 
-export function Logo({ className, size = "md", showLink = true }: LogoProps) {
+export function Logo({
+  className,
+  size = "md",
+  showLink = true,
+  variant = "color",
+}: LogoProps) {
   const { width, height, className: sizeClass } = sizes[size];
+  const src = variant === "white" ? images.logoWhite : images.logo;
 
   const image = (
     <Image
-      src={LOGO_PATH}
-      alt="Ceyloe — Fine Gemstones"
+      src={src}
+      alt="ceyloe"
       width={width}
       height={height}
-      className={cn(sizeClass, "object-contain", className)}
-      priority={size !== "lg"}
+      className={cn(sizeClass, "object-contain object-left", className)}
+      priority={size === "hero" || size === "md"}
       unoptimized
     />
   );
@@ -39,11 +51,9 @@ export function Logo({ className, size = "md", showLink = true }: LogoProps) {
   return (
     <Link
       href="/"
-      className="inline-flex shrink-0 items-center transition-opacity hover:opacity-90"
+      className="inline-flex shrink-0 items-center overflow-visible transition-opacity hover:opacity-90"
     >
       {image}
     </Link>
   );
 }
-
-export { LOGO_PATH };
