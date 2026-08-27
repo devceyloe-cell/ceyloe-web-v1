@@ -28,7 +28,7 @@ function coverPath(name: string) {
 }
 
 const home: WebCoverContent = {
-  image: coverPath("home-hero.webp"),
+  image: coverPath("blue-s.webp"),
   eyebrow: "Sri Lanka's Finest Treasures",
   titleLines: ["Natural Ceylon", "Gemstones"],
   tagline: "Curated in Australia | Sourced in Sri Lanka",

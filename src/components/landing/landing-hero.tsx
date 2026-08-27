@@ -1,13 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
 
 /** PDF page 1 / designer attachment palette */
 const NAVY = "#004B69";
 const GOLD = "#C09A4A";
 const BTN_SECONDARY = "#7A8F9A";
-const HERO_IMAGE = "/images/covers/home-hero.webp";
+const HERO_IMAGE = "/images/covers/blue-s.webp";
 
 /**
  * Homepage hero — PDF page 1 (1920×800): Natural Ceylon Gemstones.
@@ -18,15 +17,15 @@ export function LandingHero() {
       className="relative isolate overflow-hidden bg-white"
       aria-labelledby="home-hero-title"
     >
-      <div className="relative mx-auto w-full max-w-[1920px] min-h-[clamp(420px,41.67vw,800px)] lg:h-[800px]">
+      <div className="relative mx-auto aspect-[1920/800] w-full max-w-[1920px] min-h-[360px]">
         <div className="absolute inset-0" aria-hidden>
           <Image
             src={HERO_IMAGE}
             alt=""
             fill
             priority
-            sizes="100vw"
-            className="object-cover object-[72%_center] sm:object-[70%_center] lg:object-right"
+            sizes="(max-width: 1920px) 100vw, 1920px"
+            className="object-contain object-right"
           />
         </div>
 
@@ -35,7 +34,7 @@ export function LandingHero() {
           aria-hidden
         />
 
-        <div className="relative z-10 flex h-full min-h-[clamp(420px,41.67vw,800px)] items-start px-[var(--margin-mobile)] pt-10 pb-14 md:px-[var(--margin-desktop)] md:pt-12 lg:h-[800px] lg:pt-14 lg:pb-0 xl:pt-16">
+        <div className="relative z-10 flex h-full items-start px-[var(--margin-mobile)] pt-8 pb-10 md:px-[var(--margin-desktop)] md:pt-10 lg:pt-14 xl:pt-16">
           <div className="max-w-[560px] text-left lg:pl-[2%]">
             <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
@@ -84,7 +83,19 @@ export function LandingHero() {
               className="font-poppins mt-4 flex items-center gap-2 text-[clamp(12px,0.85vw,14px)] font-normal tracking-[0.02em] lg:mt-5 xl:mt-4"
               style={{ color: NAVY }}
             >
-              <MapPin className="h-[15px] w-[15px] shrink-0" strokeWidth={2} aria-hidden />
+              {/* Filled pin matching designer attachment (navy + white center) */}
+              <svg
+                className="h-[15px] w-[11px] shrink-0"
+                viewBox="0 0 12 16"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M6 0C2.686 0 0 2.686 0 6c0 4.5 6 10 6 10s6-5.5 6-10c0-3.314-2.686-6-6-6Z"
+                  fill={NAVY}
+                />
+                <circle cx="6" cy="6" r="2.25" fill="white" />
+              </svg>
               <span>
                 Curated in Australia{" "}
                 <span className="mx-1 opacity-50" aria-hidden>
