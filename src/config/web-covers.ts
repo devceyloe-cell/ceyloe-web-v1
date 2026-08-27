@@ -40,11 +40,12 @@ const home: WebCoverContent = {
 
 const ourGemstones: WebCoverContent = {
   image: coverPath("our-gemstones.webp"),
-  eyebrow: "Gemstones",
-  titleLines: ["Explore Our"],
+  eyebrow: "Explore Our",
+  titleLines: ["Gemstones"],
   description: "Discover a world of rare, natural and exceptional beauty.",
   primaryCta: { label: "Browse Collection", href: "/catalog" },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const bespokeJewelry: WebCoverContent = {

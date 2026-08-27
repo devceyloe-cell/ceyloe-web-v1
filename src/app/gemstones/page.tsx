@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { CategoryCardGrid } from "@/components/gemstones/category-card-grid";
+import { GemstonesLandingHero } from "@/components/gemstones/gemstones-landing-hero";
 import { gemstoneLandingCategories } from "@/data/gemstone-categories";
 
 export const metadata: Metadata = {
@@ -12,8 +13,10 @@ export const metadata: Metadata = {
 
 export default function GemstonesLandingPage() {
   return (
-    <div className="section-bg">
-      <Container className="py-12 md:py-20">
+    <div className="bg-white">
+      <GemstonesLandingHero />
+
+      <Container className="py-12 md:py-16">
         <SectionHeading
           eyebrow="Collection"
           title="Natural Gemstones"

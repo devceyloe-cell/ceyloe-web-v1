@@ -1,0 +1,75 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Logo } from "@/components/layout/logo";
+
+/** Attachment / PDF page 2 palette — aligned with homepage cover styles */
+const NAVY = "#004B69";
+const GOLD = "#C09A4A";
+const HERO_ART = "/images/covers/our-gemstones.webp";
+
+/**
+ * /gemstones hero — white PDF page 2 benchmark (Explore Our Gemstones).
+ */
+export function GemstonesLandingHero() {
+  return (
+    <section
+      className="relative isolate overflow-hidden bg-white"
+      aria-labelledby="gemstones-landing-title"
+    >
+      <div className="relative mx-auto aspect-[1920/800] w-full max-w-[1440px]">
+        <div className="absolute inset-0 z-0" aria-hidden>
+          <Image
+            src={HERO_ART}
+            alt=""
+            fill
+            priority
+            quality={95}
+            sizes="(max-width: 1440px) 100vw, 1440px"
+            className="object-contain object-right"
+          />
+        </div>
+
+        <div
+          className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-[58%] bg-gradient-to-r from-white via-white/95 to-transparent"
+          aria-hidden
+        />
+
+        <div className="relative z-10 flex h-full items-start px-[var(--margin-mobile)] pt-8 pb-10 md:px-[var(--margin-desktop)] md:pt-10 lg:pt-12 xl:pt-14">
+          <div className="max-w-[520px] text-left lg:pl-[2%]">
+            <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
+
+            <p
+              className="font-poppins mt-5 text-[clamp(12px,0.8vw,14px)] font-normal uppercase leading-none tracking-[0.18em] lg:mt-6 xl:mt-5"
+              style={{ color: NAVY }}
+            >
+              Explore Our
+            </p>
+
+            <h1
+              id="gemstones-landing-title"
+              className="font-bell mt-2 text-[clamp(30px,3.2vw,48px)] font-bold uppercase leading-[1.02] tracking-[0.01em] text-left lg:mt-2.5"
+              style={{ color: GOLD }}
+            >
+              Gemstones
+            </h1>
+
+            <p
+              className="font-poppins mt-3 max-w-[460px] text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] text-left lg:mt-3.5"
+              style={{ color: NAVY }}
+            >
+              Discover a world of rare, natural and exceptional beauty.
+            </p>
+
+            <Link
+              href="/catalog"
+              className="font-poppins mt-5 inline-flex min-h-[44px] min-w-[220px] items-center justify-center rounded-none px-6 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 lg:mt-6 lg:min-h-[48px] lg:min-w-[240px] xl:mt-5"
+              style={{ backgroundColor: NAVY }}
+            >
+              Browse Collection
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

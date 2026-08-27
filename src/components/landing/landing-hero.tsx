@@ -66,14 +66,14 @@ export function LandingHero() {
             <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-stretch sm:gap-3 lg:mt-6 xl:mt-5">
               <Link
                 href="/gemstones"
-                className="font-poppins inline-flex min-h-[44px] min-w-[190px] items-center justify-center rounded-none px-6 text-[11px] font-bold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90 lg:min-h-[46px]"
+                className="font-poppins inline-flex min-h-[44px] min-w-[220px] items-center justify-center rounded-none px-6 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 lg:min-h-[48px] lg:min-w-[240px]"
                 style={{ backgroundColor: NAVY }}
               >
                 Explore Gemstones
               </Link>
               <Link
                 href="/book"
-                className="font-poppins inline-flex min-h-[44px] min-w-[240px] items-center justify-center rounded-none border px-6 text-[11px] font-bold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90 lg:min-h-[46px]"
+                className="font-poppins inline-flex min-h-[44px] min-w-[220px] items-center justify-center rounded-none border px-6 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 lg:min-h-[48px] lg:min-w-[240px]"
                 style={{ backgroundColor: BTN_SECONDARY, borderColor: NAVY }}
               >
                 Book a Private Appointment
