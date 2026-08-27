@@ -42,7 +42,8 @@ export function ContactForm() {
 
   return (
     <section
-      className="bg-white px-[var(--margin-mobile)] py-12 md:px-[var(--margin-desktop)] md:py-14 lg:py-16"
+      id="contact-form"
+      className="scroll-mt-28 bg-white px-[var(--margin-mobile)] py-12 md:px-[var(--margin-desktop)] md:py-14 lg:py-16"
       aria-labelledby="enquiry-heading"
     >
       <div className="mx-auto max-w-[720px]">

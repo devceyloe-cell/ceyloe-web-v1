@@ -24,7 +24,10 @@ export function EducationPage() {
     <div className="bg-[#F7F4EF]">
       <EducationHero searchValue={query} onSearchChange={setQuery} />
 
-      <section className="px-[var(--margin-mobile)] py-12 md:px-[var(--margin-desktop)] md:py-14 lg:py-16">
+      <section
+        id="education-topics"
+        className="scroll-mt-28 px-[var(--margin-mobile)] py-12 md:px-[var(--margin-desktop)] md:py-14 lg:py-16"
+      >
         <div className="mx-auto max-w-[1280px]">
           {filtered.length === 0 ? (
             <FadeIn className="py-16 text-center">

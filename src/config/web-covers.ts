@@ -69,29 +69,29 @@ const ourStory: WebCoverContent = {
 
 const education: WebCoverContent = {
   image: coverPath("education.webp"),
-  eyebrow: "Education",
-  titleLines: ["Learn", "Gemology"],
-  description: "by the world of gemstones.",
-  primaryCta: { label: "Explore Articles", href: "/journal" },
-  overlay: "dark",
+  titleLines: ["Education"],
+  description: "Learn, discover and be inspired by the world of gemstones.",
+  primaryCta: { label: "Explore Articles", href: "/journal#education-topics" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const contact: WebCoverContent = {
   image: coverPath("contact.webp"),
-  eyebrow: "Get In Touch",
-  titleLines: ["We're here to help"],
-  description: "you find the perfect gemstone.",
-  primaryCta: { label: "Contact Us", href: "#contact-form" },
-  overlay: "dark",
+  titleLines: ["Get In Touch"],
+  description: "We're here to help you find the perfect gemstone.",
+  primaryCta: { label: "Contact Us", href: "/contact#contact-form" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const bookAppointment: WebCoverContent = {
   image: coverPath("book-appointment.webp"),
-  eyebrow: "Private Appointments",
-  titleLines: ["Book Your", "Visit"],
+  titleLines: ["Book Your", "Appointment"],
   description: "Experience our gemstones up close in a private setting.",
-  primaryCta: { label: "Book Appointment", href: "/book" },
-  overlay: "dark",
+  primaryCta: { label: "Book Now", href: "/book#appointment-form" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const showroom: WebCoverContent = {
@@ -105,11 +105,14 @@ const showroom: WebCoverContent = {
 
 const sapphires: WebCoverContent = {
   image: coverPath("sapphires.webp"),
-  eyebrow: "Sapphires",
-  titleLines: ["Ceylon", "Sapphires"],
-  description: "Discover blues, pinks, yellows and rare padparadscha.",
-  primaryCta: { label: "Browse Sapphires", href: "/catalog?category=sapphires" },
-  overlay: "dark",
+  titleLines: ["Sapphires"],
+  description: "Explore our finest sapphire collection.",
+  primaryCta: {
+    label: "Explore Sapphires",
+    href: "/gemstones/sapphires#sapphires-collection",
+  },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const blueSapphires: WebCoverContent = {
@@ -200,41 +203,46 @@ const allSapphires: WebCoverContent = {
 const spinels: WebCoverContent = {
   image: coverPath("spinels.webp"),
   titleLines: ["Spinels"],
-  description: "Vivid reds, pinks and rare blues.",
-  primaryCta: { label: "Browse Spinels", href: "/catalog?category=spinel" },
-  overlay: "dark",
+  description: "Vibrant. Rare. Remarkable.",
+  primaryCta: { label: "Browse Spinels", href: "/gemstones/spinel" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const garnets: WebCoverContent = {
   image: coverPath("garnets.webp"),
   titleLines: ["Garnets"],
-  description: "Tsavorite, rhodolite and fine colour varieties.",
-  primaryCta: { label: "Browse Garnets", href: "/catalog?category=garnet" },
-  overlay: "dark",
+  description: "Rich colours. Timeless beauty.",
+  primaryCta: { label: "Browse Garnets", href: "/gemstones/garnet" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const topaz: WebCoverContent = {
   image: coverPath("topaz.webp"),
   titleLines: ["Topaz"],
   description: "Imperial, blue and champagne tones.",
-  primaryCta: { label: "Browse Topaz", href: "/catalog?category=topaz" },
-  overlay: "dark",
+  primaryCta: { label: "Browse Topaz", href: "/gemstones/topaz" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const citrine: WebCoverContent = {
   image: coverPath("citrine.webp"),
   titleLines: ["Citrine"],
   description: "Warm golden and honey hues.",
-  primaryCta: { label: "Browse Citrine", href: "/catalog?category=citrine" },
-  overlay: "dark",
+  primaryCta: { label: "Browse Citrine", href: "/gemstones/citrine" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const otherGemstones: WebCoverContent = {
   image: coverPath("other-gemstones.webp"),
   titleLines: ["Other", "Gemstones"],
   description: "Rare and exceptional finds beyond our core collections.",
-  primaryCta: { label: "Browse Collection", href: "/catalog?category=other" },
-  overlay: "dark",
+  primaryCta: { label: "Browse Collection", href: "/gemstones/other" },
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const allGemstones: WebCoverContent = {

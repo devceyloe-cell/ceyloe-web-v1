@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { AppointmentForm } from "@/components/forms/appointment-form";
-import { WebCoverHero } from "@/components/layout/web-cover-hero";
-import { webCovers } from "@/config/web-covers";
+import { BookLandingHero } from "@/components/book/book-landing-hero";
 
 export const metadata: Metadata = {
   title: "Book an Appointment",
@@ -11,9 +10,9 @@ export const metadata: Metadata = {
 
 export default function BookPage() {
   return (
-    <div className="section-bg">
-      <WebCoverHero id="book-hero" {...webCovers.bookAppointment} />
-      <Container className="py-12 md:py-20">
+    <div className="bg-white">
+      <BookLandingHero />
+      <Container id="appointment-form" className="scroll-mt-28 py-12 md:py-20">
         <div className="mx-auto max-w-xl">
           <AppointmentForm />
         </div>

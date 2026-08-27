@@ -15,8 +15,12 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const isAdmin = pathname.startsWith("/admin");
   const hideSketchBackground =
     pathname === "/gemstones" ||
+    pathname.startsWith("/gemstones/") ||
     pathname === "/custom-jewelry" ||
-    pathname === "/about";
+    pathname === "/about" ||
+    pathname === "/journal" ||
+    pathname === "/contact" ||
+    pathname === "/book";
 
   if (isAdmin) {
     return <CurrencyProvider>{children}</CurrencyProvider>;

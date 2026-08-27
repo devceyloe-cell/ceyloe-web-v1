@@ -15,10 +15,10 @@ export const images = {
     team: "/images/about/2.jpg",
   },
   categories: {
-    sapphires: "/images/covers/sapphires.webp",
-    spinel: "/images/covers/spinels.webp",
-    garnet: "/images/covers/garnets.webp",
-    zircon: "/images/covers/other-gemstones.webp",
+    sapphires: "/images/covers/cards/sapphires.webp",
+    spinel: "/images/covers/cards/spinels.webp",
+    garnet: "/images/covers/cards/garnets.webp",
+    zircon: "/images/covers/cards/other-gemstones.webp",
     jewellery: "/images/covers/bespoke-jewelry.webp",
   },
 } as const;

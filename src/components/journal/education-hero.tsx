@@ -3,9 +3,8 @@
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { FadeIn } from "@/components/about/fade-in";
-import { WebCoverHero } from "@/components/layout/web-cover-hero";
+import { EducationLandingHero } from "@/components/journal/education-landing-hero";
 import { educationHero } from "@/data/education-content";
-import { webCovers } from "@/config/web-covers";
 
 interface EducationHeroProps {
   onSearchChange?: (query: string) => void;
@@ -25,7 +24,7 @@ export function EducationHero({ onSearchChange, searchValue }: EducationHeroProp
 
   return (
     <>
-      <WebCoverHero id="education-hero" {...webCovers.education} compact />
+      <EducationLandingHero />
       <section className="border-b border-border bg-white px-[var(--margin-mobile)] py-6 md:px-[var(--margin-desktop)] md:py-8">
         <FadeIn className="mx-auto max-w-[720px]">
           <label className="relative block">
