@@ -35,12 +35,12 @@ export function LandingHero() {
           aria-hidden
         />
 
-        <div className="relative z-10 flex h-full min-h-[clamp(420px,41.67vw,800px)] items-center px-[var(--margin-mobile)] py-14 md:px-[var(--margin-desktop)] lg:h-[800px] lg:py-0">
+        <div className="relative z-10 flex h-full min-h-[clamp(420px,41.67vw,800px)] items-start px-[var(--margin-mobile)] pt-10 pb-14 md:px-[var(--margin-desktop)] md:pt-12 lg:h-[800px] lg:pt-14 lg:pb-0 xl:pt-16">
           <div className="max-w-[560px] text-left lg:pl-[2%]">
-            <Logo size="hero" />
+            <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
             <p
-              className="font-poppins mt-[clamp(32px,3vw,48px)] text-[clamp(13px,1vw,16px)] font-normal uppercase leading-none tracking-[0.18em]"
+              className="font-poppins mt-5 text-[clamp(12px,0.8vw,14px)] font-normal uppercase leading-none tracking-[0.18em] lg:mt-6 xl:mt-5"
               style={{ color: NAVY }}
             >
               Sri Lanka&apos;s Finest Treasures
@@ -48,7 +48,7 @@ export function LandingHero() {
 
             <h1
               id="home-hero-title"
-              className="font-bell mt-[clamp(10px,1vw,14px)] text-[clamp(32px,3.8vw,58px)] font-bold uppercase leading-[1.05] tracking-[0.01em] text-left"
+              className="font-bell mt-2 text-[clamp(30px,3.2vw,48px)] font-bold uppercase leading-[1.02] tracking-[0.01em] text-left lg:mt-2.5"
               style={{ color: GOLD }}
             >
               <span className="block">Natural Ceylon</span>
@@ -56,24 +56,24 @@ export function LandingHero() {
             </h1>
 
             <p
-              className="font-poppins mt-[clamp(14px,1.2vw,18px)] max-w-[460px] text-[clamp(14px,1vw,16px)] font-normal leading-[1.55] text-left"
+              className="font-poppins mt-3 max-w-[460px] text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] text-left lg:mt-3.5"
               style={{ color: NAVY }}
             >
               Exceptional natural Ceylon gemstones sourced from Sri Lanka and curated
               in Australia.
             </p>
 
-            <div className="mt-[clamp(22px,2.2vw,32px)] flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-stretch sm:gap-3">
+            <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-stretch sm:gap-3 lg:mt-6 xl:mt-5">
               <Link
                 href="/gemstones"
-                className="font-poppins inline-flex min-h-[48px] min-w-[200px] items-center justify-center rounded-none px-7 text-[11px] font-bold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90"
+                className="font-poppins inline-flex min-h-[44px] min-w-[190px] items-center justify-center rounded-none px-6 text-[11px] font-bold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90 lg:min-h-[46px]"
                 style={{ backgroundColor: NAVY }}
               >
                 Explore Gemstones
               </Link>
               <Link
                 href="/book"
-                className="font-poppins inline-flex min-h-[48px] min-w-[250px] items-center justify-center rounded-none border px-7 text-[11px] font-bold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90"
+                className="font-poppins inline-flex min-h-[44px] min-w-[240px] items-center justify-center rounded-none border px-6 text-[11px] font-bold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90 lg:min-h-[46px]"
                 style={{ backgroundColor: BTN_SECONDARY, borderColor: NAVY }}
               >
                 Book a Private Appointment
@@ -81,7 +81,7 @@ export function LandingHero() {
             </div>
 
             <p
-              className="font-poppins mt-[clamp(20px,2vw,28px)] flex items-center gap-2 text-[clamp(13px,0.95vw,15px)] font-normal tracking-[0.02em]"
+              className="font-poppins mt-4 flex items-center gap-2 text-[clamp(12px,0.85vw,14px)] font-normal tracking-[0.02em] lg:mt-5 xl:mt-4"
               style={{ color: NAVY }}
             >
               <MapPin className="h-[15px] w-[15px] shrink-0" strokeWidth={2} aria-hidden />
