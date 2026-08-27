@@ -17,25 +17,26 @@ export function LandingHero() {
       className="relative isolate overflow-hidden bg-white"
       aria-labelledby="home-hero-title"
     >
-      <div className="relative mx-auto aspect-[1920/800] w-full max-w-[1920px] min-h-[360px]">
+      <div className="relative mx-auto aspect-[1920/800] w-full max-w-[1440px]">
         <div className="absolute inset-0" aria-hidden>
           <Image
             src={HERO_IMAGE}
             alt=""
             fill
             priority
-            sizes="(max-width: 1920px) 100vw, 1920px"
+            quality={95}
+            sizes="(max-width: 1440px) 100vw, 1440px"
             className="object-contain object-right"
           />
         </div>
 
         <div
-          className="pointer-events-none absolute inset-y-0 left-0 w-[58%] bg-gradient-to-r from-white via-white/92 to-transparent"
+          className="pointer-events-none absolute inset-y-0 left-0 w-[58%] bg-gradient-to-r from-white via-white/95 to-transparent"
           aria-hidden
         />
 
-        <div className="relative z-10 flex h-full items-start px-[var(--margin-mobile)] pt-8 pb-10 md:px-[var(--margin-desktop)] md:pt-10 lg:pt-14 xl:pt-16">
-          <div className="max-w-[560px] text-left lg:pl-[2%]">
+        <div className="relative z-10 flex h-full items-start px-[var(--margin-mobile)] pt-8 pb-10 md:px-[var(--margin-desktop)] md:pt-10 lg:pt-12 xl:pt-14">
+          <div className="max-w-[520px] text-left lg:pl-[2%]">
             <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
             <p
