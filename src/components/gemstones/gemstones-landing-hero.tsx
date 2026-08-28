@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
+import { BrowseCollectionButton } from "@/components/gemstones/browse-collection-button";
 
 /** Attachment / PDF page 2 palette — aligned with homepage cover styles */
 const NAVY = "#004B69";
@@ -16,7 +16,7 @@ export function GemstonesLandingHero() {
       className="relative isolate overflow-hidden bg-white"
       aria-labelledby="gemstones-landing-title"
     >
-      <div className="relative h-[clamp(300px,32vw,520px)] w-full">
+      <div className="relative aspect-[1920/800] w-full bg-white">
         <div className="absolute inset-0 z-0" aria-hidden>
           <Image
             src={HERO_ART}
@@ -25,7 +25,7 @@ export function GemstonesLandingHero() {
             priority
             quality={95}
             sizes="100vw"
-            className="object-cover object-right"
+            className="object-contain object-right"
           />
         </div>
 
@@ -60,13 +60,7 @@ export function GemstonesLandingHero() {
               Discover a world of rare, natural and exceptional beauty.
             </p>
 
-            <Link
-              href="/catalog"
-              className="font-poppins mt-5 inline-flex min-h-[44px] min-w-[220px] items-center justify-center rounded-none px-6 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 lg:mt-6 lg:min-h-[48px] lg:min-w-[240px] xl:mt-5"
-              style={{ backgroundColor: NAVY }}
-            >
-              Browse Collection
-            </Link>
+            <BrowseCollectionButton />
           </div>
         </div>
       </div>

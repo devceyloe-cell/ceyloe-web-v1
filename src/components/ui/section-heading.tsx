@@ -7,6 +7,8 @@ interface SectionHeadingProps {
   align?: "left" | "center";
   className?: string;
   italicHighlight?: string;
+  /** Optional id for the heading (hash targets / focus) */
+  titleId?: string;
 }
 
 export function SectionHeading({
@@ -16,13 +18,21 @@ export function SectionHeading({
   align = "center",
   className,
   italicHighlight,
+  titleId,
 }: SectionHeadingProps) {
   return (
     <div className={cn("mb-12 md:mb-16", align === "center" && "text-center", className)}>
       {eyebrow && (
         <p className="subheading-caps mb-4 tracking-[0.2em] text-rich-gold">{eyebrow}</p>
       )}
-      <h2 className="font-caslon text-3xl md:text-4xl lg:text-5xl">
+      <h2
+        id={titleId}
+        tabIndex={titleId ? -1 : undefined}
+        className={cn(
+          "font-caslon text-3xl outline-none md:text-4xl lg:text-5xl",
+          titleId && "scroll-mt-28",
+        )}
+      >
         {title}
         {italicHighlight && <span className="italic"> {italicHighlight}</span>}
       </h2>

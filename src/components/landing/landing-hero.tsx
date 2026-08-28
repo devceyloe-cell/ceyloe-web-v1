@@ -63,17 +63,17 @@ export function LandingHero() {
               in Australia.
             </p>
 
-            <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-stretch sm:gap-3 lg:mt-6 xl:mt-5">
+            <div className="mt-5 flex flex-row flex-nowrap items-stretch gap-2.5 sm:gap-3 lg:mt-6 xl:mt-5">
               <Link
                 href="/gemstones"
-                className="font-poppins inline-flex min-h-[44px] min-w-[220px] items-center justify-center rounded-none px-6 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 lg:min-h-[48px] lg:min-w-[240px]"
+                className="font-poppins inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center rounded-none px-3 text-center text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90 sm:min-w-[200px] sm:flex-none sm:px-5 sm:text-[11px] sm:tracking-[0.16em] lg:min-h-[48px] lg:min-w-[240px] lg:px-6"
                 style={{ backgroundColor: NAVY }}
               >
                 Explore Gemstones
               </Link>
               <Link
                 href="/book"
-                className="font-poppins inline-flex min-h-[44px] min-w-[220px] items-center justify-center rounded-none border px-6 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 lg:min-h-[48px] lg:min-w-[240px]"
+                className="font-poppins inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center rounded-none border px-3 text-center text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90 sm:min-w-[200px] sm:flex-none sm:px-5 sm:text-[11px] sm:tracking-[0.16em] lg:min-h-[48px] lg:min-w-[240px] lg:px-6"
                 style={{ backgroundColor: BTN_SECONDARY, borderColor: NAVY }}
               >
                 Book a Private Appointment

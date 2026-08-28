@@ -43,7 +43,7 @@ const ourGemstones: WebCoverContent = {
   eyebrow: "Explore Our",
   titleLines: ["Gemstones"],
   description: "Discover a world of rare, natural and exceptional beauty.",
-  primaryCta: { label: "Browse Collection", href: "/catalog" },
+  primaryCta: { label: "Browse Collection", href: "/gemstones#natural-gemstones-heading" },
   tone: "light",
   imagePosition: "right center",
 };
@@ -221,7 +221,7 @@ const garnets: WebCoverContent = {
 const topaz: WebCoverContent = {
   image: coverPath("topaz.webp"),
   titleLines: ["Topaz"],
-  description: "Imperial, blue and champagne tones.",
+  description: "Rich colours. Timeless beauty.",
   primaryCta: { label: "Browse Topaz", href: "/gemstones/topaz" },
   tone: "light",
   imagePosition: "right center",
@@ -255,11 +255,11 @@ const allGemstones: WebCoverContent = {
 
 const cart: WebCoverContent = {
   image: coverPath("cart.webp"),
-  eyebrow: "Your Cart",
-  titleLines: ["Shopping", "Bag"],
+  titleLines: ["Your Cart"],
   description: "Review your selected gemstones.",
   primaryCta: { label: "Continue Shopping", href: "/catalog" },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const thankYou: WebCoverContent = {

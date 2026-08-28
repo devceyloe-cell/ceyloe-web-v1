@@ -62,9 +62,9 @@ export const gemstoneTypePages: Record<string, GemstoneTypePageConfig> = {
     title: "Topaz",
     catalogCategory: "topaz",
     image: "/images/covers/topaz.webp",
-    heroLayout: "stacked",
-    traits: DEFAULT_TRAITS,
-    exploreLabel: "Explore our finest topaz collection.",
+    heroLayout: "banner",
+    bannerTagline: "Rich colours. Timeless beauty.",
+    showTitleDivider: true,
     description: "Imperial, blue and champagne tones.",
   },
   citrine: {

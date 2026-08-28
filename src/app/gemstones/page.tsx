@@ -16,8 +16,9 @@ export default function GemstonesLandingPage() {
     <div className="bg-white">
       <GemstonesLandingHero />
 
-      <Container className="py-12 md:py-16">
+      <Container id="natural-gemstones" className="scroll-mt-28 py-12 md:py-16">
         <SectionHeading
+          titleId="natural-gemstones-heading"
           eyebrow="Collection"
           title="Natural Gemstones"
           description="Explore our carefully curated collection of natural gemstones, sourced from Sri Lanka and selected for their beauty, rarity and quality. Whether you're searching for a loose gemstone or planning a bespoke jewellery piece, begin your journey here."

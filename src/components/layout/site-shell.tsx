@@ -20,7 +20,8 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     pathname === "/about" ||
     pathname === "/journal" ||
     pathname === "/contact" ||
-    pathname === "/book";
+    pathname === "/book" ||
+    pathname === "/cart";
 
   if (isAdmin) {
     return <CurrencyProvider>{children}</CurrencyProvider>;
