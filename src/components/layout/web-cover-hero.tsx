@@ -32,8 +32,8 @@ export function WebCoverHero({
     <section
       id={id}
       className={cn(
-        "relative isolate overflow-hidden",
-        compact ? "min-h-[320px] md:min-h-[420px]" : "min-h-[420px] md:min-h-[560px] lg:min-h-[720px]",
+        "relative isolate",
+        compact ? "min-h-[320px] md:min-h-[420px]" : "min-h-0 md:min-h-[560px] lg:min-h-[720px]",
         className,
       )}
       aria-labelledby={id ? `${id}-title` : undefined}
@@ -70,7 +70,7 @@ export function WebCoverHero({
       <div
         className={cn(
           "relative z-10 mx-auto flex w-full max-w-[1440px] flex-col justify-center px-[var(--margin-mobile)] md:px-[var(--margin-desktop)]",
-          compact ? "min-h-[320px] py-12 md:min-h-[420px]" : "min-h-[420px] py-16 md:min-h-[560px] lg:min-h-[720px] lg:py-20",
+          compact ? "py-12 md:py-14" : "py-14 md:py-16 lg:py-20",
         )}
       >
         <div className="max-w-xl">

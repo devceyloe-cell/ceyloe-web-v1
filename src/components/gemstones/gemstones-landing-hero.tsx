@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { Logo } from "@/components/layout/logo";
+import { WhiteCoverHeroLayout } from "@/components/layout/white-cover-hero-layout";
 import { BrowseCollectionButton } from "@/components/gemstones/browse-collection-button";
 
 /** Attachment / PDF page 2 palette — aligned with homepage cover styles */
@@ -12,58 +12,37 @@ const HERO_ART = "/images/covers/our-gemstones.webp";
  */
 export function GemstonesLandingHero() {
   return (
-    <section
-      className="relative isolate overflow-hidden bg-white"
-      aria-labelledby="gemstones-landing-title"
+    <WhiteCoverHeroLayout
+      image={HERO_ART}
+      ariaLabelledBy="gemstones-landing-title"
+      variant="wide"
+      imageFit="contain"
     >
-      <div className="relative aspect-[1920/800] w-full bg-white">
-        <div className="absolute inset-0 z-0" aria-hidden>
-          <Image
-            src={HERO_ART}
-            alt=""
-            fill
-            priority
-            quality={95}
-            sizes="100vw"
-            className="object-contain object-right"
-          />
-        </div>
+      <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
-        <div
-          className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-[58%] bg-gradient-to-r from-white via-white/95 to-transparent"
-          aria-hidden
-        />
+      <p
+        className="font-poppins mt-5 text-[clamp(12px,0.8vw,14px)] font-normal uppercase leading-none tracking-[0.18em] lg:mt-6 xl:mt-5"
+        style={{ color: NAVY }}
+      >
+        Explore Our
+      </p>
 
-        <div className="relative z-10 mx-auto flex h-full w-full max-w-[1440px] items-start px-[var(--margin-mobile)] pt-8 pb-10 md:px-[var(--margin-desktop)] md:pt-10 lg:pt-12 xl:pt-14">
-          <div className="max-w-[520px] text-left lg:pl-[2%]">
-            <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
+      <h1
+        id="gemstones-landing-title"
+        className="font-bell mt-2 text-[clamp(30px,3.2vw,48px)] font-bold uppercase leading-[1.02] tracking-[0.01em] text-left lg:mt-2.5"
+        style={{ color: GOLD }}
+      >
+        Gemstones
+      </h1>
 
-            <p
-              className="font-poppins mt-5 text-[clamp(12px,0.8vw,14px)] font-normal uppercase leading-none tracking-[0.18em] lg:mt-6 xl:mt-5"
-              style={{ color: NAVY }}
-            >
-              Explore Our
-            </p>
+      <p
+        className="font-poppins mt-3 max-w-[460px] text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] text-left lg:mt-3.5"
+        style={{ color: NAVY }}
+      >
+        Discover a world of rare, natural and exceptional beauty.
+      </p>
 
-            <h1
-              id="gemstones-landing-title"
-              className="font-bell mt-2 text-[clamp(30px,3.2vw,48px)] font-bold uppercase leading-[1.02] tracking-[0.01em] text-left lg:mt-2.5"
-              style={{ color: GOLD }}
-            >
-              Gemstones
-            </h1>
-
-            <p
-              className="font-poppins mt-3 max-w-[460px] text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] text-left lg:mt-3.5"
-              style={{ color: NAVY }}
-            >
-              Discover a world of rare, natural and exceptional beauty.
-            </p>
-
-            <BrowseCollectionButton />
-          </div>
-        </div>
-      </div>
-    </section>
+      <BrowseCollectionButton />
+    </WhiteCoverHeroLayout>
   );
 }

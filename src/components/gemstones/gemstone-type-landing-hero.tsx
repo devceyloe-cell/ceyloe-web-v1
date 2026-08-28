@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
+import { WhiteCoverHeroLayout } from "@/components/layout/white-cover-hero-layout";
 import type { GemstoneTypePageConfig } from "@/data/gemstone-type-pages";
 
 const NAVY = "#004B69";
@@ -30,79 +30,53 @@ export function GemstoneTypeLandingHero({ config }: GemstoneTypeLandingHeroProps
   const exploreHref = `#${config.slug}-collection`;
 
   return (
-    <section
-      className="relative isolate overflow-hidden bg-white"
-      aria-labelledby={titleId}
-    >
-      <div className="relative h-[clamp(300px,32vw,520px)] w-full">
-        <div className="absolute inset-0 z-0" aria-hidden>
-          <Image
-            src={config.image}
-            alt=""
-            fill
-            priority
-            quality={95}
-            sizes="100vw"
-            className="object-cover object-right"
-          />
-        </div>
+    <WhiteCoverHeroLayout image={config.image} ariaLabelledBy={titleId}>
+      <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
-        <div
-          className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-[58%] bg-gradient-to-r from-white via-white/95 to-transparent"
-          aria-hidden
-        />
+      <h1
+        id={titleId}
+        className="font-bell mt-5 text-[clamp(30px,3.2vw,48px)] font-bold uppercase leading-[1.02] tracking-[0.01em] text-left lg:mt-6 xl:mt-5"
+        style={{ color: GOLD }}
+      >
+        {config.title}
+      </h1>
 
-        <div className="relative z-10 mx-auto flex h-full w-full max-w-[1440px] items-start px-[var(--margin-mobile)] pt-8 pb-10 md:px-[var(--margin-desktop)] md:pt-10 lg:pt-12 xl:pt-14">
-          <div className="max-w-[520px] text-left lg:pl-[2%]">
-            <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
+      {config.showTitleDivider ? <TitleDivider /> : null}
 
-            <h1
-              id={titleId}
-              className="font-bell mt-5 text-[clamp(30px,3.2vw,48px)] font-bold uppercase leading-[1.02] tracking-[0.01em] text-left lg:mt-6 xl:mt-5"
-              style={{ color: GOLD }}
-            >
-              {config.title}
-            </h1>
+      {config.heroLayout === "banner" && config.bannerTagline ? (
+        <p
+          className="font-poppins mt-5 inline-flex min-h-[40px] items-center px-5 text-[11px] font-bold uppercase tracking-[0.12em] text-white sm:min-h-[44px] sm:px-6 sm:text-[12px] lg:mt-6"
+          style={{ backgroundColor: NAVY }}
+        >
+          {config.bannerTagline}
+        </p>
+      ) : null}
 
-            {config.showTitleDivider ? <TitleDivider /> : null}
-
-            {config.heroLayout === "banner" && config.bannerTagline ? (
-              <p
-                className="font-poppins mt-5 inline-flex min-h-[40px] items-center px-5 text-[11px] font-bold uppercase tracking-[0.12em] text-white sm:min-h-[44px] sm:px-6 sm:text-[12px] lg:mt-6"
+      {config.heroLayout === "stacked" && config.traits ? (
+        <ul className="mt-4 flex flex-col gap-2 lg:mt-5">
+          {config.traits.map((label) => (
+            <li key={label}>
+              <span
+                className="font-poppins inline-flex min-h-[36px] min-w-[160px] items-center justify-center px-5 text-[11px] font-bold uppercase tracking-[0.14em] text-white sm:min-w-[180px]"
                 style={{ backgroundColor: NAVY }}
               >
-                {config.bannerTagline}
-              </p>
-            ) : null}
+                {label}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
 
-            {config.heroLayout === "stacked" && config.traits ? (
-              <ul className="mt-4 flex flex-col gap-2 lg:mt-5">
-                {config.traits.map((label) => (
-                  <li key={label}>
-                    <span
-                      className="font-poppins inline-flex min-h-[36px] min-w-[160px] items-center justify-center px-5 text-[11px] font-bold uppercase tracking-[0.14em] text-white sm:min-w-[180px]"
-                      style={{ backgroundColor: NAVY }}
-                    >
-                      {label}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-
-            {config.exploreLabel ? (
-              <p
-                className="font-poppins mt-5 text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] lg:mt-6"
-                style={{ color: NAVY }}
-              >
-                <Link href={exploreHref} className="transition-opacity hover:opacity-80">
-                  {config.exploreLabel}
-                </Link>
-              </p>
-            ) : null}
-          </div>
-        </div>
-      </div>
-    </section>
+      {config.exploreLabel ? (
+        <p
+          className="font-poppins mt-5 text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] lg:mt-6"
+          style={{ color: NAVY }}
+        >
+          <Link href={exploreHref} className="transition-opacity hover:opacity-80">
+            {config.exploreLabel}
+          </Link>
+        </p>
+      ) : null}
+    </WhiteCoverHeroLayout>
   );
 }
