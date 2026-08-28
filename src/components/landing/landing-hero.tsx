@@ -17,7 +17,6 @@ export function LandingHero() {
       image={HERO_IMAGE}
       ariaLabelledBy="home-hero-title"
       variant="wide"
-      imageFit="contain"
     >
       <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 

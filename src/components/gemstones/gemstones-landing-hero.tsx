@@ -16,7 +16,6 @@ export function GemstonesLandingHero() {
       image={HERO_ART}
       ariaLabelledBy="gemstones-landing-title"
       variant="wide"
-      imageFit="contain"
     >
       <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 

@@ -6,50 +6,36 @@ type WhiteCoverHeroLayoutProps = {
   ariaLabelledBy?: string;
   /** Full-width 1920×800 heroes (home, gemstones). Others use fixed desktop height. */
   variant?: "wide" | "standard";
-  /** How the artwork is fitted on desktop. */
-  imageFit?: "contain" | "cover";
   children: React.ReactNode;
 };
 
 /**
  * Shared white-cover hero shell.
- * Artwork is sticky and sits behind text on all breakpoints.
+ * Artwork spans full screen width; text stays in the content column.
  */
 export function WhiteCoverHeroLayout({
   image,
   ariaLabelledBy,
   variant = "standard",
-  imageFit = "cover",
   children,
 }: WhiteCoverHeroLayoutProps) {
   const isWide = variant === "wide";
-  const fitContain = imageFit === "contain";
 
   return (
     <section
-      className="relative isolate bg-white"
+      className="relative isolate w-full bg-white"
       aria-labelledby={ariaLabelledBy}
     >
       <div
         className={cn(
-          "relative mx-auto w-full max-w-[1440px] overflow-hidden",
+          "relative w-full overflow-hidden",
           isWide
-            ? "min-h-[clamp(420px,42vw,667px)]"
-            : "min-h-[clamp(300px,32vw,520px)]",
+            ? "min-h-[clamp(340px,calc(100vw*600/1920),560px)] lg:aspect-[1920/600] lg:min-h-0"
+            : "min-h-[clamp(260px,calc(100vw*600/1920),440px)]",
         )}
       >
-        <div
-          className="pointer-events-none absolute inset-0 z-0"
-          aria-hidden
-        >
-          <div
-            className={cn(
-              "sticky top-0 w-full",
-              isWide
-                ? "h-[clamp(280px,50vw,667px)]"
-                : "h-[clamp(260px,42vw,520px)]",
-            )}
-          >
+        <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+          <div className="sticky top-0 h-full w-full">
             <div className="relative h-full w-full">
               <Image
                 src={image}
@@ -58,9 +44,7 @@ export function WhiteCoverHeroLayout({
                 priority
                 quality={95}
                 sizes="100vw"
-                className={cn(
-                  fitContain ? "object-contain object-right" : "object-cover object-right",
-                )}
+                className="h-full w-full object-cover object-right"
               />
             </div>
           </div>
@@ -71,7 +55,14 @@ export function WhiteCoverHeroLayout({
           aria-hidden
         />
 
-        <div className="relative z-10 px-[var(--margin-mobile)] pb-10 pt-2 md:px-[var(--margin-desktop)] md:pb-12 md:pt-10 lg:pt-12 xl:pt-14">
+        <div
+          className={cn(
+            "relative z-10 mx-auto w-full max-w-[1440px] px-[var(--margin-mobile)] pb-8 pt-2 md:px-[var(--margin-desktop)] md:pb-8 md:pt-8 lg:pt-10 xl:pt-11",
+            isWide &&
+              "lg:absolute lg:inset-x-0 lg:top-0 lg:mx-auto lg:flex lg:items-start lg:pb-0",
+            !isWide && "md:pb-10",
+          )}
+        >
           <div className="max-w-[520px] text-left lg:pl-[2%]">{children}</div>
         </div>
       </div>
