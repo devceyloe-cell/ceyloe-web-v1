@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/container";
 import { CatalogFilters } from "@/components/catalog/catalog-filters";
 import { ProductGrid } from "@/components/catalog/product-grid";
 import { CompareBar } from "@/components/compare/compare-bar";
-import { WebCoverHero } from "@/components/layout/web-cover-hero";
+import { CatalogLandingHero } from "@/components/catalog/catalog-landing-hero";
 import {
   getProducts,
   getProductCategories,
@@ -83,11 +83,13 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     (filters.category ? titleCase(filters.category) : "Gemstones");
 
   return (
-    <div className="section-bg">
-      <WebCoverHero
-        id="catalog-hero"
-        {...cover}
-        description={`${products.length} exceptional ${categoryLabel.toLowerCase()} available`}
+    <div className="bg-white">
+      <CatalogLandingHero
+        cover={cover}
+        description={
+          cover.description ??
+          `${products.length} exceptional ${categoryLabel.toLowerCase()} available`
+        }
       />
       <Container className="py-12 md:py-20">
         <Link

@@ -2,14 +2,12 @@ import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
 import { WhiteCoverHeroLayout } from "@/components/layout/white-cover-hero-layout";
 
-/** PDF page 1 / designer attachment palette */
-const NAVY = "#004B69";
 const GOLD = "#C09A4A";
 const BTN_SECONDARY = "#7A8F9A";
-const HERO_IMAGE = "/images/covers/blue-s.webp";
+const HERO_IMAGE = "/images/covers/hero-image.webp";
 
 /**
- * Homepage hero — PDF page 1 (1920×800): Natural Ceylon Gemstones.
+ * Homepage hero — Natural Ceylon Gemstones over hero artwork with black overlay.
  */
 export function LandingHero() {
   return (
@@ -17,13 +15,11 @@ export function LandingHero() {
       image={HERO_IMAGE}
       ariaLabelledBy="home-hero-title"
       variant="wide"
+      overlay="black"
     >
-      <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
+      <Logo size="hero" variant="white" className="!w-[clamp(160px,12vw,200px)]" />
 
-      <p
-        className="font-poppins mt-5 text-[clamp(12px,0.8vw,14px)] font-normal uppercase leading-none tracking-[0.18em] lg:mt-6 xl:mt-5"
-        style={{ color: NAVY }}
-      >
+      <p className="font-poppins mt-5 text-[clamp(12px,0.8vw,14px)] font-normal uppercase leading-none tracking-[0.18em] text-white/90 lg:mt-6 xl:mt-5">
         Sri Lanka&apos;s Finest Treasures
       </p>
 
@@ -36,10 +32,7 @@ export function LandingHero() {
         <span className="block">Gemstones</span>
       </h1>
 
-      <p
-        className="font-poppins mt-3 max-w-[460px] text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] text-left lg:mt-3.5"
-        style={{ color: NAVY }}
-      >
+      <p className="font-poppins mt-3 max-w-[460px] text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] text-left text-white/90 lg:mt-3.5">
         Exceptional natural Ceylon gemstones sourced from Sri Lanka and curated in
         Australia.
       </p>
@@ -48,23 +41,20 @@ export function LandingHero() {
         <Link
           href="/gemstones"
           className="font-poppins inline-flex min-h-[44px] w-full items-center justify-center whitespace-nowrap rounded-none px-5 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 sm:w-auto sm:px-6 lg:min-h-[48px]"
-          style={{ backgroundColor: NAVY }}
+          style={{ backgroundColor: GOLD }}
         >
           Explore Gemstones
         </Link>
         <Link
           href="/book"
-          className="font-poppins inline-flex min-h-[44px] w-full items-center justify-center whitespace-nowrap rounded-none border px-5 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 sm:w-auto sm:px-6 lg:min-h-[48px]"
-          style={{ backgroundColor: BTN_SECONDARY, borderColor: NAVY }}
+          className="font-poppins inline-flex min-h-[44px] w-full items-center justify-center whitespace-nowrap rounded-none border border-white/50 px-5 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 sm:w-auto sm:px-6 lg:min-h-[48px]"
+          style={{ backgroundColor: BTN_SECONDARY }}
         >
           Book a Private Appointment
         </Link>
       </div>
 
-      <p
-        className="font-poppins mt-4 flex items-center gap-2 text-[clamp(12px,0.85vw,14px)] font-normal tracking-[0.02em] lg:mt-5 xl:mt-4"
-        style={{ color: NAVY }}
-      >
+      <p className="font-poppins mt-4 flex items-center gap-2 text-[clamp(12px,0.85vw,14px)] font-normal tracking-[0.02em] text-white/85 lg:mt-5 xl:mt-4">
         <svg
           className="h-[15px] w-[11px] shrink-0"
           viewBox="0 0 12 16"
@@ -73,9 +63,9 @@ export function LandingHero() {
         >
           <path
             d="M6 0C2.686 0 0 2.686 0 6c0 4.5 6 10 6 10s6-5.5 6-10c0-3.314-2.686-6-6-6Z"
-            fill={NAVY}
+            fill="white"
           />
-          <circle cx="6" cy="6" r="2.25" fill="white" />
+          <circle cx="6" cy="6" r="2.25" fill="#111111" />
         </svg>
         <span>
           Curated in Australia{" "}

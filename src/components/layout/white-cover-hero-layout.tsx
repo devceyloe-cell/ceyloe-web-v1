@@ -6,6 +6,8 @@ type WhiteCoverHeroLayoutProps = {
   ariaLabelledBy?: string;
   /** Full-width 1920×800 heroes (home, gemstones). Others use fixed desktop height. */
   variant?: "wide" | "standard";
+  /** Darken the artwork with a black overlay (homepage). */
+  overlay?: "black" | "none";
   children: React.ReactNode;
 };
 
@@ -17,6 +19,7 @@ export function WhiteCoverHeroLayout({
   image,
   ariaLabelledBy,
   variant = "standard",
+  overlay = "none",
   children,
 }: WhiteCoverHeroLayoutProps) {
   const isWide = variant === "wide";
@@ -46,12 +49,23 @@ export function WhiteCoverHeroLayout({
                 sizes="100vw"
                 className="h-full w-full object-cover object-right"
               />
+              {overlay === "black" ? (
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent"
+                  aria-hidden
+                />
+              ) : null}
             </div>
           </div>
         </div>
 
         <div
-          className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-[72%] bg-gradient-to-r from-white via-white/95 to-transparent md:w-[58%]"
+          className={cn(
+            "pointer-events-none absolute inset-y-0 left-0 z-[1] w-[72%] md:w-[58%]",
+            overlay === "black"
+              ? "bg-gradient-to-r from-black/70 via-black/25 to-transparent"
+              : "bg-gradient-to-r from-white via-white/95 to-transparent",
+          )}
           aria-hidden
         />
 

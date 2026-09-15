@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:azure": "next build && node scripts/package-azure.mjs",
+    "build:azure": "node scripts/clean-azure-artifacts.mjs && next build && node scripts/package-azure.mjs",
     "deploy:azure": "node scripts/deploy-azure.mjs",
     "azure:set-env": "node scripts/azure-set-env.mjs",
     "start": "next start",

@@ -16,6 +16,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const hideSketchBackground =
     pathname === "/gemstones" ||
     pathname.startsWith("/gemstones/") ||
+    pathname === "/catalog" ||
     pathname === "/custom-jewelry" ||
     pathname === "/about" ||
     pathname === "/journal" ||

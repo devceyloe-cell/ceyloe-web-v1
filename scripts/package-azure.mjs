@@ -36,9 +36,9 @@ cpSync(standaloneDir, outDir, { recursive: true });
 cpSync(join(root, ".next", "static"), join(outDir, ".next", "static"), { recursive: true });
 cpSync(join(root, "public"), join(outDir, "public"), { recursive: true });
 
-for (const extra of ["ceyloe-azure.zip"]) {
+for (const extra of ["azure-deploy", "ceyloe-azure.zip"]) {
   const p = join(outDir, extra);
-  if (existsSync(p)) rmSync(p);
+  if (existsSync(p)) rmSync(p, { recursive: true, force: true });
 }
 
 const pkgPath = join(outDir, "package.json");

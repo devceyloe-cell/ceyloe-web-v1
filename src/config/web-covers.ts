@@ -28,7 +28,7 @@ function coverPath(name: string) {
 }
 
 const home: WebCoverContent = {
-  image: coverPath("blue-s.webp"),
+  image: coverPath("hero-image.webp"),
   eyebrow: "Sri Lanka's Finest Treasures",
   titleLines: ["Natural Ceylon", "Gemstones"],
   tagline: "Curated in Australia | Sourced in Sri Lanka",
@@ -123,18 +123,16 @@ const blueSapphires: WebCoverContent = {
     label: "Browse Blue Sapphires",
     href: "/catalog?category=sapphires&color=blue",
   },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const blueSapphireCollection: WebCoverContent = {
-  image: coverPath("blue-sapphire-collection.webp"),
-  titleLines: ["Blue Sapphire", "Collection"],
+  image: coverPath("blue-sapphires.webp"),
+  titleLines: ["Blue", "Sapphires"],
   description: "Curated selection of fine blue Ceylon sapphires.",
-  primaryCta: {
-    label: "View Collection",
-    href: "/catalog?category=sapphires&color=blue",
-  },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const pinkSapphires: WebCoverContent = {
@@ -145,7 +143,8 @@ const pinkSapphires: WebCoverContent = {
     label: "Browse Pink Sapphires",
     href: "/catalog?category=sapphires&color=pink",
   },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const yellowSapphires: WebCoverContent = {
@@ -156,7 +155,8 @@ const yellowSapphires: WebCoverContent = {
     label: "Browse Yellow Sapphires",
     href: "/catalog?category=sapphires&color=yellow",
   },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const tealSapphires: WebCoverContent = {
@@ -167,7 +167,8 @@ const tealSapphires: WebCoverContent = {
     label: "Browse Teal Sapphires",
     href: "/catalog?category=sapphires&color=teal",
   },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const partiSapphires: WebCoverContent = {
@@ -178,7 +179,8 @@ const partiSapphires: WebCoverContent = {
     label: "Browse Parti Sapphires",
     href: "/catalog?category=sapphires&color=parti",
   },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const padparadscha: WebCoverContent = {
@@ -189,7 +191,8 @@ const padparadscha: WebCoverContent = {
     label: "Browse Padparadscha",
     href: "/catalog?category=sapphires&color=padparadscha",
   },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const allSapphires: WebCoverContent = {
@@ -197,7 +200,8 @@ const allSapphires: WebCoverContent = {
   titleLines: ["All", "Sapphires"],
   description: "Browse every sapphire in our curated collection.",
   primaryCta: { label: "View All Sapphires", href: "/catalog?category=sapphires" },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const spinels: WebCoverContent = {
@@ -250,7 +254,8 @@ const allGemstones: WebCoverContent = {
   titleLines: ["All", "Gemstones"],
   description: "Browse the complete curated collection.",
   primaryCta: { label: "Browse Catalog", href: "/catalog" },
-  overlay: "dark",
+  tone: "light",
+  imagePosition: "right center",
 };
 
 const cart: WebCoverContent = {
