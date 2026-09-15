@@ -2,14 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { Loader2, Trash2 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Price } from "@/components/ui/price";
 import { useCart } from "@/contexts/cart-context";
+import { useUserAuth } from "@/contexts/user-auth-context";
 
-export function CartContent() {
+function CartBody() {
+  const searchParams = useSearchParams();
+  const confirmed = searchParams.get("confirmed") === "1";
   const { items, removeItem, clearCart, itemCount } = useCart();
+  const { user, loading: authLoading } = useUserAuth();
   const [checkingOutHandle, setCheckingOutHandle] = useState<string | null>(null);
   const [error, setError] = useState("");
 
@@ -34,8 +39,31 @@ export function CartContent() {
     setCheckingOutHandle(null);
   }
 
+  if (!authLoading && !user) {
+    return (
+      <Container className="py-12 md:py-16">
+        <div className="text-center">
+          <p className="font-poppins text-muted">
+            Sign in to view your cart. Items you add are saved to your account.
+          </p>
+          <Link
+            href="/login"
+            className="font-poppins mt-6 inline-flex min-h-12 items-center justify-center bg-[#C09A4A] px-8 text-[11px] font-bold uppercase tracking-[0.14em] text-white hover:bg-[#d0ab5c]"
+          >
+            Login / Create account
+          </Link>
+        </div>
+      </Container>
+    );
+  }
+
   return (
     <Container className="py-12 md:py-16">
+      {confirmed ? (
+        <p className="mb-6 border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm text-emerald-800">
+          Email confirmed. Your account is active.
+        </p>
+      ) : null}
       {itemCount === 0 ? (
         <div className="text-center">
           <p className="font-poppins text-muted">Your cart is empty.</p>
@@ -116,5 +144,19 @@ export function CartContent() {
         </div>
       )}
     </Container>
+  );
+}
+
+export function CartContent() {
+  return (
+    <Suspense
+      fallback={
+        <Container className="py-12 md:py-16">
+          <p className="text-center text-sm text-muted">Loading cart...</p>
+        </Container>
+      }
+    >
+      <CartBody />
+    </Suspense>
   );
 }

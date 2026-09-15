@@ -1,20 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { Menu, ShoppingBag, User, X } from "lucide-react";
 import { landingNavigation } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/layout/logo";
 import { CurrencySelector } from "@/components/layout/currency-selector";
 import { useCart } from "@/contexts/cart-context";
+import { useUserAuth } from "@/contexts/user-auth-context";
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { itemCount } = useCart();
+  const { user, logout } = useUserAuth();
 
   useEffect(() => {
     const header = document.querySelector("header");
@@ -37,6 +40,13 @@ export function Header() {
       window.removeEventListener("resize", syncHeaderHeight);
     };
   }, [mobileOpen]);
+
+  async function handleLogout() {
+    await logout();
+    setMobileOpen(false);
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black">
@@ -71,6 +81,29 @@ export function Header() {
             >
               Book Appointment
             </Link>
+
+            {user ? (
+              <div className="hidden items-center gap-2 sm:flex">
+                <span className="max-w-[140px] truncate font-manrope text-[11px] font-semibold normal-case tracking-normal text-white/80">
+                  {user.email}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="font-manrope text-[10px] font-semibold uppercase tracking-[0.12em] text-white/60 transition-colors hover:text-rich-gold"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden text-white transition-colors hover:text-rich-gold sm:inline-flex"
+                aria-label="Login"
+              >
+                <User className="h-5 w-5" strokeWidth={1.5} />
+              </Link>
+            )}
 
             <Link
               href="/cart"
@@ -118,6 +151,28 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
+            {user ? (
+              <>
+                <p className="py-3 font-manrope text-sm font-semibold normal-case tracking-normal text-rich-gold">
+                  {user.email}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="block w-full py-3 text-left font-manrope text-sm font-semibold uppercase tracking-[0.12em] text-white/90 hover:text-rich-gold"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="block py-3 font-manrope text-sm font-semibold uppercase tracking-[0.12em] text-white/90 hover:text-rich-gold"
+              >
+                Login
+              </Link>
+            )}
             <Link
               href="/book"
               onClick={() => setMobileOpen(false)}

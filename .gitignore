@@ -25,6 +25,8 @@
 # misc
 .DS_Store
 *.pem
+tmp-wc*.json
+tmp-imported-products.json
 
 # debug
 npm-debug.log*

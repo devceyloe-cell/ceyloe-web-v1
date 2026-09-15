@@ -28,7 +28,11 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
   }
 
   if (filters.color) {
-    result = result.filter((p) => p.specs.color?.toLowerCase() === filters.color!.toLowerCase());
+    const wanted = filters.color.toLowerCase();
+    result = result.filter((p) => {
+      const color = p.specs.color?.toLowerCase() ?? "";
+      return color === wanted || color.includes(wanted) || wanted.includes(color);
+    });
   }
 
   if (filters.shape) {

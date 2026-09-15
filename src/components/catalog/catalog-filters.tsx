@@ -1,14 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 
 interface CatalogFiltersProps {
-  categories: string[];
-  colors: string[];
-  shapes: string[];
-  origins: string[];
+  categories?: string[];
+  colors?: string[];
+  shapes?: string[];
+  origins?: string[];
 }
 
 const sortOptions = [
@@ -18,17 +17,14 @@ const sortOptions = [
   { value: "price-desc", label: "Price: High to Low" },
 ];
 
-export function CatalogFilters({ categories, colors, shapes, origins }: CatalogFiltersProps) {
+export function CatalogFilters(_props: CatalogFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const current = {
     category: searchParams.get("category") ?? "",
     color: searchParams.get("color") ?? "",
-    shape: searchParams.get("shape") ?? "",
-    origin: searchParams.get("origin") ?? "",
     sort: searchParams.get("sort") ?? "featured",
-    search: searchParams.get("search") ?? "",
     minPrice: searchParams.get("minPrice") ?? "",
     maxPrice: searchParams.get("maxPrice") ?? "",
     minCarat: searchParams.get("minCarat") ?? "",
@@ -43,29 +39,25 @@ export function CatalogFilters({ categories, colors, shapes, origins }: CatalogF
   }
 
   function clearAll() {
-    router.push("/catalog");
+    const params = new URLSearchParams();
+    if (current.category) params.set("category", current.category);
+    if (current.color) params.set("color", current.color);
+    const qs = params.toString();
+    router.push(qs ? `/catalog?${qs}` : "/catalog");
   }
 
-  const hasFilters = Object.entries(current).some(
-    ([k, v]) => v && k !== "sort" && v !== "featured",
-  );
+  const hasFilters =
+    Boolean(current.minPrice) ||
+    Boolean(current.maxPrice) ||
+    Boolean(current.minCarat) ||
+    Boolean(current.maxCarat) ||
+    (Boolean(current.sort) && current.sort !== "featured");
 
   const inputClass =
     "w-full border border-border bg-surface px-3 py-2 text-sm text-foreground focus:border-foreground/30 focus:outline-none";
 
   return (
     <div className="space-y-6">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-        <input
-          type="search"
-          placeholder="Search gemstones..."
-          defaultValue={current.search}
-          onChange={(e) => updateParams("search", e.target.value)}
-          className="w-full border border-border bg-surface py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted focus:border-foreground/30 focus:outline-none"
-        />
-      </div>
-
       {hasFilters && (
         <button
           type="button"
@@ -75,38 +67,6 @@ export function CatalogFilters({ categories, colors, shapes, origins }: CatalogF
           <X className="h-3 w-3" /> Clear filters
         </button>
       )}
-
-      <FilterGroup title="Category">
-        <FilterPills
-          options={[{ value: "", label: "All" }, ...categories.map((c) => ({ value: c, label: c }))]}
-          current={current.category}
-          onChange={(v) => updateParams("category", v)}
-        />
-      </FilterGroup>
-
-      <FilterGroup title="Color">
-        <FilterPills
-          options={[{ value: "", label: "All" }, ...colors.map((c) => ({ value: c, label: c }))]}
-          current={current.color}
-          onChange={(v) => updateParams("color", v)}
-        />
-      </FilterGroup>
-
-      <FilterGroup title="Shape">
-        <FilterPills
-          options={[{ value: "", label: "All" }, ...shapes.map((s) => ({ value: s, label: s }))]}
-          current={current.shape}
-          onChange={(v) => updateParams("shape", v)}
-        />
-      </FilterGroup>
-
-      <FilterGroup title="Origin">
-        <FilterPills
-          options={[{ value: "", label: "All" }, ...origins.map((o) => ({ value: o, label: o }))]}
-          current={current.origin}
-          onChange={(v) => updateParams("origin", v)}
-        />
-      </FilterGroup>
 
       <FilterGroup title="Price (USD)">
         <div className="grid grid-cols-2 gap-2">
@@ -170,36 +130,6 @@ function FilterGroup({ title, children }: { title: string; children: React.React
     <div>
       <h3 className="mb-3 text-xs font-medium uppercase tracking-[0.15em] text-muted">{title}</h3>
       {children}
-    </div>
-  );
-}
-
-function FilterPills({
-  options,
-  current,
-  onChange,
-}: {
-  options: { value: string; label: string }[];
-  current: string;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((opt) => (
-        <button
-          key={opt.value || "all"}
-          type="button"
-          onClick={() => onChange(opt.value)}
-          className={cn(
-            "border px-3 py-1.5 text-[11px] uppercase tracking-wider transition-colors",
-            current === opt.value
-              ? "border-primary bg-primary text-white"
-              : "border-border text-muted hover:border-primary/40 hover:text-primary",
-          )}
-        >
-          {opt.label}
-        </button>
-      ))}
     </div>
   );
 }

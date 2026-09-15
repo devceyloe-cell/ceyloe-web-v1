@@ -30,6 +30,8 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
     if (result.ok) {
       setCartStatus("success");
       window.setTimeout(() => setCartStatus("idle"), 2500);
+    } else if (result.reason === "auth") {
+      window.location.href = `/login?next=${encodeURIComponent(`/products/${product.handle}`)}`;
     } else if (result.reason === "duplicate") {
       setCartStatus("duplicate");
       window.setTimeout(() => setCartStatus("idle"), 2500);

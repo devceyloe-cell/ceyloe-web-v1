@@ -1,15 +1,24 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Calendar, Mail, MapPin, Phone, Trash2, Video } from "lucide-react";
+import {
+  Calendar,
+  Check,
+  CircleCheck,
+  Mail,
+  MapPin,
+  Phone,
+  Trash2,
+  Video,
+  X,
+} from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
 import type { Appointment, AppointmentStatus } from "@/types/appointment";
 
 const statusStyles: Record<AppointmentStatus, string> = {
   new: "bg-gold/15 text-gold",
-  confirmed: "bg-emerald-500/15 text-emerald-600",
+  confirmed: "bg-emerald-500/15 text-emerald-700",
   completed: "bg-surface-elevated text-muted",
   cancelled: "bg-red-500/10 text-red-500",
 };
@@ -63,49 +72,46 @@ export function AppointmentsDashboard({
   return (
     <>
       <AdminHeader title="Appointments" />
-      <div className="mx-auto max-w-5xl px-4 py-8">
-        <div className="mb-4">
-          <Link href="/admin" className="text-xs text-muted hover:text-gold">
-            ← Back to admin
-          </Link>
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        <div className="mb-8">
+          <p className="text-xs uppercase tracking-[0.2em] text-gold">Bookings</p>
+          <h1 className="mt-1 font-display text-3xl font-light tracking-tight">
+            Appointments
+          </h1>
+          <p className="mt-1 text-sm text-muted">
+            Requests from the Book an Appointment page
+            {newCount > 0 ? (
+              <span className="ml-2 rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold">
+                {newCount} new
+              </span>
+            ) : null}
+          </p>
         </div>
 
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-gold">Bookings</p>
-            <h1 className="font-display text-3xl font-light">Appointment requests</h1>
-            <p className="mt-1 text-sm text-muted">
-              Submissions from the Book an Appointment page
-              {newCount > 0 && (
-                <span className="ml-2 rounded bg-gold/15 px-2 py-0.5 text-gold">
-                  {newCount} new
-                </span>
-              )}
-            </p>
-          </div>
-        </div>
-
-        {!mongoConfigured && (
+        {!mongoConfigured ? (
           <div className="mb-8 border border-amber-500/40 bg-amber-500/10 p-4 text-sm">
             Set <code className="text-foreground">MONGODB_URI</code> to store appointment bookings.
           </div>
-        )}
+        ) : null}
 
         {initial.length === 0 ? (
-          <div className="border border-dashed border-border p-12 text-center">
+          <div className="border border-dashed border-border bg-surface/50 px-6 py-14 text-center">
             <Calendar className="mx-auto h-8 w-8 text-muted" />
-            <p className="mt-4 text-muted">No appointment requests yet.</p>
+            <p className="mt-3 text-sm text-muted">No appointment requests yet.</p>
           </div>
         ) : (
-          <ul className="space-y-4">
+          <ul className="space-y-3">
             {initial.map((appointment) => (
-              <li key={appointment.id} className="border border-border bg-surface p-5">
+              <li
+                key={appointment.id}
+                className="border border-border bg-surface p-5 transition hover:border-gold/40"
+              >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-3">
                       <h2 className="font-medium text-foreground">{appointment.name}</h2>
                       <span
-                        className={`rounded px-2 py-0.5 text-[10px] uppercase tracking-widest ${statusStyles[appointment.status]}`}
+                        className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${statusStyles[appointment.status]}`}
                       >
                         {appointment.status}
                       </span>
@@ -113,7 +119,7 @@ export function AppointmentsDashboard({
 
                     <a
                       href={`mailto:${appointment.email}`}
-                      className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted hover:text-gold"
+                      className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-muted hover:text-gold"
                     >
                       <Mail className="h-3.5 w-3.5" />
                       {appointment.email}
@@ -121,15 +127,17 @@ export function AppointmentsDashboard({
 
                     <div className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
                       <div>
-                        <p className="text-[10px] uppercase tracking-widest text-muted">Preferred date</p>
+                        <p className="text-[10px] uppercase tracking-[0.16em] text-muted">
+                          Preferred date
+                        </p>
                         <p className="mt-1 font-medium">{appointment.date}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] uppercase tracking-widest text-muted">Time</p>
+                        <p className="text-[10px] uppercase tracking-[0.16em] text-muted">Time</p>
                         <p className="mt-1 font-medium">{timeLabels[appointment.time]}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] uppercase tracking-widest text-muted">Type</p>
+                        <p className="text-[10px] uppercase tracking-[0.16em] text-muted">Type</p>
                         <p className="mt-1 inline-flex items-center gap-1.5 font-medium">
                           <TypeIcon type={appointment.type} />
                           {typeLabels[appointment.type]}
@@ -137,11 +145,11 @@ export function AppointmentsDashboard({
                       </div>
                     </div>
 
-                    {appointment.notes && (
+                    {appointment.notes ? (
                       <p className="mt-4 border-l-2 border-gold/40 pl-3 text-sm leading-relaxed text-muted">
                         {appointment.notes}
                       </p>
-                    )}
+                    ) : null}
 
                     <p className="mt-3 text-xs text-muted">
                       Received {new Date(appointment.createdAt).toLocaleString()}
@@ -149,40 +157,47 @@ export function AppointmentsDashboard({
                   </div>
 
                   <div className="flex flex-col gap-2 sm:items-end">
-                    {appointment.status === "new" && (
+                    {appointment.status === "new" ? (
                       <Button
                         type="button"
                         size="sm"
+                        className="inline-flex items-center gap-1.5"
                         onClick={() => updateStatus(appointment.id, "confirmed")}
                       >
-                        Mark confirmed
+                        <Check className="h-3.5 w-3.5" />
+                        Confirm
                       </Button>
-                    )}
-                    {appointment.status === "confirmed" && (
+                    ) : null}
+                    {appointment.status === "confirmed" ? (
                       <Button
                         type="button"
                         size="sm"
                         variant="secondary"
+                        className="inline-flex items-center gap-1.5"
                         onClick={() => updateStatus(appointment.id, "completed")}
                       >
-                        Mark completed
+                        <CircleCheck className="h-3.5 w-3.5" />
+                        Complete
                       </Button>
-                    )}
-                    {appointment.status !== "cancelled" && appointment.status !== "completed" && (
+                    ) : null}
+                    {appointment.status !== "cancelled" &&
+                    appointment.status !== "completed" ? (
                       <Button
                         type="button"
                         size="sm"
                         variant="ghost"
+                        className="inline-flex items-center gap-1.5"
                         onClick={() => updateStatus(appointment.id, "cancelled")}
                       >
+                        <X className="h-3.5 w-3.5" />
                         Cancel
                       </Button>
-                    )}
+                    ) : null}
                     <Button
                       type="button"
                       size="sm"
                       variant="ghost"
-                      className="text-red-400"
+                      className="inline-flex items-center gap-1.5 text-red-400 hover:text-red-300"
                       onClick={() => remove(appointment.id)}
                     >
                       <Trash2 className="h-3.5 w-3.5" />

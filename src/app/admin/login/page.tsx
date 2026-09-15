@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
+/** Admin sign-in only — accounts are created with scripts/create-admin.mjs */
 export default function AdminLoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -26,7 +27,7 @@ export default function AdminLoginPage() {
       router.push("/admin");
       router.refresh();
     } else {
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       setError(data.error || "Login failed");
     }
 
@@ -38,7 +39,9 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md border border-border bg-surface p-8">
         <p className="text-xs uppercase tracking-[0.2em] text-gold">Ceyloe Admin</p>
         <h1 className="mt-2 font-display text-3xl font-light">Sign in</h1>
-        <p className="mt-2 text-sm text-muted">Manage gems, pages, and content</p>
+        <p className="mt-2 text-sm text-muted">
+          Admin accounts are created manually. Contact your site owner if you need access.
+        </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <div>

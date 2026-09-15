@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "cdn.sanity.io",
       },
+      {
+        protocol: "https",
+        hostname: "ceyloe.com",
+        pathname: "/wp-content/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.ceyloe.com",
+        pathname: "/wp-content/uploads/**",
+      },
     ],
   },
 };

@@ -1,15 +1,32 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, ExternalLink } from "lucide-react";
+import {
+  Calendar,
+  ExternalLink,
+  FileText,
+  Gem,
+  LayoutDashboard,
+  LogOut,
+  Users,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type AdminUser = {
   username: string;
   role: string;
 };
+
+const navItems = [
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/products", label: "Products", icon: Gem },
+  { href: "/admin/appointments", label: "Appointments", icon: Calendar },
+  { href: "/admin/users", label: "Users", icon: Users },
+];
 
 function formatRole(role: string) {
   switch (role) {
@@ -26,6 +43,7 @@ function initials(username: string) {
 
 export function AdminHeader({ title }: { title?: string }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<AdminUser | null>(null);
 
   useEffect(() => {
@@ -44,46 +62,49 @@ export function AdminHeader({ title }: { title?: string }) {
   }
 
   return (
-    <header className="border-b border-border bg-surface">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4">
-        <div className="flex min-w-0 items-center gap-4">
-          <Link href="/admin" className="shrink-0 text-xs uppercase tracking-[0.2em] text-gold">
-            Ceyloe Admin
+    <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <Link href="/admin" className="shrink-0">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">
+              Ceyloe
+            </span>
+            <span className="ml-1.5 text-[11px] uppercase tracking-[0.14em] text-muted">Admin</span>
           </Link>
-          {title && (
+          {title ? (
             <>
               <span className="hidden h-4 w-px bg-border sm:block" aria-hidden />
-              <span className="truncate text-sm text-muted">{title}</span>
+              <span className="hidden truncate text-sm text-muted sm:inline">{title}</span>
             </>
-          )}
+          ) : null}
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs text-muted transition hover:text-gold"
+            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-xs text-muted transition hover:bg-background hover:text-gold"
             target="_blank"
           >
             <ExternalLink className="h-3.5 w-3.5" />
-            View site
+            <span className="hidden sm:inline">View site</span>
           </Link>
 
-          {user && (
-            <div className="flex items-center gap-3 border border-border bg-background px-3 py-2">
+          {user ? (
+            <div className="hidden items-center gap-2.5 rounded-md border border-border bg-background px-2.5 py-1.5 md:flex">
               <div
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-semibold uppercase tracking-wide text-gold"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold/15 text-[10px] font-semibold uppercase tracking-wide text-gold"
                 aria-hidden
               >
                 {initials(user.username)}
               </div>
               <div className="min-w-0 leading-tight">
                 <p className="truncate text-sm font-medium text-foreground">{user.username}</p>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-muted">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-muted">
                   {formatRole(user.role)}
                 </p>
               </div>
             </div>
-          )}
+          ) : null}
 
           <Button
             type="button"
@@ -93,10 +114,48 @@ export function AdminHeader({ title }: { title?: string }) {
             className="inline-flex items-center gap-1.5"
           >
             <LogOut className="h-3.5 w-3.5" />
-            Sign out
+            <span className="hidden sm:inline">Sign out</span>
           </Button>
         </div>
       </div>
+
+      <nav className="border-t border-border/70 bg-background/60">
+        <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-2 py-1.5 sm:px-4">
+          {navItems.map((item) => {
+            const active = item.exact
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "inline-flex shrink-0 items-center gap-2 rounded-md px-3 py-2 text-sm transition",
+                  active
+                    ? "bg-gold/15 font-medium text-gold"
+                    : "text-muted hover:bg-surface hover:text-foreground",
+                )}
+              >
+                <Icon className="h-4 w-4" strokeWidth={1.75} />
+                {item.label}
+              </Link>
+            );
+          })}
+          <Link
+            href="/admin/pages/new"
+            className={cn(
+              "inline-flex shrink-0 items-center gap-2 rounded-md px-3 py-2 text-sm transition",
+              pathname.startsWith("/admin/pages")
+                ? "bg-gold/15 font-medium text-gold"
+                : "text-muted hover:bg-surface hover:text-foreground",
+            )}
+          >
+            <FileText className="h-4 w-4" strokeWidth={1.75} />
+            Pages
+          </Link>
+        </div>
+      </nav>
     </header>
   );
 }

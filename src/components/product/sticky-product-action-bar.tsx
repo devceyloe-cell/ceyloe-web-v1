@@ -49,7 +49,11 @@ export function StickyProductActionBar({
   async function handleAdd() {
     if (!product.inStock || adding || inCart) return;
     setAdding(true);
-    addItem(product);
+    const result = addItem(product);
+    if (result.reason === "auth") {
+      window.location.href = `/login?next=${encodeURIComponent(productUrl)}`;
+      return;
+    }
     window.setTimeout(() => setAdding(false), 400);
   }
 

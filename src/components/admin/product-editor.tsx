@@ -1,12 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  ArrowLeft,
+  ExternalLink,
+  Gem,
+  ImagePlus,
+  Save,
+  Star,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
-import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Button } from "@/components/ui/button";
+import { Price } from "@/components/ui/price";
 import { PRODUCT_CATEGORIES } from "@/config/product-categories";
 import type { Product } from "@/types";
+import { cn } from "@/lib/utils";
 
 function slugify(text: string) {
   return text
@@ -35,6 +48,18 @@ export function emptyProduct(): Product {
   };
 }
 
+const SPEC_FIELDS = [
+  ["carat", "Carat"],
+  ["color", "Color"],
+  ["clarity", "Clarity"],
+  ["cut", "Cut"],
+  ["shape", "Shape"],
+  ["origin", "Origin"],
+  ["treatment", "Treatment"],
+  ["certification", "Certification"],
+  ["certificateNumber", "Certificate number"],
+] as const;
+
 interface ProductEditorProps {
   initial?: Product;
 }
@@ -44,7 +69,16 @@ export function ProductEditor({ initial }: ProductEditorProps) {
   const isNew = !initial;
   const [product, setProduct] = useState<Product>(initial ?? emptyProduct());
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [error, setError] = useState("");
+
+  const gallery = useMemo(() => {
+    if (product.images.length > 0) return product.images;
+    return product.image ? [product.image] : [];
+  }, [product.image, product.images]);
+
+  const previewSrc = gallery[Math.min(activeIndex, Math.max(gallery.length - 1, 0))] || "";
 
   function updateField<K extends keyof Product>(key: K, value: Product[K]) {
     setProduct((p) => ({ ...p, [key]: value }));
@@ -57,31 +91,60 @@ export function ProductEditor({ initial }: ProductEditorProps) {
     }));
   }
 
-  function addGalleryImage(url: string) {
-    if (!url) return;
+  function setGallery(images: string[], primary?: string) {
     setProduct((p) => ({
       ...p,
-      images: [...p.images, url],
-      image: p.image || url,
+      images,
+      image: primary ?? images[0] ?? "",
     }));
   }
 
+  function addGalleryImage(url: string) {
+    if (!url || gallery.includes(url)) return;
+    const images = [...gallery, url];
+    setGallery(images, product.image || url);
+    setActiveIndex(images.length - 1);
+  }
+
   function removeGalleryImage(index: number) {
-    setProduct((p) => {
-      const images = p.images.filter((_, i) => i !== index);
-      return { ...p, images, image: images[0] || "" };
-    });
+    const images = gallery.filter((_, i) => i !== index);
+    setGallery(images);
+    setActiveIndex((i) => Math.max(0, Math.min(i, images.length - 1)));
+  }
+
+  function setPrimaryImage(index: number) {
+    const url = gallery[index];
+    if (!url) return;
+    const images = [url, ...gallery.filter((_, i) => i !== index)];
+    setGallery(images, url);
+    setActiveIndex(0);
+  }
+
+  async function uploadFile(file: File) {
+    setUploading(true);
+    setError("");
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+    const data = await res.json();
+    if (res.ok) {
+      addGalleryImage(data.url);
+    } else {
+      setError(data.error || "Upload failed");
+    }
+    setUploading(false);
   }
 
   async function handleSave() {
     setSaving(true);
     setError("");
 
+    const images = gallery;
     const payload = {
       ...product,
       handle: slugify(product.handle || product.title),
-      images: product.images.length > 0 ? product.images : product.image ? [product.image] : [],
-      image: product.image || product.images[0] || "",
+      images,
+      image: product.image || images[0] || "",
     };
 
     const res = await fetch(isNew ? "/api/admin/products" : `/api/admin/products/${product.id}`, {
@@ -116,190 +179,424 @@ export function ProductEditor({ initial }: ProductEditorProps) {
   }
 
   const inputClass =
-    "w-full border border-border bg-background px-3 py-2 text-sm focus:border-gold focus:outline-none";
+    "w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm outline-none ring-gold/30 transition focus:border-gold focus:ring-2";
+  const labelClass = "mb-1.5 block text-[11px] font-medium uppercase tracking-[0.16em] text-muted";
 
   return (
     <>
       <AdminHeader title={isNew ? "New product" : "Edit product"} />
-      <div className="mx-auto max-w-3xl px-4 py-8">
-        <div className="space-y-8">
-          <section className="space-y-4 border border-border bg-surface p-6">
-            <h2 className="text-xs uppercase tracking-widest text-gold">Basic info</h2>
 
-            <div>
-              <label className="mb-2 block text-xs uppercase tracking-widest text-muted">Title</label>
-              <input
-                type="text"
-                value={product.title}
-                onChange={(e) => {
-                  const title = e.target.value;
-                  setProduct((p) => ({
-                    ...p,
-                    title,
-                    handle: isNew || !p.handle ? slugify(title) : p.handle,
-                  }));
-                }}
-                className={inputClass}
-                required
-              />
+      <div className="border-b border-border bg-surface/80">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <Link
+              href="/admin/products"
+              className="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs text-muted transition hover:bg-background hover:text-gold"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Products
+            </Link>
+            <span className="hidden h-4 w-px bg-border sm:block" aria-hidden />
+            <div className="min-w-0">
+              <p className="truncate font-medium text-foreground">
+                {product.title || (isNew ? "New product" : "Untitled")}
+              </p>
+              <p className="truncate text-xs text-muted">
+                {product.handle ? `/products/${product.handle}` : "Set a title to generate the URL"}
+              </p>
             </div>
+          </div>
 
-            <div>
-              <label className="mb-2 block text-xs uppercase tracking-widest text-muted">URL handle</label>
-              <input
-                type="text"
-                value={product.handle}
-                onChange={(e) => updateField("handle", slugify(e.target.value))}
-                className={inputClass}
-                placeholder="natural-blue-sapphire-1-16ct"
-              />
-              <p className="mt-1 text-xs text-muted">Product page: /products/{product.handle || "..."}</p>
-            </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {!isNew && product.handle ? (
+              <a
+                href={`/products/${product.handle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-xs text-muted transition hover:bg-background hover:text-gold"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                View live
+              </a>
+            ) : null}
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => router.push("/admin/products")}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleSave}
+              disabled={saving}
+              className="inline-flex items-center gap-1.5"
+            >
+              <Save className="h-3.5 w-3.5" />
+              {saving ? "Saving…" : "Save"}
+            </Button>
+          </div>
+        </div>
+      </div>
 
-            <div>
-              <label className="mb-2 block text-xs uppercase tracking-widest text-muted">Description</label>
-              <textarea
-                value={product.description}
-                onChange={(e) => updateField("description", e.target.value)}
-                rows={4}
-                className={inputClass}
-              />
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div>
-                <label className="mb-2 block text-xs uppercase tracking-widest text-muted">Price (USD)</label>
-                <input
-                  type="number"
-                  min={0}
-                  step={1}
-                  value={product.price || ""}
-                  onChange={(e) => updateField("price", Number(e.target.value))}
-                  className={inputClass}
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs uppercase tracking-widest text-muted">Category</label>
-                <select
-                  value={product.category}
-                  onChange={(e) => updateField("category", e.target.value)}
-                  className={inputClass}
-                >
-                  {PRODUCT_CATEGORIES.map((cat) => (
-                    <option key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex flex-col justify-end gap-3 pt-6">
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={product.inStock}
-                    onChange={(e) => updateField("inStock", e.target.checked)}
+      <div className="mx-auto max-w-6xl px-4 py-8 pb-28">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+          {/* Media column */}
+          <section className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+            <div className="overflow-hidden border border-border bg-surface">
+              <div className="relative aspect-square bg-background">
+                {previewSrc ? (
+                  <Image
+                    src={previewSrc}
+                    alt={product.title || "Product preview"}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    priority
                   />
-                  In stock
-                </label>
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(product.featured)}
-                    onChange={(e) => updateField("featured", e.target.checked)}
-                  />
-                  Featured
-                </label>
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(product.isNew)}
-                    onChange={(e) => updateField("isNew", e.target.checked)}
-                  />
-                  New arrival
-                </label>
-              </div>
-            </div>
-          </section>
+                ) : (
+                  <div className="flex h-full flex-col items-center justify-center gap-3 text-muted">
+                    <Gem className="h-12 w-12" />
+                    <p className="text-sm">No images yet</p>
+                  </div>
+                )}
 
-          <section className="space-y-4 border border-border bg-surface p-6">
-            <h2 className="text-xs uppercase tracking-widest text-gold">Images</h2>
-
-            <ImageUploadField
-              label="Primary image"
-              value={product.image}
-              onChange={(url) => updateField("image", url)}
-            />
-
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-widest text-muted">Gallery</p>
-              {product.images.map((url, index) => (
-                <div key={`${url}-${index}`} className="flex items-center gap-2">
-                  <input type="text" value={url} readOnly className={`${inputClass} flex-1`} />
-                  <Button type="button" variant="ghost" size="sm" onClick={() => removeGalleryImage(index)}>
-                    Remove
-                  </Button>
+                <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+                  {product.inStock ? (
+                    <span className="rounded-full bg-emerald-600/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
+                      In stock
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-neutral-800/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
+                      Out of stock
+                    </span>
+                  )}
+                  {product.featured ? (
+                    <span className="rounded-full bg-gold/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
+                      Featured
+                    </span>
+                  ) : null}
                 </div>
-              ))}
-              <GalleryImageAdd onAdd={addGalleryImage} />
+
+                {product.price > 0 ? (
+                  <div className="absolute bottom-3 right-3 rounded-md bg-black/70 px-3 py-1.5 text-sm text-white backdrop-blur">
+                    <Price amount={product.price} />
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="border-t border-border p-4">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-gold">
+                      Gallery
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted">
+                      {gallery.length === 1 ? "1 image" : `${gallery.length} images`} · first is
+                      primary
+                    </p>
+                  </div>
+                  <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs transition hover:border-gold">
+                    <Upload className="h-3.5 w-3.5" />
+                    {uploading ? "Uploading…" : "Upload"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) await uploadFile(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {gallery.length > 0 ? (
+                  <ul className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+                    {gallery.map((url, index) => {
+                      const isPrimary = index === 0;
+                      const isActive = index === activeIndex;
+                      return (
+                        <li key={`${url}-${index}`} className="group/thumb relative">
+                          <button
+                            type="button"
+                            onClick={() => setActiveIndex(index)}
+                            className={cn(
+                              "relative aspect-square w-full overflow-hidden border bg-background transition",
+                              isActive ? "border-gold ring-2 ring-gold/30" : "border-border hover:border-gold/50",
+                            )}
+                          >
+                            <Image src={url} alt="" fill className="object-cover" sizes="96px" />
+                            {index === 0 ? (
+                              <span className="absolute left-1 top-1 rounded bg-gold px-1 py-0.5 text-[9px] font-semibold uppercase text-white">
+                                Main
+                              </span>
+                            ) : null}
+                          </button>
+                          <div className="absolute inset-x-0 bottom-0 flex justify-center gap-1 bg-black/55 p-1 opacity-0 transition group-hover/thumb:opacity-100">
+                            {!isPrimary ? (
+                              <button
+                                type="button"
+                                title="Set as primary"
+                                onClick={() => setPrimaryImage(index)}
+                                className="rounded bg-white/90 p-1 text-neutral-900 hover:bg-white"
+                              >
+                                <Star className="h-3 w-3" />
+                              </button>
+                            ) : null}
+                            <button
+                              type="button"
+                              title="Remove"
+                              onClick={() => removeGalleryImage(index)}
+                              className="rounded bg-white/90 p-1 text-red-600 hover:bg-white"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          </div>
+                        </li>
+                      );
+                    })}
+                    <li>
+                      <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-border text-muted transition hover:border-gold hover:text-gold">
+                        <ImagePlus className="h-5 w-5" />
+                        <span className="text-[10px] uppercase tracking-wider">Add</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={uploading}
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (file) await uploadFile(file);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    </li>
+                  </ul>
+                ) : (
+                  <label className="flex cursor-pointer flex-col items-center justify-center gap-2 border border-dashed border-border px-4 py-10 text-center transition hover:border-gold">
+                    <ImagePlus className="h-8 w-8 text-muted" />
+                    <p className="text-sm text-muted">Drop or upload product photos</p>
+                    <span className="text-xs text-gold">Choose files</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) await uploadFile(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                )}
+
+                <GalleryUrlAdd onAdd={addGalleryImage} />
+              </div>
             </div>
           </section>
 
-          <section className="space-y-4 border border-border bg-surface p-6">
-            <h2 className="text-xs uppercase tracking-widest text-gold">Gemstone specs</h2>
+          {/* Form column */}
+          <div className="space-y-5">
+            <section className="border border-border bg-surface p-5 sm:p-6">
+              <h2 className="text-[11px] font-medium uppercase tracking-[0.18em] text-gold">
+                Basic info
+              </h2>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              {(
-                [
-                  ["carat", "Carat"],
-                  ["color", "Color"],
-                  ["clarity", "Clarity"],
-                  ["cut", "Cut"],
-                  ["shape", "Shape"],
-                  ["origin", "Origin"],
-                  ["treatment", "Treatment"],
-                  ["certification", "Certification"],
-                  ["certificateNumber", "Certificate number"],
-                ] as const
-              ).map(([key, label]) => (
-                <div key={key}>
-                  <label className="mb-2 block text-xs uppercase tracking-widest text-muted">{label}</label>
+              <div className="mt-4 space-y-4">
+                <div>
+                  <label className={labelClass}>Title</label>
                   <input
                     type="text"
-                    value={product.specs[key] ?? ""}
-                    onChange={(e) => updateSpec(key, e.target.value)}
+                    value={product.title}
+                    onChange={(e) => {
+                      const title = e.target.value;
+                      setProduct((p) => ({
+                        ...p,
+                        title,
+                        handle: isNew || !p.handle ? slugify(title) : p.handle,
+                      }));
+                    }}
+                    className={inputClass}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>URL handle</label>
+                  <div className="flex overflow-hidden rounded-md border border-border focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/30">
+                    <span className="hidden shrink-0 bg-background px-3 py-2.5 text-xs text-muted sm:inline">
+                      /products/
+                    </span>
+                    <input
+                      type="text"
+                      value={product.handle}
+                      onChange={(e) => updateField("handle", slugify(e.target.value))}
+                      className="min-w-0 flex-1 border-0 bg-background px-3 py-2.5 text-sm outline-none"
+                      placeholder="natural-blue-sapphire-1-16ct"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className={labelClass}>Description</label>
+                  <textarea
+                    value={product.description}
+                    onChange={(e) => updateField("description", e.target.value)}
+                    rows={5}
                     className={inputClass}
                   />
                 </div>
-              ))}
-            </div>
 
-            <div>
-              <label className="mb-2 block text-xs uppercase tracking-widest text-muted">
-                Certification URL (optional)
-              </label>
-              <input
-                type="text"
-                value={product.certificationUrl ?? ""}
-                onChange={(e) => updateField("certificationUrl", e.target.value)}
-                className={inputClass}
-              />
-            </div>
-          </section>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className={labelClass}>Price (USD)</label>
+                    <input
+                      type="number"
+                      min={0}
+                      step={1}
+                      value={product.price || ""}
+                      onChange={(e) => updateField("price", Number(e.target.value))}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Category</label>
+                    <select
+                      value={product.category}
+                      onChange={(e) => updateField("category", e.target.value)}
+                      className={inputClass}
+                    >
+                      {PRODUCT_CATEGORIES.map((cat) => (
+                        <option key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+                <div className="grid gap-2 sm:grid-cols-3">
+                  {(
+                    [
+                      ["inStock", "In stock", product.inStock],
+                      ["featured", "Featured", Boolean(product.featured)],
+                      ["isNew", "New arrival", Boolean(product.isNew)],
+                    ] as const
+                  ).map(([key, label, checked]) => (
+                    <label
+                      key={key}
+                      className={cn(
+                        "flex cursor-pointer items-center gap-2.5 rounded-md border px-3 py-3 text-sm transition",
+                        checked
+                          ? "border-gold/50 bg-gold/10 text-foreground"
+                          : "border-border bg-background text-muted hover:border-gold/40",
+                      )}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={(e) => updateField(key, e.target.checked)}
+                        className="accent-[var(--gold,#b8953a)]"
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </section>
 
-          <div className="flex flex-wrap gap-3">
-            <Button type="button" onClick={handleSave} disabled={saving}>
-              {saving ? "Saving..." : "Save product"}
-            </Button>
-            <Button type="button" variant="secondary" onClick={() => router.push("/admin/products")}>
+            <section className="border border-border bg-surface p-5 sm:p-6">
+              <h2 className="text-[11px] font-medium uppercase tracking-[0.18em] text-gold">
+                Gemstone specs
+              </h2>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                {SPEC_FIELDS.map(([key, label]) => (
+                  <div key={key}>
+                    <label className={labelClass}>{label}</label>
+                    <input
+                      type="text"
+                      value={product.specs[key] ?? ""}
+                      onChange={(e) => updateSpec(key, e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4">
+                <label className={labelClass}>Certification URL</label>
+                <input
+                  type="text"
+                  value={product.certificationUrl ?? ""}
+                  onChange={(e) => updateField("certificationUrl", e.target.value)}
+                  className={inputClass}
+                  placeholder="https://"
+                />
+              </div>
+            </section>
+
+            {error ? <p className="text-sm text-red-500">{error}</p> : null}
+
+            {!isNew ? (
+              <div className="flex items-center justify-between gap-3 border border-red-500/20 bg-red-500/5 px-4 py-3">
+                <div>
+                  <p className="text-sm font-medium text-foreground">Delete product</p>
+                  <p className="text-xs text-muted">Removes this gem from the catalog permanently.</p>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDelete}
+                  className="inline-flex items-center gap-1.5 text-red-500 hover:text-red-400"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Delete
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface/95 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
+          <p className="hidden truncate text-sm text-muted sm:block">
+            {product.title || "Untitled product"}
+            {product.price > 0 ? (
+              <>
+                {" · "}
+                <span className="text-gold">
+                  <Price amount={product.price} />
+                </span>
+              </>
+            ) : null}
+          </p>
+          <div className="ml-auto flex gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => router.push("/admin/products")}
+            >
               Cancel
             </Button>
-            {!isNew && (
-              <Button type="button" variant="ghost" onClick={handleDelete} className="text-red-400">
-                Delete
-              </Button>
-            )}
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleSave}
+              disabled={saving}
+              className="inline-flex items-center gap-1.5"
+            >
+              <Save className="h-3.5 w-3.5" />
+              {saving ? "Saving…" : "Save product"}
+            </Button>
           </div>
         </div>
       </div>
@@ -307,41 +604,29 @@ export function ProductEditor({ initial }: ProductEditorProps) {
   );
 }
 
-function GalleryImageAdd({ onAdd }: { onAdd: (url: string) => void }) {
+function GalleryUrlAdd({ onAdd }: { onAdd: (url: string) => void }) {
   const [url, setUrl] = useState("");
 
   return (
-    <div className="flex gap-2">
+    <div className="mt-3 flex gap-2">
       <input
         type="text"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
-        placeholder="Image URL after upload"
-        className="flex-1 border border-border bg-background px-3 py-2 text-sm focus:border-gold focus:outline-none"
+        placeholder="Or paste image URL"
+        className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none ring-gold/30 focus:border-gold focus:ring-2"
       />
-      <Button type="button" variant="secondary" size="sm" onClick={() => { onAdd(url); setUrl(""); }}>
-        Add to gallery
+      <Button
+        type="button"
+        variant="secondary"
+        size="sm"
+        onClick={() => {
+          onAdd(url.trim());
+          setUrl("");
+        }}
+      >
+        Add
       </Button>
-      <label>
-        <span className="inline-flex cursor-pointer items-center border border-border px-3 py-2 text-xs hover:border-gold">
-          Upload
-        </span>
-        <input
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={async (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            const formData = new FormData();
-            formData.append("file", file);
-            const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-            const data = await res.json();
-            if (res.ok) onAdd(data.url);
-            e.target.value = "";
-          }}
-        />
-      </label>
     </div>
   );
 }
