@@ -9,6 +9,7 @@ import {
   ExternalLink,
   FileText,
   Gem,
+  Images,
   LayoutDashboard,
   LogOut,
   Users,
@@ -24,6 +25,7 @@ type AdminUser = {
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/products", label: "Products", icon: Gem },
+  { href: "/admin/collection", label: "Collection", icon: Images },
   { href: "/admin/appointments", label: "Appointments", icon: Calendar },
   { href: "/admin/users", label: "Users", icon: Users },
 ];

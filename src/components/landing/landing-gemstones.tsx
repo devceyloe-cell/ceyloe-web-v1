@@ -2,47 +2,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { images } from "@/config/images";
-import { stitchImages } from "@/config/stitch-images";
+import type { HomepageCollection } from "@/lib/homepage/collection";
 
-const gemstones = [
-  {
-    name: "Blue Sapphire",
-    href: "/catalog?category=sapphires&color=blue",
-    image: images.categories.sapphires,
-  },
-  {
-    name: "Padparadscha Sapphire",
-    href: "/catalog?category=sapphires&color=padparadscha",
-    image: stitchImages.sapphire,
-  },
-  {
-    name: "Pink Sapphire",
-    href: "/catalog?category=sapphires&color=pink",
-    image: stitchImages.ruby,
-  },
-  { name: "Spinel", href: "/catalog?category=spinel", image: images.categories.spinel },
-  { name: "Garnet", href: "/catalog?category=garnet", image: images.categories.garnet },
-  { name: "Fine Gemstones", href: "/gemstones", image: stitchImages.allGems },
-];
-
-export function LandingGemstones() {
+export function LandingGemstones({ collection }: { collection: HomepageCollection }) {
   return (
-    <section className="bg-[#141414] py-10 text-white md:py-12">
+    <section id="collection" className="bg-[#141414] py-10 text-white md:py-12">
       <Container>
         <div className="mb-8 px-1 text-center md:mb-12">
           <p className="font-manrope text-[10px] font-semibold uppercase tracking-[0.28em] text-rich-gold">
-            Our Collection
+            {collection.eyebrow}
           </p>
           <h2 className="font-caslon mt-3 text-[1.65rem] font-normal leading-snug !text-white sm:text-2xl md:text-3xl">
-            Discover Our Finest Gems
+            {collection.title}
           </h2>
         </div>
 
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-6 lg:gap-x-6 lg:gap-y-8">
-          {gemstones.map((gem) => (
+          {collection.items.map((gem) => (
             <Link
-              key={gem.name}
+              key={gem.id}
               href={gem.href}
               className="group flex min-w-0 flex-col items-center text-center"
             >
@@ -59,7 +37,7 @@ export function LandingGemstones() {
                 {gem.name}
               </h3>
               <span className="font-manrope mt-2 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-rich-gold">
-                Explore
+                {collection.exploreLabel}
                 <ArrowRight className="h-2.5 w-2.5 transition-transform group-hover:translate-x-0.5" />
               </span>
             </Link>

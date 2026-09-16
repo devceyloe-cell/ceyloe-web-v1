@@ -8,6 +8,7 @@ import {
   FilePlus2,
   FileText,
   Gem,
+  Images,
   Pencil,
   Users,
 } from "lucide-react";
@@ -26,6 +27,7 @@ type DashboardStats = {
   newAppointments: number;
   users: number;
   pages: number;
+  collectionItems: number;
 };
 
 const modules = [
@@ -36,6 +38,14 @@ const modules = [
     icon: Gem,
     statKey: "products" as const,
     accent: "bg-sky-500/10 text-sky-700",
+  },
+  {
+    href: "/admin/collection",
+    label: "Collection",
+    description: "Homepage circular gems — images, captions, and links",
+    icon: Images,
+    statKey: "collectionItems" as const,
+    accent: "bg-rose-500/10 text-rose-700",
   },
   {
     href: "/admin/appointments",
@@ -102,6 +112,12 @@ export function AdminDashboard({
                 Add product
               </Button>
             </Link>
+            <Link href="/admin/collection">
+              <Button size="sm" variant="secondary" className="inline-flex items-center gap-1.5">
+                <Images className="h-3.5 w-3.5" />
+                Edit collection
+              </Button>
+            </Link>
             <Link href="/admin/pages/new">
               <Button size="sm" variant="secondary" className="inline-flex items-center gap-1.5">
                 <FilePlus2 className="h-3.5 w-3.5" />
@@ -111,12 +127,14 @@ export function AdminDashboard({
           </div>
         </div>
 
-        <section className="mb-10 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="mb-10 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {modules.map((mod) => {
             const Icon = mod.icon;
             const count = stats[mod.statKey];
             const badge =
-              mod.badgeKey && stats[mod.badgeKey] > 0 ? stats[mod.badgeKey] : null;
+              "badgeKey" in mod && mod.badgeKey && stats[mod.badgeKey] > 0
+                ? stats[mod.badgeKey]
+                : null;
             return (
               <Link
                 key={mod.href}

@@ -4,16 +4,18 @@ import { isMongoConfigured } from "@/config/env";
 import { getAllProductsFromDb } from "@/lib/mongodb/products";
 import { getAllAppointments } from "@/lib/mongodb/appointments";
 import { getAllUsers } from "@/lib/mongodb/users";
+import { getHomepageCollection } from "@/lib/mongodb/homepage-collection";
 import { AdminDashboard } from "@/components/admin/admin-dashboard";
 
 export default async function AdminHomePage() {
   const mongo = isMongoConfigured();
-  const [pages, session, products, appointments, users] = await Promise.all([
+  const [pages, session, products, appointments, users, collection] = await Promise.all([
     getAllPages(true),
     getAdminSession(),
     mongo ? getAllProductsFromDb() : Promise.resolve([]),
     mongo ? getAllAppointments() : Promise.resolve([]),
     mongo ? getAllUsers() : Promise.resolve([]),
+    getHomepageCollection(),
   ]);
 
   const newAppointments = appointments.filter((a) => a.status === "new").length;
@@ -28,6 +30,7 @@ export default async function AdminHomePage() {
         newAppointments,
         users: users.length,
         pages: pages.length,
+        collectionItems: collection.items.length,
       }}
     />
   );
