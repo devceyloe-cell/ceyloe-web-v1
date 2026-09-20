@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Maximize2, Play, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Images, Maximize2, Play, RotateCw, X } from "lucide-react";
 import { ProductVideo } from "@/components/product/product-video";
+import { Product360Viewer } from "@/components/product/product-360-viewer";
 import { cn } from "@/lib/utils";
 
 interface ProductMediaGalleryProps {
@@ -13,7 +14,7 @@ interface ProductMediaGalleryProps {
   poster?: string;
 }
 
-type MediaMode = "photo" | "video";
+type MediaTab = "photos" | "360" | "video";
 
 export function ProductMediaGallery({
   images,
@@ -23,22 +24,23 @@ export function ProductMediaGallery({
 }: ProductMediaGalleryProps) {
   const galleryImages = images.length > 0 ? images : poster ? [poster] : [];
   const [activeIndex, setActiveIndex] = useState(0);
-  const [mode, setMode] = useState<MediaMode>("photo");
+  const [tab, setTab] = useState<MediaTab>("photos");
   const [fullscreen, setFullscreen] = useState(false);
 
   const hasVideo = Boolean(videoUrl);
+  const has360 = galleryImages.length >= 2;
   const videoPoster = poster ?? galleryImages[0];
   const safeIndex = Math.min(activeIndex, Math.max(galleryImages.length - 1, 0));
 
   const showPrev = useCallback(() => {
     if (galleryImages.length < 2) return;
-    setMode("photo");
+    setTab("photos");
     setActiveIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
   }, [galleryImages.length]);
 
   const showNext = useCallback(() => {
     if (galleryImages.length < 2) return;
-    setMode("photo");
+    setTab("photos");
     setActiveIndex((prev) => (prev + 1) % galleryImages.length);
   }, [galleryImages.length]);
 
@@ -61,11 +63,50 @@ export function ProductMediaGallery({
     );
   }
 
+  const tabs: { id: MediaTab; label: string; icon: typeof RotateCw; show: boolean }[] = [
+    { id: "photos", label: "Photos", icon: Images, show: true },
+    { id: "360", label: "360°", icon: RotateCw, show: has360 },
+    { id: "video", label: "Video", icon: Play, show: hasVideo },
+  ];
+
   return (
     <>
       <div className="space-y-3">
+        <div
+          role="tablist"
+          aria-label="Product media"
+          className="flex border border-border bg-surface-elevated"
+        >
+          {tabs
+            .filter((t) => t.show)
+            .map((t) => {
+              const Icon = t.icon;
+              const active = tab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setTab(t.id)}
+                  className={cn(
+                    "inline-flex flex-1 items-center justify-center gap-2 px-3 py-2.5 font-manrope text-[11px] font-bold uppercase tracking-[0.14em] transition",
+                    active
+                      ? "bg-deep-navy text-white"
+                      : "bg-transparent text-muted hover:bg-white hover:text-deep-navy",
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {t.label}
+                </button>
+              );
+            })}
+        </div>
+
         <div className="relative aspect-square overflow-hidden border border-border bg-surface-elevated">
-          {mode === "video" && hasVideo ? (
+          {tab === "360" && has360 ? (
+            <Product360Viewer images={galleryImages} title={title} />
+          ) : tab === "video" && hasVideo ? (
             <ProductVideo
               variant="gallery"
               videoUrl={videoUrl}
@@ -90,84 +131,68 @@ export function ProductMediaGallery({
               >
                 <Maximize2 className="h-4 w-4" />
               </button>
-            </>
-          )}
 
-          {mode === "photo" && galleryImages.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={showPrev}
-                className="absolute top-1/2 left-2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-black/40 text-white/90 transition-colors hover:bg-black/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold"
-                aria-label="Previous image"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                type="button"
-                onClick={showNext}
-                className="absolute top-1/2 right-2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-black/40 text-white/90 transition-colors hover:bg-black/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold"
-                aria-label="Next image"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
+              {galleryImages.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={showPrev}
+                    className="absolute top-1/2 left-2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-black/40 text-white/90 transition-colors hover:bg-black/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={showNext}
+                    className="absolute top-1/2 right-2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-black/40 text-white/90 transition-colors hover:bg-black/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                </>
+              )}
             </>
           )}
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {galleryImages.map((image, index) => {
-            const active = mode === "photo" && index === safeIndex;
-            return (
-              <button
-                key={`${image}-${index}`}
-                type="button"
-                onClick={() => {
-                  setMode("photo");
-                  setActiveIndex(index);
-                }}
-                className={cn(
-                  "relative h-[72px] w-[72px] shrink-0 overflow-hidden border bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold",
-                  active ? "border-rich-gold" : "border-border hover:border-rich-gold/50",
-                )}
-                aria-label={`View image ${index + 1}`}
-                aria-current={active ? "true" : undefined}
-              >
-                <Image src={image} alt="" fill className="object-cover object-center" sizes="72px" />
-              </button>
-            );
-          })}
+        {tab === "photos" && (
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {galleryImages.map((image, index) => {
+              const active = index === safeIndex;
+              return (
+                <button
+                  key={`${image}-${index}`}
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  className={cn(
+                    "relative h-[72px] w-[72px] shrink-0 overflow-hidden border bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold",
+                    active ? "border-rich-gold" : "border-border hover:border-rich-gold/50",
+                  )}
+                  aria-label={`View image ${index + 1}`}
+                  aria-current={active ? "true" : undefined}
+                >
+                  <Image
+                    src={image}
+                    alt=""
+                    fill
+                    className="object-cover object-center"
+                    sizes="72px"
+                  />
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-          {hasVideo && (
-            <button
-              type="button"
-              onClick={() => setMode("video")}
-              className={cn(
-                "relative flex h-[72px] w-[72px] shrink-0 flex-col items-center justify-center overflow-hidden border bg-[#1a1a1a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold",
-                mode === "video" ? "border-rich-gold" : "border-border hover:border-rich-gold/50",
-              )}
-              aria-label="Play product video"
-              aria-current={mode === "video" ? "true" : undefined}
-            >
-              {videoPoster && (
-                <Image
-                  src={videoPoster}
-                  alt=""
-                  fill
-                  className="object-cover object-center opacity-50"
-                  sizes="72px"
-                />
-              )}
-              <Play className="relative z-[1] h-5 w-5 text-white" fill="currentColor" />
-              <span className="relative z-[1] mt-1 font-manrope text-[8px] font-semibold tracking-[0.14em] text-white uppercase">
-                Video
-              </span>
-            </button>
-          )}
-        </div>
+        {tab === "360" && has360 && (
+          <p className="font-manrope text-center text-xs text-muted">
+            Drag left or right to spin through all {galleryImages.length} photos
+          </p>
+        )}
       </div>
 
-      {fullscreen && (
+      {fullscreen && tab === "photos" && (
         <div
           className="fixed inset-0 z-[80] flex items-center justify-center bg-black/95 p-4"
           role="dialog"

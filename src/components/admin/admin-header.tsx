@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Calendar,
+  Contact,
   ExternalLink,
   FileText,
   Gem,
@@ -26,6 +27,7 @@ const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/products", label: "Products", icon: Gem },
   { href: "/admin/collection", label: "Collection", icon: Images },
+  { href: "/admin/team", label: "Our Team", icon: Contact },
   { href: "/admin/appointments", label: "Appointments", icon: Calendar },
   { href: "/admin/users", label: "Users", icon: Users },
 ];

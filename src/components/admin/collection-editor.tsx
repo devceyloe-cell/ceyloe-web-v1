@@ -33,9 +33,15 @@ function newItem(): HomepageCollectionItem {
 interface CollectionEditorProps {
   initial: HomepageCollection;
   mongoConfigured: boolean;
+  /** When true, skip page header/chrome (used inside Collection admin tabs). */
+  embedded?: boolean;
 }
 
-export function CollectionEditor({ initial, mongoConfigured }: CollectionEditorProps) {
+export function CollectionEditor({
+  initial,
+  mongoConfigured,
+  embedded = false,
+}: CollectionEditorProps) {
   const router = useRouter();
   const [collection, setCollection] = useState<HomepageCollection>(initial);
   const [saving, setSaving] = useState(false);
@@ -101,28 +107,30 @@ export function CollectionEditor({ initial, mongoConfigured }: CollectionEditorP
 
   return (
     <>
-      <AdminHeader title="Homepage collection" />
-      <div className="mx-auto max-w-4xl px-4 py-8 pb-28">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-gold">Homepage</p>
-            <h1 className="mt-1 font-display text-3xl font-light tracking-tight">
-              Our Collection
-            </h1>
-            <p className="mt-1 text-sm text-muted">
-              Circular gem images, captions, and links on the homepage
-            </p>
+      {!embedded ? <AdminHeader title="Homepage collection" /> : null}
+      <div className={embedded ? "pb-28" : "mx-auto max-w-4xl px-4 py-8 pb-28"}>
+        {!embedded ? (
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-gold">Homepage</p>
+              <h1 className="mt-1 font-display text-3xl font-light tracking-tight">
+                Our Collection
+              </h1>
+              <p className="mt-1 text-sm text-muted">
+                Circular gem images, captions, and links on the homepage
+              </p>
+            </div>
+            <a
+              href="/#collection"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-gold"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              View on site
+            </a>
           </div>
-          <a
-            href="/#collection"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-gold"
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-            View on site
-          </a>
-        </div>
+        ) : null}
 
         {!mongoConfigured ? (
           <div className="mb-6 border border-amber-500/40 bg-amber-500/10 p-4 text-sm">
@@ -277,9 +285,13 @@ export function CollectionEditor({ initial, mongoConfigured }: CollectionEditorP
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface/95 backdrop-blur">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-3">
-          <Link href="/admin" className="text-sm text-muted hover:text-gold">
-            Back to dashboard
-          </Link>
+          {!embedded ? (
+            <Link href="/admin" className="text-sm text-muted hover:text-gold">
+              Back to dashboard
+            </Link>
+          ) : (
+            <span />
+          )}
           <Button
             type="button"
             size="sm"

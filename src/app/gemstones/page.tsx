@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { CategoryCardGrid } from "@/components/gemstones/category-card-grid";
 import { GemstonesLandingHero } from "@/components/gemstones/gemstones-landing-hero";
-import { gemstoneLandingCategories } from "@/data/gemstone-categories";
+import { getNaturalGemstones } from "@/lib/mongodb/natural-gemstones";
 
 export const metadata: Metadata = {
   title: "Natural Gemstones",
@@ -11,7 +11,11 @@ export const metadata: Metadata = {
     "Explore our carefully curated collection of natural gemstones, sourced from Sri Lanka and selected for their beauty, rarity and quality.",
 };
 
-export default function GemstonesLandingPage() {
+export const dynamic = "force-dynamic";
+
+export default async function GemstonesLandingPage() {
+  const section = await getNaturalGemstones();
+
   return (
     <div className="bg-white">
       <GemstonesLandingHero />
@@ -19,13 +23,13 @@ export default function GemstonesLandingPage() {
       <Container id="natural-gemstones" className="scroll-mt-28 py-12 md:py-16">
         <SectionHeading
           titleId="natural-gemstones-heading"
-          eyebrow="Collection"
-          title="Natural Gemstones"
-          description="Explore our carefully curated collection of natural gemstones, sourced from Sri Lanka and selected for their beauty, rarity and quality. Whether you're searching for a loose gemstone or planning a bespoke jewellery piece, begin your journey here."
+          eyebrow={section.eyebrow}
+          title={section.title}
+          description={section.description}
           align="left"
         />
 
-        <CategoryCardGrid categories={gemstoneLandingCategories} />
+        <CategoryCardGrid categories={section.categories} />
       </Container>
     </div>
   );

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Price } from "@/components/ui/price";
 import { CompareButton } from "@/components/compare/compare-button";
+import { BuyNowButton } from "@/components/product/buy-now-button";
 import type { Product } from "@/types";
 
 interface ProductCardProps {
@@ -45,7 +46,8 @@ export function ProductCard({ product }: ProductCardProps) {
           </p>
         </div>
       </Link>
-      <div className="mt-3 text-center">
+      <div className="mt-4 flex flex-col items-center gap-2">
+        <BuyNowButton handle={product.handle} inStock={product.inStock} className="min-w-[140px]" />
         <CompareButton handle={product.handle} />
       </div>
     </div>
