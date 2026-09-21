@@ -21,6 +21,12 @@
 | `NEXT_PUBLIC_SITE_URL` | Production site URL (Stripe redirects) |
 | `STRIPE_SECRET_KEY` | Stripe server key |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe public key |
+| `AFTERPAY_MERCHANT_ID` | Afterpay merchant ID (`1202585`) |
+| `AFTERPAY_SECRET_KEY` | Afterpay secret from [Afterpay Hub](https://hub.afterpay.com/) (server only) |
+| `NEXT_PUBLIC_AFTERPAY_MERCHANT_ID` | Same merchant ID for on-site messaging |
+| `AFTERPAY_SANDBOX` | `true` for sandbox API; omit/false for production |
+| `AFTERPAY_COUNTRY_CODE` / `NEXT_PUBLIC_AFTERPAY_COUNTRY_CODE` | `AU` (default), `NZ`, `US`, `CA`, or `GB` |
+| `AFTERPAY_CURRENCY` / `NEXT_PUBLIC_AFTERPAY_CURRENCY` | Must match merchant account (`AUD` default) |
 
 ### Update env in Vercel CLI
 
@@ -62,10 +68,12 @@ Then redeploy: `npx vercel --prod --yes`
 ## Admin user (production database)
 
 ```bash
-npm run admin:create -- admin YourSecurePassword
+npm run admin:create -- admin YourSecurePassword admin@ceyloe.com
 ```
 
 Uses `MONGODB_URI` from `.env.local` (same Atlas cluster as production).
+
+Email is required for MFA (OTP after password). In production, MFA defaults to **on**; toggle it under **Admin → Settings**.
 
 ## Deploy commands
 

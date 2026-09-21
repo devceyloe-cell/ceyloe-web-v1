@@ -36,6 +36,17 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
   }
 
   const { id } = await context.params;
+
+  // Prevent admin from deleting themselves (avoid lockout)
+  const { getAdminSession } = await import("@/lib/admin/auth");
+  const session = await getAdminSession();
+  if (session && session.id === id) {
+    return NextResponse.json(
+      { error: "Cannot delete your own admin account" },
+      { status: 400 },
+    );
+  }
+
   const existing = await getUserById(id);
   if (!existing) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });

@@ -14,13 +14,26 @@ export const metadata: Metadata = {
 const ctaBase =
   "inline-flex min-h-14 w-full items-center justify-center gap-2 px-6 text-center font-manrope text-sm font-semibold uppercase tracking-wider transition-colors";
 
-const nextSteps = [
-  "You will receive a payment confirmation by email from Stripe.",
-  "Our team will contact you within 1–2 business days to confirm delivery and certification.",
-  "Your gemstone will be prepared with insured, secure shipping.",
-];
+export default async function CheckoutSuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ method?: string; order?: string }>;
+}) {
+  const params = await searchParams;
+  const method = params.method === "afterpay" ? "afterpay" : "stripe";
+  const steps =
+    method === "afterpay"
+      ? [
+          "You will receive a payment confirmation by email from Afterpay.",
+          "Our team will contact you within 1–2 business days to confirm delivery and certification.",
+          "Your gemstone will be prepared with insured, secure shipping.",
+        ]
+      : [
+          "You will receive a payment confirmation by email from Stripe.",
+          "Our team will contact you within 1–2 business days to confirm delivery and certification.",
+          "Your gemstone will be prepared with insured, secure shipping.",
+        ];
 
-export default function CheckoutSuccessPage() {
   return (
     <div className="section-bg">
       <WebCoverHero id="thank-you-hero" {...webCovers.thankYou} compact />
@@ -35,14 +48,15 @@ export default function CheckoutSuccessPage() {
           <div className="mt-6 h-px w-14 bg-rich-gold/40" aria-hidden />
 
           <p className="mt-6 text-base leading-relaxed text-muted">
-            Your payment was processed securely. We are honoured you chose {siteConfig.name} for
-            your next treasured piece.
+            Your payment was processed securely
+            {method === "afterpay" ? " with Afterpay" : ""}. We are honoured you chose{" "}
+            {siteConfig.name} for your next treasured piece.
           </p>
 
           <div className="mt-8 space-y-4 border-t border-border pt-8">
             <p className="text-xs uppercase tracking-[0.2em] text-rich-gold">What happens next</p>
             <ul className="space-y-3 text-sm leading-relaxed text-muted">
-              {nextSteps.map((step) => (
+              {steps.map((step) => (
                 <li key={step} className="flex gap-3">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-rich-gold" aria-hidden />
                   <span>{step}</span>

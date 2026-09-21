@@ -3,12 +3,19 @@ import { jwtVerify } from "jose";
 
 const COOKIE_NAME = "ceyloe-admin-session";
 
+const PUBLIC_ADMIN_PATHS = new Set([
+  "/admin/login",
+  "/api/admin/login",
+  "/api/admin/verify-otp",
+  "/api/admin/resend-otp",
+]);
+
 async function verifyToken(token: string): Promise<boolean> {
   const secret = process.env.ADMIN_JWT_SECRET;
   if (!secret) return false;
   try {
-    await jwtVerify(token, new TextEncoder().encode(secret));
-    return true;
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
+    return payload.role === "admin";
   } catch {
     return false;
   }
@@ -17,7 +24,7 @@ async function verifyToken(token: string): Promise<boolean> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/admin/login" || pathname === "/api/admin/login") {
+  if (PUBLIC_ADMIN_PATHS.has(pathname)) {
     return NextResponse.next();
   }
 

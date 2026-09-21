@@ -13,6 +13,7 @@ type StoredUser = {
   verificationExpiresAt?: string | null;
   loginOtpHash?: string | null;
   loginOtpExpiresAt?: string | null;
+  loginOtpAttempts?: number;
   createdAt: string;
   verifiedAt?: string | null;
 };
@@ -222,7 +223,7 @@ export async function issueLoginOtp(email: string): Promise<{
 
   await collection.updateOne(
     { _id: doc._id },
-    { $set: { loginOtpHash, loginOtpExpiresAt } },
+    { $set: { loginOtpHash, loginOtpExpiresAt, loginOtpAttempts: 0 } },
   );
 
   return {
@@ -240,14 +241,36 @@ export async function verifyLoginOtp(email: string, otp: string): Promise<User |
   if (!doc?.loginOtpHash || !doc.emailVerified) return null;
 
   if (doc.loginOtpExpiresAt && new Date(doc.loginOtpExpiresAt).getTime() < Date.now()) {
+    // OTP expired, clear it
+    await collection.updateOne(
+      { _id: doc._id },
+      { $set: { loginOtpHash: null, loginOtpExpiresAt: null, loginOtpAttempts: 0 } },
+    );
     return null;
   }
 
-  if (hashToken(code) !== doc.loginOtpHash) return null;
+  // Check if too many attempts (max 5)
+  const attempts = doc.loginOtpAttempts || 0;
+  if (attempts >= 5) {
+    // Invalidate OTP after 5 failed attempts
+    await collection.updateOne(
+      { _id: doc._id },
+      { $set: { loginOtpHash: null, loginOtpExpiresAt: null, loginOtpAttempts: 0 } },
+    );
+    return null;
+  }
 
+  // Verify OTP
+  if (hashToken(code) !== doc.loginOtpHash) {
+    // Wrong code, increment attempt counter
+    await collection.updateOne({ _id: doc._id }, { $inc: { loginOtpAttempts: 1 } });
+    return null;
+  }
+
+  // Success: clear OTP and attempts
   await collection.updateOne(
     { _id: doc._id },
-    { $set: { loginOtpHash: null, loginOtpExpiresAt: null } },
+    { $set: { loginOtpHash: null, loginOtpExpiresAt: null, loginOtpAttempts: 0 } },
   );
 
   return toUser(doc as StoredUser & { _id: ObjectId });

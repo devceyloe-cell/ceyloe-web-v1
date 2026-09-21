@@ -21,8 +21,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "Only images are allowed" }, { status: 400 });
+    // Validate MIME type (basic check)
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (!file.type || !allowedTypes.includes(file.type)) {
+      return NextResponse.json(
+        { error: "Only JPEG, PNG, GIF, and WebP images are allowed" },
+        { status: 400 },
+      );
     }
 
     const maxSize = 4.5 * 1024 * 1024;

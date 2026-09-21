@@ -14,6 +14,7 @@ import {
   getGemstoneTypePage,
 } from "@/data/gemstone-type-pages";
 import { getProducts } from "@/services/product-service";
+import { getCatalogBounds, getProductCaratWeight } from "@/lib/product-utils";
 import type { CatalogFilters as Filters } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -57,16 +58,31 @@ export default async function GemstoneTypePage({
   const collectionId = `${config.slug}-collection`;
   const hasSubcategories = Boolean(config.subcategories?.length);
 
-  const filters: Filters = {
-    category: config.catalogCategory,
-    sort: (query.sort as Filters["sort"]) ?? "featured",
-    minPrice: query.minPrice ? Number(query.minPrice) : undefined,
-    maxPrice: query.maxPrice ? Number(query.maxPrice) : undefined,
-    minCarat: query.minCarat ? Number(query.minCarat) : undefined,
-    maxCarat: query.maxCarat ? Number(query.maxCarat) : undefined,
-  };
+  const sort = (query.sort as Filters["sort"]) ?? "featured";
 
-  const products = hasSubcategories ? [] : await getProducts(filters);
+  // Full category set (no price/carat filters) drives filter Min/Max bounds
+  const categoryProducts = hasSubcategories
+    ? []
+    : await getProducts({ category: config.catalogCategory, sort });
+
+  const bounds = getCatalogBounds(categoryProducts);
+
+  const minPrice = query.minPrice ? Number(query.minPrice) : undefined;
+  const maxPrice = query.maxPrice ? Number(query.maxPrice) : undefined;
+  const minCarat = query.minCarat ? Number(query.minCarat) : undefined;
+  const maxCarat = query.maxCarat ? Number(query.maxCarat) : undefined;
+
+  const products = categoryProducts.filter((p) => {
+    if (minPrice !== undefined && p.price < minPrice) return false;
+    if (maxPrice !== undefined && p.price > maxPrice) return false;
+    if (minCarat !== undefined || maxCarat !== undefined) {
+      const w = getProductCaratWeight(p);
+      if (w === undefined) return false;
+      if (minCarat !== undefined && w < minCarat) return false;
+      if (maxCarat !== undefined && w > maxCarat) return false;
+    }
+    return true;
+  });
 
   return (
     <div className="bg-white">
@@ -100,7 +116,7 @@ export default async function GemstoneTypePage({
             <div className="grid gap-10 lg:grid-cols-[260px_1fr]">
               <aside className="lg:sticky lg:top-28 lg:self-start">
                 <Suspense fallback={<div className="h-40 animate-pulse bg-surface-elevated" />}>
-                  <CollectionFilters />
+                  <CollectionFilters bounds={bounds} />
                 </Suspense>
               </aside>
               <div>

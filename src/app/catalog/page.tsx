@@ -12,7 +12,7 @@ import {
   getProductCategories,
   getAllProductsForFilters,
 } from "@/services/product-service";
-import { getFilterOptions } from "@/lib/product-utils";
+import { getFilterOptions, getCatalogBounds } from "@/lib/product-utils";
 import { PRODUCT_CATEGORIES } from "@/config/product-categories";
 import { getCatalogCoverKey, getWebCover } from "@/config/web-covers";
 import type { CatalogFilters as Filters } from "@/types";
@@ -56,26 +56,32 @@ function getCatalogBackLink(filters: Filters) {
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   const params = await searchParams;
 
-  const filters: Filters = {
+  const baseFilters: Filters = {
     category: params.category,
     color: params.color,
     shape: params.shape,
     origin: params.origin,
     sort: (params.sort as Filters["sort"]) ?? "featured",
     search: params.search,
+  };
+
+  const filters: Filters = {
+    ...baseFilters,
     minPrice: params.minPrice ? Number(params.minPrice) : undefined,
     maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
     minCarat: params.minCarat ? Number(params.minCarat) : undefined,
     maxCarat: params.maxCarat ? Number(params.maxCarat) : undefined,
   };
 
-  const [products, categories, allProducts] = await Promise.all([
+  const [products, categories, allProducts, selectionProducts] = await Promise.all([
     getProducts(filters),
     getProductCategories(),
     getAllProductsForFilters(),
+    getProducts(baseFilters),
   ]);
 
   const filterOptions = getFilterOptions(allProducts);
+  const bounds = getCatalogBounds(selectionProducts);
   const cover = getWebCover(getCatalogCoverKey(filters.category, filters.color));
   const back = getCatalogBackLink(filters);
   const categoryLabel =
@@ -103,7 +109,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
         <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <Suspense fallback={<div className="h-40 animate-pulse bg-surface-elevated" />}>
-              <CatalogFilters categories={categories} {...filterOptions} />
+              <CatalogFilters categories={categories} {...filterOptions} bounds={bounds} />
             </Suspense>
           </aside>
 

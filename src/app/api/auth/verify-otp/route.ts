@@ -5,6 +5,7 @@ import {
 } from "@/lib/user/auth";
 import { verifyLoginOtp } from "@/lib/mongodb/users";
 import { mergeCartForUser, type StoredCartItem } from "@/lib/mongodb/carts";
+import { VerifyOtpSchema } from "@/lib/validation/schemas";
 
 /**
  * Step 2 of login: verify OTP and create session.
@@ -18,13 +19,19 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => ({}));
-  const email = typeof body.email === "string" ? body.email : "";
-  const otp = typeof body.otp === "string" ? body.otp : "";
   const guestCart = Array.isArray(body.cart) ? (body.cart as StoredCartItem[]) : [];
 
-  if (!email.trim() || !otp.trim()) {
-    return NextResponse.json({ error: "Email and code are required" }, { status: 400 });
+  // Validate email and OTP
+  const parsed = VerifyOtpSchema.safeParse(body);
+  if (!parsed.success) {
+    const firstError = parsed.error.issues[0];
+    return NextResponse.json(
+      { error: firstError?.message || "Invalid email or OTP format" },
+      { status: 400 },
+    );
   }
+
+  const { email, otp } = parsed.data;
 
   const user = await verifyLoginOtp(email, otp);
   if (!user) {

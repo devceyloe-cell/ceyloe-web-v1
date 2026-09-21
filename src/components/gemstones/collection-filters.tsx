@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
+import type { CatalogBounds } from "@/lib/product-utils";
 
 const sortOptions = [
   { value: "featured", label: "Featured" },
@@ -12,9 +13,9 @@ const sortOptions = [
 
 /**
  * Slim collection filters for gemstone type pages:
- * Price (USD), Carat, Sort By only.
+ * Price, Carat, Sort By only.
  */
-export function CollectionFilters() {
+export function CollectionFilters({ bounds }: { bounds?: CatalogBounds | null }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -49,6 +50,11 @@ export function CollectionFilters() {
   const inputClass =
     "w-full border border-border bg-surface px-3 py-2 text-sm text-foreground focus:border-foreground/30 focus:outline-none";
 
+  const priceMin = bounds?.minPrice;
+  const priceMax = bounds?.maxPrice;
+  const caratMin = bounds?.minCarat;
+  const caratMax = bounds?.maxCarat;
+
   return (
     <div className="space-y-6">
       {hasFilters && (
@@ -61,23 +67,34 @@ export function CollectionFilters() {
         </button>
       )}
 
-      <FilterGroup title="Price (USD)">
+      <FilterGroup title="Price">
         <div className="grid grid-cols-2 gap-2">
           <input
             type="number"
-            placeholder="Min"
+            placeholder={priceMin !== undefined ? String(priceMin) : "Min"}
+            min={priceMin}
+            max={priceMax}
             defaultValue={current.minPrice}
             onChange={(e) => updateParams("minPrice", e.target.value)}
             className={inputClass}
+            aria-label="Minimum price"
           />
           <input
             type="number"
-            placeholder="Max"
+            placeholder={priceMax !== undefined ? String(priceMax) : "Max"}
+            min={priceMin}
+            max={priceMax}
             defaultValue={current.maxPrice}
             onChange={(e) => updateParams("maxPrice", e.target.value)}
             className={inputClass}
+            aria-label="Maximum price"
           />
         </div>
+        {priceMin !== undefined && priceMax !== undefined ? (
+          <p className="mt-1.5 text-[10px] text-muted">
+            {priceMin.toLocaleString()} – {priceMax.toLocaleString()}
+          </p>
+        ) : null}
       </FilterGroup>
 
       <FilterGroup title="Carat">
@@ -85,20 +102,31 @@ export function CollectionFilters() {
           <input
             type="number"
             step="0.01"
-            placeholder="Min"
+            placeholder={caratMin !== undefined ? String(caratMin) : "Min"}
+            min={caratMin}
+            max={caratMax}
             defaultValue={current.minCarat}
             onChange={(e) => updateParams("minCarat", e.target.value)}
             className={inputClass}
+            aria-label="Minimum carat"
           />
           <input
             type="number"
             step="0.01"
-            placeholder="Max"
+            placeholder={caratMax !== undefined ? String(caratMax) : "Max"}
+            min={caratMin}
+            max={caratMax}
             defaultValue={current.maxCarat}
             onChange={(e) => updateParams("maxCarat", e.target.value)}
             className={inputClass}
+            aria-label="Maximum carat"
           />
         </div>
+        {caratMin !== undefined && caratMax !== undefined && caratMax > 0 ? (
+          <p className="mt-1.5 text-[10px] text-muted">
+            {caratMin} – {caratMax} ct
+          </p>
+        ) : null}
       </FilterGroup>
 
       <FilterGroup title="Sort By">

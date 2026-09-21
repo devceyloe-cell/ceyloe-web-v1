@@ -36,6 +36,10 @@ After deploy, set **Application settings** in Azure Portal → **ceyloe** → **
 | `NEXT_PUBLIC_SITE_URL` | Yes — e.g. `https://your-app.azurewebsites.net` |
 | `STRIPE_SECRET_KEY` | Yes (for checkout) |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Yes (for checkout) |
+| `AFTERPAY_MERCHANT_ID` | `1202585` |
+| `AFTERPAY_SECRET_KEY` | Yes (for Afterpay) — from https://hub.afterpay.com/ |
+| `NEXT_PUBLIC_AFTERPAY_MERCHANT_ID` | `1202585` |
+| `AFTERPAY_CURRENCY` / `NEXT_PUBLIC_AFTERPAY_CURRENCY` | Match merchant account (e.g. `AUD`) |
 | `WEBSITES_PORT` | `8080` (Linux) |
 | `SCM_DO_BUILD_DURING_DEPLOYMENT` | `false` (deploy pre-built package) |
 

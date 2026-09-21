@@ -26,12 +26,19 @@ export async function GET(_request: NextRequest, context: RouteContext) {
   const meta = file.metadata as { contentType?: string } | undefined;
   const contentType = meta?.contentType || "application/octet-stream";
 
+  // Trusted image types only; force download for others
+  const trustedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+  const isTrusted = trustedTypes.includes(contentType);
+
   return new NextResponse(new Uint8Array(body), {
     status: 200,
     headers: {
-      "Content-Type": contentType,
+      "Content-Type": isTrusted ? contentType : "application/octet-stream",
       "Content-Length": String(body.length),
       "Cache-Control": "public, max-age=31536000, immutable",
+      "X-Content-Type-Options": "nosniff",
+      // Force download for untrusted types
+      ...(isTrusted ? {} : { "Content-Disposition": "attachment" }),
     },
   });
 }

@@ -13,6 +13,7 @@ import {
   Images,
   LayoutDashboard,
   LogOut,
+  Settings,
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ const navItems = [
   { href: "/admin/team", label: "Our Team", icon: Contact },
   { href: "/admin/appointments", label: "Appointments", icon: Calendar },
   { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 function formatRole(role: string) {

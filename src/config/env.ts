@@ -31,6 +31,26 @@ export const env = {
     secretKey: process.env.STRIPE_SECRET_KEY ?? "",
     publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "",
   },
+  afterpay: {
+    /** Merchant ID from https://hub.afterpay.com/ */
+    merchantId: process.env.AFTERPAY_MERCHANT_ID ?? process.env.NEXT_PUBLIC_AFTERPAY_MERCHANT_ID ?? "1202585",
+    /** Secret Key from Afterpay Hub — server only, never expose to the client */
+    secretKey: process.env.AFTERPAY_SECRET_KEY ?? "",
+    /** Use sandbox API when true */
+    sandbox: process.env.AFTERPAY_SANDBOX === "true",
+    /** Merchant region: AU | NZ | US | CA | GB */
+    countryCode: (
+      process.env.AFTERPAY_COUNTRY_CODE ??
+      process.env.NEXT_PUBLIC_AFTERPAY_COUNTRY_CODE ??
+      "AU"
+    ).toUpperCase(),
+    /** Must match the Afterpay merchant account currency */
+    currency: (
+      process.env.AFTERPAY_CURRENCY ??
+      process.env.NEXT_PUBLIC_AFTERPAY_CURRENCY ??
+      "AUD"
+    ).toUpperCase(),
+  },
 } as const;
 
 export function isShopifyConfigured(): boolean {
@@ -47,4 +67,8 @@ export function isMongoConfigured(): boolean {
 
 export function isStripeConfigured(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY?.trim());
+}
+
+export function isAfterpayConfigured(): boolean {
+  return Boolean(env.afterpay.merchantId.trim() && env.afterpay.secretKey.trim());
 }

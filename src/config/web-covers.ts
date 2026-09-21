@@ -43,7 +43,7 @@ const ourGemstones: WebCoverContent = {
   eyebrow: "Explore Our",
   titleLines: ["Gemstones"],
   description: "Discover a world of rare, natural and exceptional beauty.",
-  primaryCta: { label: "Browse Collection", href: "/gemstones#natural-gemstones-heading" },
+  primaryCta: { label: "Browse Collection", href: "/catalog" },
   tone: "light",
   imagePosition: "right center",
 };

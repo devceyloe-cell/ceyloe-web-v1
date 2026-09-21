@@ -83,20 +83,59 @@ export const DEFAULT_NATURAL_GEMSTONES: NaturalGemstonesSection = {
   ],
 };
 
+/** Canonical routes for known Natural Gemstones category titles/ids. */
+const KNOWN_CATEGORY_HREFS: Record<string, string> = {
+  sapphire: "/gemstones/sapphires",
+  sapphires: "/gemstones/sapphires",
+  spinel: "/gemstones/spinel",
+  spinels: "/gemstones/spinel",
+  garnet: "/gemstones/garnet",
+  garnets: "/gemstones/garnet",
+  topaz: "/gemstones/topaz",
+  citrine: "/gemstones/citrine",
+  tourmaline: "/gemstones/tourmaline",
+  zircon: "/gemstones/zircon",
+  other: "/gemstones/other",
+  all: "/catalog",
+};
+
+function resolveCategoryHref(id: string, title: string, href: string): string {
+  const keyFromId = id.toLowerCase().trim();
+  const keyFromTitle = title.toLowerCase().trim().replace(/\s+/g, "-");
+  const known =
+    KNOWN_CATEGORY_HREFS[keyFromId] ||
+    KNOWN_CATEGORY_HREFS[keyFromTitle] ||
+    KNOWN_CATEGORY_HREFS[keyFromTitle.replace(/s$/, "")];
+
+  // Fix Sapphires (and other known types) when saved with a wrong generic route
+  if (known && (!href || href === "/gemstones" || href === "/gemstones/")) {
+    return known;
+  }
+  if (known && /^sapphires?$/i.test(title) && href !== known) {
+    return known;
+  }
+  return href || known || "/gemstones";
+}
+
 export function normalizeNaturalGemstones(
   input: Partial<NaturalGemstonesSection> | null | undefined,
 ): NaturalGemstonesSection {
   const base = DEFAULT_NATURAL_GEMSTONES;
   const categories = Array.isArray(input?.categories)
     ? input!.categories
-        .map((item, index) => ({
-          id: String(item?.id || `category-${index + 1}`),
-          title: String(item?.title || "").trim(),
-          description: item?.description ? String(item.description).trim() : undefined,
-          href: String(item?.href || "").trim() || "/gemstones",
-          image: String(item?.image || "").trim(),
-          featured: Boolean(item?.featured),
-        }))
+        .map((item, index) => {
+          const id = String(item?.id || `category-${index + 1}`);
+          const title = String(item?.title || "").trim();
+          const rawHref = String(item?.href || "").trim();
+          return {
+            id,
+            title,
+            description: item?.description ? String(item.description).trim() : undefined,
+            href: resolveCategoryHref(id, title, rawHref),
+            image: String(item?.image || "").trim(),
+            featured: Boolean(item?.featured),
+          };
+        })
         .filter((item) => item.title && item.image)
     : base.categories;
 

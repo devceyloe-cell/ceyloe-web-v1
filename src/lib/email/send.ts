@@ -251,3 +251,50 @@ export async function sendLoginOtpEmail(email: string, otp: string) {
     text: buildLoginOtpEmailText(otp),
   });
 }
+
+export function buildAdminLoginOtpEmailHtml(otp: string) {
+  const site = siteConfig.url.replace(/\/$/, "");
+  return `
+    <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 520px; margin: 0 auto; color: #1a1a1a;">
+      <p style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #004B69;">Ceyloe Admin</p>
+      <h1 style="font-size: 26px; color: #C09A4A; margin: 8px 0 16px;">Your admin sign-in code</h1>
+      <p style="font-size: 15px; line-height: 1.6;">
+        Use this one-time code to finish signing in to the Ceyloe admin console. It expires in 10 minutes.
+      </p>
+      <p style="margin: 28px 0; font-size: 32px; letter-spacing: 0.35em; font-weight: bold; color: #004B69;">
+        ${otp}
+      </p>
+      <p style="font-size: 12px; color: #888; margin-top: 28px; line-height: 1.5;">
+        If you did not try to sign in, secure your account and contact the site owner.
+      </p>
+      <hr style="border: none; border-top: 1px solid #e8e4dc; margin: 28px 0 16px;" />
+      <p style="font-size: 11px; color: #999; line-height: 1.5;">
+        Ceyloe · ${site}<br/>
+        Kalgoorlie WA, Australia
+      </p>
+    </div>
+  `.trim();
+}
+
+export function buildAdminLoginOtpEmailText(otp: string) {
+  return [
+    "Ceyloe Admin",
+    "",
+    "Your admin sign-in code",
+    "",
+    `Code: ${otp}`,
+    "",
+    "This code expires in 10 minutes. If you did not try to sign in, ignore this email.",
+    "",
+    `Ceyloe · ${siteConfig.url}`,
+  ].join("\n");
+}
+
+export async function sendAdminLoginOtpEmail(email: string, otp: string) {
+  return sendEmail({
+    to: email,
+    subject: "Your Ceyloe admin sign-in code",
+    html: buildAdminLoginOtpEmailHtml(otp),
+    text: buildAdminLoginOtpEmailText(otp),
+  });
+}

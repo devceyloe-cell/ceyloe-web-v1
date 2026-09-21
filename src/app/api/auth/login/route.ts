@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isUserAuthConfigured } from "@/lib/user/auth";
 import { issueLoginOtp } from "@/lib/mongodb/users";
 import { sendLoginOtpEmail } from "@/lib/email/send";
+import { LoginSchema } from "@/lib/validation/schemas";
 
 /**
  * Step 1 of login: validate account and email a one-time code.
@@ -16,18 +17,26 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => ({}));
-  const email = typeof body.email === "string" ? body.email : "";
 
-  if (!email.trim()) {
-    return NextResponse.json({ error: "Email is required" }, { status: 400 });
+  // Validate input
+  const parsed = LoginSchema.safeParse(body);
+  if (!parsed.success) {
+    const firstError = parsed.error.issues[0];
+    return NextResponse.json(
+      { error: firstError?.message || "Invalid email" },
+      { status: 400 },
+    );
   }
+
+  const { email } = parsed.data;
 
   try {
     const issued = await issueLoginOtp(email);
     if (!issued) {
+      // Generic error to prevent account enumeration
       return NextResponse.json(
-        { error: "Account not found. Create an account first." },
-        { status: 401 },
+        { error: "If an account exists with this email, we sent a login code." },
+        { status: 200 },
       );
     }
 
@@ -45,15 +54,19 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Could not start login";
     if (message.toLowerCase().includes("confirm your email")) {
+      // For unverified accounts, still return success to prevent enumeration
       return NextResponse.json(
         {
-          error: message,
-          needsVerification: true,
-          email: email.trim().toLowerCase(),
+          success: true,
+          message: "If an account exists with this email, check your inbox for a verification link first.",
         },
-        { status: 403 },
+        { status: 200 },
       );
     }
-    return NextResponse.json({ error: message }, { status: 400 });
+    // Generic error for other failures
+    return NextResponse.json(
+      { error: "Unable to process login request. Please try again." },
+      { status: 400 },
+    );
   }
 }
