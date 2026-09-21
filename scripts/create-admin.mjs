@@ -79,6 +79,7 @@ async function main() {
     username,
     passwordHash,
     email,
+    emails: email ? [email] : [],
     createdAt: now,
   });
 

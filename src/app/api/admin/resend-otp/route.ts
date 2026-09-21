@@ -15,6 +15,22 @@ function maskEmail(email: string) {
   return `${visible}***@${domain}`;
 }
 
+function maskEmails(emails: string[]) {
+  if (emails.length === 0) return "";
+  if (emails.length === 1) return maskEmail(emails[0]);
+  return `${maskEmail(emails[0])} (+${emails.length - 1} more)`;
+}
+
+async function sendOtpToAll(emails: string[], otp: string) {
+  const results = await Promise.allSettled(
+    emails.map((email) => sendAdminLoginOtpEmail(email, otp)),
+  );
+  const sent = results.some(
+    (r) => r.status === "fulfilled" && (r.value.sent || r.value.loggedOnly),
+  );
+  return { sent };
+}
+
 export async function POST() {
   if (!isAdminConfigured()) {
     return NextResponse.json({ error: "Admin is not configured" }, { status: 503 });
@@ -36,7 +52,7 @@ export async function POST() {
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
-  if (!issued?.user.email) {
+  if (!issued || issued.user.emails.length === 0) {
     return NextResponse.json({ error: "Could not resend code" }, { status: 400 });
   }
 
@@ -45,7 +61,7 @@ export async function POST() {
 
   let mail;
   try {
-    mail = await sendAdminLoginOtpEmail(issued.user.email, issued.otp);
+    mail = await sendOtpToAll(issued.user.emails, issued.otp);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Could not send verification email";
     return NextResponse.json({ error: message }, { status: 502 });
@@ -60,7 +76,7 @@ export async function POST() {
 
   return NextResponse.json({
     success: true,
-    emailHint: maskEmail(issued.user.email),
+    emailHint: maskEmails(issued.user.emails),
     ...(process.env.NODE_ENV !== "production" ? { devOtp: issued.otp } : {}),
   });
 }

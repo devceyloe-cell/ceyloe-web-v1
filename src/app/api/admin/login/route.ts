@@ -19,6 +19,23 @@ function maskEmail(email: string) {
   return `${visible}***@${domain}`;
 }
 
+function maskEmails(emails: string[]) {
+  if (emails.length === 0) return "";
+  if (emails.length === 1) return maskEmail(emails[0]);
+  return `${maskEmail(emails[0])} (+${emails.length - 1} more)`;
+}
+
+async function sendOtpToAll(emails: string[], otp: string) {
+  const results = await Promise.allSettled(
+    emails.map((email) => sendAdminLoginOtpEmail(email, otp)),
+  );
+  const sent = results.some(
+    (r) => r.status === "fulfilled" && (r.value.sent || r.value.loggedOnly),
+  );
+  const anyFulfilled = results.some((r) => r.status === "fulfilled");
+  return { sent, anyFulfilled };
+}
+
 export async function POST(request: NextRequest) {
   if (!isAdminConfigured()) {
     return NextResponse.json(
@@ -58,11 +75,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, needsOtp: false });
   }
 
-  if (!user.email) {
+  if (user.emails.length === 0) {
     return NextResponse.json(
       {
         error:
-          "MFA is enabled but this admin has no email. Set an email with create-admin or ask an existing admin to update Settings.",
+          "MFA is enabled but this admin has no MFA emails. Add them in Admin → Settings.",
       },
       { status: 403 },
     );
@@ -87,7 +104,7 @@ export async function POST(request: NextRequest) {
 
   let mail;
   try {
-    mail = await sendAdminLoginOtpEmail(issued.user.email!, issued.otp);
+    mail = await sendOtpToAll(issued.user.emails, issued.otp);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Could not send verification email";
     return NextResponse.json({ error: message }, { status: 502 });
@@ -105,7 +122,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     success: true,
     needsOtp: true,
-    emailHint: maskEmail(issued.user.email!),
+    emailHint: maskEmails(issued.user.emails),
     ...(process.env.NODE_ENV !== "production" ? { devOtp: issued.otp } : {}),
   });
 }

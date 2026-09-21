@@ -4,7 +4,11 @@ import {
   getAdminSecuritySettings,
   saveAdminSecuritySettings,
 } from "@/lib/mongodb/admin-security";
-import { getAdminUserById, updateAdminProfile } from "@/lib/mongodb/admin-users";
+import {
+  changeAdminPassword,
+  getAdminUserById,
+  updateAdminProfile,
+} from "@/lib/mongodb/admin-users";
 import { AdminSecuritySettingsSchema } from "@/lib/validation/schemas";
 
 export async function GET() {
@@ -27,6 +31,7 @@ export async function GET() {
     profile: {
       username: session.username,
       email: profile?.email ?? null,
+      emails: profile?.emails ?? [],
     },
   });
 }
@@ -51,21 +56,39 @@ export async function PATCH(request: NextRequest) {
     );
   }
 
-  const { mfaEnabled, email } = parsed.data;
+  const { mfaEnabled, emails, currentPassword, newPassword } = parsed.data;
 
-  let profile = await getAdminUserById(session.id);
-  if (email) {
+  if ((currentPassword && !newPassword) || (!currentPassword && newPassword)) {
+    return NextResponse.json(
+      { error: "Current password and new password are both required to change password" },
+      { status: 400 },
+    );
+  }
+
+  if (currentPassword && newPassword) {
     try {
-      profile = await updateAdminProfile(session.id, { email });
+      await changeAdminPassword(session.id, currentPassword, newPassword);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Could not update email";
+      const message = err instanceof Error ? err.message : "Could not change password";
       return NextResponse.json({ error: message }, { status: 400 });
     }
   }
 
-  if (mfaEnabled && !profile?.email && !email) {
+  let profile = await getAdminUserById(session.id);
+
+  if (emails !== undefined) {
+    try {
+      profile = await updateAdminProfile(session.id, { emails });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Could not update emails";
+      return NextResponse.json({ error: message }, { status: 400 });
+    }
+  }
+
+  const resolvedEmails = profile?.emails ?? [];
+  if (mfaEnabled && resolvedEmails.length === 0) {
     return NextResponse.json(
-      { error: "Set an admin email before enabling MFA" },
+      { error: "Add at least one MFA email before enabling MFA" },
       { status: 400 },
     );
   }
@@ -80,6 +103,8 @@ export async function PATCH(request: NextRequest) {
     profile: {
       username: session.username,
       email: profile?.email ?? null,
+      emails: profile?.emails ?? [],
     },
+    passwordChanged: Boolean(currentPassword && newPassword),
   });
 }

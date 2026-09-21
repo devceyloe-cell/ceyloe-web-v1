@@ -74,7 +74,12 @@ export const AdminVerifyOtpSchema = z.object({
 
 export const AdminSecuritySettingsSchema = z.object({
   mfaEnabled: z.boolean(),
-  email: EmailSchema.optional(),
+  emails: z
+    .array(EmailSchema)
+    .max(5, "You can add up to 5 MFA emails")
+    .optional(),
+  currentPassword: z.string().min(1).max(200).optional(),
+  newPassword: z.string().min(12).max(200).optional(),
 });
 
 export type ContactFormData = z.infer<typeof ContactFormSchema>;

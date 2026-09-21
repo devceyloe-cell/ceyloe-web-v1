@@ -7,11 +7,14 @@ const COLLECTION = "admin_users";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const OTP_TTL_MS = 1000 * 60 * 10; // 10 minutes
 const MAX_OTP_ATTEMPTS = 5;
+const MAX_MFA_EMAILS = 5;
 
 type StoredAdminUser = {
   username: string;
   passwordHash: string;
+  /** @deprecated use emails — kept for older documents */
   email?: string | null;
+  emails?: string[];
   loginOtpHash?: string | null;
   loginOtpExpiresAt?: string | null;
   loginOtpAttempts?: number;
@@ -22,7 +25,10 @@ type StoredAdminUser = {
 export type AdminUser = {
   id: string;
   username: string;
+  /** Primary MFA email (first in list) */
   email: string | null;
+  /** All MFA delivery addresses */
+  emails: string[];
   createdAt: string;
 };
 
@@ -38,6 +44,25 @@ export function isValidAdminEmail(email: string) {
   return EMAIL_RE.test(normalizeEmail(email));
 }
 
+export function normalizeMfaEmails(input: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of input) {
+    const email = normalizeEmail(raw);
+    if (!email || !isValidAdminEmail(email) || seen.has(email)) continue;
+    seen.add(email);
+    out.push(email);
+    if (out.length >= MAX_MFA_EMAILS) break;
+  }
+  return out;
+}
+
+function resolveEmails(doc: StoredAdminUser): string[] {
+  const fromArray = Array.isArray(doc.emails) ? doc.emails : [];
+  const legacy = doc.email?.trim() ? [doc.email] : [];
+  return normalizeMfaEmails([...fromArray, ...legacy]);
+}
+
 function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
 }
@@ -47,10 +72,12 @@ function generateOtpCode() {
 }
 
 function toAdminUser(doc: StoredAdminUser & { _id: ObjectId }): AdminUser {
+  const emails = resolveEmails(doc);
   return {
     id: doc._id.toString(),
     username: doc.username,
-    email: doc.email?.trim() ? normalizeEmail(doc.email) : null,
+    email: emails[0] ?? null,
+    emails,
     createdAt: doc.createdAt,
   };
 }
@@ -97,7 +124,7 @@ export async function authenticateAdminUser(
   return admin;
 }
 
-function validatePasswordStrength(password: string): void {
+export function validatePasswordStrength(password: string): void {
   if (password.length < 12) {
     throw new Error("Password must be at least 12 characters");
   }
@@ -132,12 +159,9 @@ export async function createAdminUser(
 
   validatePasswordStrength(password);
 
-  let normalizedEmail: string | null = null;
-  if (email?.trim()) {
-    normalizedEmail = normalizeEmail(email);
-    if (!isValidAdminEmail(normalizedEmail)) {
-      throw new Error("Enter a valid email address");
-    }
+  const emails = email?.trim() ? normalizeMfaEmails([email]) : [];
+  if (email?.trim() && emails.length === 0) {
+    throw new Error("Enter a valid email address");
   }
 
   const collection = await getCollection();
@@ -149,21 +173,23 @@ export async function createAdminUser(
   const result = await collection.insertOne({
     username: normalized,
     passwordHash,
-    email: normalizedEmail,
+    email: emails[0] ?? null,
+    emails,
     createdAt: now,
   });
 
   return {
     id: result.insertedId.toString(),
     username: normalized,
-    email: normalizedEmail,
+    email: emails[0] ?? null,
+    emails,
     createdAt: now,
   };
 }
 
 export async function updateAdminProfile(
   id: string,
-  input: { email?: string },
+  input: { emails?: string[] },
 ): Promise<AdminUser | null> {
   if (!ObjectId.isValid(id)) return null;
 
@@ -172,12 +198,16 @@ export async function updateAdminProfile(
     updatedAt: new Date().toISOString(),
   };
 
-  if (input.email !== undefined) {
-    const normalizedEmail = normalizeEmail(input.email);
-    if (!isValidAdminEmail(normalizedEmail)) {
-      throw new Error("Enter a valid email address");
+  if (input.emails !== undefined) {
+    const emails = normalizeMfaEmails(input.emails);
+    if (input.emails.some((e) => e.trim()) && emails.length === 0) {
+      throw new Error("Enter at least one valid email address");
     }
-    updates.email = normalizedEmail;
+    if (input.emails.length > MAX_MFA_EMAILS) {
+      throw new Error(`You can add up to ${MAX_MFA_EMAILS} MFA emails`);
+    }
+    updates.emails = emails;
+    updates.email = emails[0] ?? null;
   }
 
   const result = await collection.findOneAndUpdate(
@@ -190,6 +220,33 @@ export async function updateAdminProfile(
   return toAdminUser(result as StoredAdminUser & { _id: ObjectId });
 }
 
+export async function changeAdminPassword(
+  id: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  if (!ObjectId.isValid(id)) throw new Error("Admin not found");
+
+  const collection = await getCollection();
+  const doc = await collection.findOne({ _id: new ObjectId(id) });
+  if (!doc) throw new Error("Admin not found");
+
+  const valid = await verifyPassword(currentPassword, doc.passwordHash);
+  if (!valid) throw new Error("Current password is incorrect");
+
+  validatePasswordStrength(newPassword);
+
+  if (currentPassword === newPassword) {
+    throw new Error("New password must be different from the current password");
+  }
+
+  const passwordHash = await hashPassword(newPassword);
+  await collection.updateOne(
+    { _id: doc._id },
+    { $set: { passwordHash, updatedAt: new Date().toISOString() } },
+  );
+}
+
 export async function issueAdminLoginOtp(username: string): Promise<{
   user: AdminUser;
   otp: string;
@@ -199,8 +256,8 @@ export async function issueAdminLoginOtp(username: string): Promise<{
   if (!doc) return null;
 
   const user = toAdminUser(doc as StoredAdminUser & { _id: ObjectId });
-  if (!user.email) {
-    throw new Error("Admin email is required for MFA. Set it in Admin → Settings.");
+  if (user.emails.length === 0) {
+    throw new Error("Admin MFA emails are required. Set them in Admin → Settings.");
   }
 
   const otp = generateOtpCode();
@@ -261,3 +318,5 @@ export async function countAdminUsers(): Promise<number> {
   if (!db) return 0;
   return db.collection<StoredAdminUser>(COLLECTION).countDocuments();
 }
+
+export { MAX_MFA_EMAILS };
