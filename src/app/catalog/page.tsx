@@ -8,9 +8,8 @@ import { ProductGrid } from "@/components/catalog/product-grid";
 import { CompareBar } from "@/components/compare/compare-bar";
 import { CatalogLandingHero } from "@/components/catalog/catalog-landing-hero";
 import {
-  getProducts,
-  getProductCategories,
-  getAllProductsForFilters,
+  deriveCatalogView,
+  loadAllProducts,
 } from "@/services/product-service";
 import { getFilterOptions, getCatalogBounds } from "@/lib/product-utils";
 import { PRODUCT_CATEGORIES } from "@/config/product-categories";
@@ -21,8 +20,6 @@ export const metadata: Metadata = {
   title: "Gemstone Catalog",
   description: "Browse our collection of certified, ethically sourced gemstones from Sri Lanka.",
 };
-
-export const dynamic = "force-dynamic";
 
 interface CatalogPageProps {
   searchParams: Promise<{
@@ -73,12 +70,12 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     maxCarat: params.maxCarat ? Number(params.maxCarat) : undefined,
   };
 
-  const [products, categories, allProducts, selectionProducts] = await Promise.all([
-    getProducts(filters),
-    getProductCategories(),
-    getAllProductsForFilters(),
-    getProducts(baseFilters),
-  ]);
+  const allProducts = await loadAllProducts();
+  const { products, selectionProducts, categories } = deriveCatalogView(
+    allProducts,
+    filters,
+    baseFilters,
+  );
 
   const filterOptions = getFilterOptions(allProducts);
   const bounds = getCatalogBounds(selectionProducts);

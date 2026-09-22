@@ -45,7 +45,7 @@ export function WhiteCoverHeroLayout({
                 alt=""
                 fill
                 priority
-                quality={95}
+                quality={80}
                 sizes="100vw"
                 className="h-full w-full object-cover object-right"
               />

@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { getDb } from "@/lib/mongodb/client";
 import {
   DEFAULT_HOMEPAGE_COLLECTION,
@@ -6,8 +7,9 @@ import {
 } from "@/lib/homepage/collection";
 
 const SETTINGS_KEY = "homepage-collection";
+const REVALIDATE_SECONDS = 60;
 
-export async function getHomepageCollection(): Promise<HomepageCollection> {
+async function fetchHomepageCollection(): Promise<HomepageCollection> {
   try {
     const db = await getDb();
     if (!db) return DEFAULT_HOMEPAGE_COLLECTION;
@@ -20,6 +22,12 @@ export async function getHomepageCollection(): Promise<HomepageCollection> {
     return DEFAULT_HOMEPAGE_COLLECTION;
   }
 }
+
+export const getHomepageCollection = unstable_cache(
+  fetchHomepageCollection,
+  ["homepage-collection"],
+  { revalidate: REVALIDATE_SECONDS, tags: ["homepage-collection"] },
+);
 
 export async function saveHomepageCollection(
   input: Partial<HomepageCollection>,

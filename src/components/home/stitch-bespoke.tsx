@@ -1,16 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Diamond, PenLine } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { stitchImages } from "@/config/stitch-images";
 
 const features = [
   {
-    icon: "diamond",
+    icon: Diamond,
     title: "Unrivalled Selection",
     text: "Choose from our exclusive design catalogue or create a unique concept.",
   },
   {
-    icon: "edit_note",
+    icon: PenLine,
     title: "Expert Curation",
     text: "Direct sourcing ensures you get the finest quality gemstones at the best value.",
   },
@@ -44,15 +45,18 @@ export function StitchBespoke() {
             </p>
 
             <div className="mb-12 space-y-6">
-              {features.map((feature) => (
-                <div key={feature.title} className="flex items-start gap-4">
-                  <span className="material-symbols-outlined shrink-0 text-rich-gold">{feature.icon}</span>
-                  <div>
-                    <h4 className="label-caps mb-1 text-pale-gold">{feature.title}</h4>
-                    <p className="text-sm text-surface-dim">{feature.text}</p>
+              {features.map((feature) => {
+                const Icon = feature.icon;
+                return (
+                  <div key={feature.title} className="flex items-start gap-4">
+                    <Icon className="h-6 w-6 shrink-0 text-rich-gold" strokeWidth={1.25} />
+                    <div>
+                      <h4 className="label-caps mb-1 text-pale-gold">{feature.title}</h4>
+                      <p className="text-sm text-surface-dim">{feature.text}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <Link href="/custom-jewelry" className="btn-stitch-gold inline-block px-10 py-5">

@@ -39,8 +39,7 @@ export function Logo({
       width={width}
       height={height}
       className={cn(sizeClass, "object-contain object-left", className)}
-      priority={size === "hero" || size === "md"}
-      unoptimized
+      priority={size === "hero"}
     />
   );
 

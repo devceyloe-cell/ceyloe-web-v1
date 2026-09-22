@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -8,8 +9,16 @@ import { CurrencyProvider } from "@/contexts/currency-context";
 import { UserAuthProvider } from "@/contexts/user-auth-context";
 import { CartProvider } from "@/contexts/cart-context";
 import { SiteBackground } from "@/components/layout/site-background";
-import { WhatsAppFab } from "@/components/widgets/whatsapp-fab";
-import { LiveChatWidget } from "@/components/widgets/live-chat-widget";
+
+const WhatsAppFab = dynamic(
+  () => import("@/components/widgets/whatsapp-fab").then((m) => m.WhatsAppFab),
+  { ssr: false },
+);
+
+const LiveChatWidget = dynamic(
+  () => import("@/components/widgets/live-chat-widget").then((m) => m.LiveChatWidget),
+  { ssr: false },
+);
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

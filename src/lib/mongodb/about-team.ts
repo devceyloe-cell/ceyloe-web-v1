@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { getDb } from "@/lib/mongodb/client";
 import {
   DEFAULT_ABOUT_TEAM,
@@ -6,8 +7,9 @@ import {
 } from "@/lib/about/team";
 
 const SETTINGS_KEY = "about-team";
+const REVALIDATE_SECONDS = 60;
 
-export async function getAboutTeam(): Promise<AboutTeamSection> {
+async function fetchAboutTeam(): Promise<AboutTeamSection> {
   try {
     const db = await getDb();
     if (!db) return DEFAULT_ABOUT_TEAM;
@@ -20,6 +22,11 @@ export async function getAboutTeam(): Promise<AboutTeamSection> {
     return DEFAULT_ABOUT_TEAM;
   }
 }
+
+export const getAboutTeam = unstable_cache(fetchAboutTeam, ["about-team"], {
+  revalidate: REVALIDATE_SECONDS,
+  tags: ["about-team"],
+});
 
 export async function saveAboutTeam(
   input: Partial<AboutTeamSection>,

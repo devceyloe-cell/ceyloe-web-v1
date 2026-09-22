@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "Ceyloe was founded with a passion for sharing the beauty of natural Sri Lankan gemstones with Australia — quality, honesty, transparency and personalised service.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function AboutPage() {
   const team = await getAboutTeam();

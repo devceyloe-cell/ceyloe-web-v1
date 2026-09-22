@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { getDb } from "@/lib/mongodb/client";
 import {
   DEFAULT_NATURAL_GEMSTONES,
@@ -6,8 +7,9 @@ import {
 } from "@/lib/gemstones/natural-categories";
 
 const SETTINGS_KEY = "natural-gemstones";
+const REVALIDATE_SECONDS = 60;
 
-export async function getNaturalGemstones(): Promise<NaturalGemstonesSection> {
+async function fetchNaturalGemstones(): Promise<NaturalGemstonesSection> {
   try {
     const db = await getDb();
     if (!db) return DEFAULT_NATURAL_GEMSTONES;
@@ -20,6 +22,12 @@ export async function getNaturalGemstones(): Promise<NaturalGemstonesSection> {
     return DEFAULT_NATURAL_GEMSTONES;
   }
 }
+
+export const getNaturalGemstones = unstable_cache(
+  fetchNaturalGemstones,
+  ["natural-gemstones"],
+  { revalidate: REVALIDATE_SECONDS, tags: ["natural-gemstones"] },
+);
 
 export async function saveNaturalGemstones(
   input: Partial<NaturalGemstonesSection>,

@@ -11,6 +11,7 @@ const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
   weight: ["400", "600", "700"],
+  display: "swap",
 });
 
 const caslon = Libre_Caslon_Text({
@@ -18,6 +19,7 @@ const caslon = Libre_Caslon_Text({
   subsets: ["latin"],
   weight: ["400", "700"],
   style: ["normal", "italic"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -52,12 +54,6 @@ export default function RootLayout({
       className={`light scroll-smooth ${manrope.variable} ${caslon.variable} ${bellMt.variable} ${poppins.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,0&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body className="min-h-screen bg-surface font-manrope text-foreground antialiased">
         <ThemeProvider>
           <SiteShell>{children}</SiteShell>

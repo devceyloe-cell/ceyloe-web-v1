@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { mockProducts } from "@/data/mock/products";
 import { isMongoConfigured, isShopifyConfigured } from "@/config/env";
 import { getCeyloeProductVideoUrl } from "@/config/ceyloe-youtube-videos";
@@ -12,6 +13,8 @@ import {
 import { getProductCaratWeight, getProductShape } from "@/lib/product-utils";
 import { scoreSimilarProduct } from "@/lib/product-detail";
 import type { CatalogFilters, Product, RecommendRequest } from "@/types";
+
+const PRODUCTS_REVALIDATE_SECONDS = 60;
 
 function withCeyloeVideo(product: Product): Product {
   return {
@@ -104,7 +107,7 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
   return result;
 }
 
-async function loadAllProducts(): Promise<Product[]> {
+async function fetchAllProducts(): Promise<Product[]> {
   if (isMongoConfigured()) {
     const products = await getAllProductsFromDb();
     if (products.length > 0) {
@@ -119,9 +122,28 @@ async function loadAllProducts(): Promise<Product[]> {
   return mockProducts;
 }
 
+/** Cached catalog load — shared across catalog/filters/similar within revalidate window. */
+export const loadAllProducts = unstable_cache(
+  fetchAllProducts,
+  ["all-products"],
+  { revalidate: PRODUCTS_REVALIDATE_SECONDS, tags: ["products"] },
+);
+
 export async function getProducts(filters: CatalogFilters = {}): Promise<Product[]> {
   const products = await loadAllProducts();
   return applyFilters(products, filters);
+}
+
+/** Derive filtered lists, categories, and bounds from one in-memory catalog. */
+export function deriveCatalogView(
+  allProducts: Product[],
+  filters: CatalogFilters,
+  baseFilters: CatalogFilters,
+) {
+  const products = applyFilters(allProducts, filters);
+  const selectionProducts = applyFilters(allProducts, baseFilters);
+  const categories = [...new Set(allProducts.map((p) => p.category))];
+  return { products, selectionProducts, categories, allProducts };
 }
 
 export async function getProductByHandle(handle: string): Promise<Product | null> {
@@ -166,7 +188,7 @@ export async function getRecentlyAddedProducts(limit = 4): Promise<Product[]> {
 }
 
 export async function getProductCategories(): Promise<string[]> {
-  const products = await getProducts();
+  const products = await loadAllProducts();
   return [...new Set(products.map((p) => p.category))];
 }
 

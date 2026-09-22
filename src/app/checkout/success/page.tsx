@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { ArrowRight, Mail } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { WebCoverHero } from "@/components/layout/web-cover-hero";
+import { ClearCartOnSuccess } from "@/components/cart/clear-cart-on-success";
 import { siteConfig } from "@/config/site";
 import { webCovers } from "@/config/web-covers";
 
@@ -36,6 +38,9 @@ export default async function CheckoutSuccessPage({
 
   return (
     <div className="section-bg">
+      <Suspense fallback={null}>
+        <ClearCartOnSuccess />
+      </Suspense>
       <WebCoverHero id="thank-you-hero" {...webCovers.thankYou} compact />
       <Container className="flex items-center py-16 md:py-24">
         <div className="mx-auto w-full max-w-lg border border-border bg-surface-elevated p-8 md:p-12">

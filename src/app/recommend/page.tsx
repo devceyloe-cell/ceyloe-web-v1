@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "Get personalised gemstone recommendations based on your preferences and budget.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function RecommendPage() {
   const products = await getAllProductsForFilters();

@@ -37,10 +37,25 @@ const securityHeaders = [
   },
 ];
 
+const longCacheHeaders = [
+  {
+    key: "Cache-Control",
+    value: "public, max-age=31536000, immutable",
+  },
+];
+
 const nextConfig: NextConfig = {
   output: "standalone",
   async headers() {
     return [
+      {
+        source: "/_next/static/:path*",
+        headers: longCacheHeaders,
+      },
+      {
+        source: "/images/:path*",
+        headers: longCacheHeaders,
+      },
       {
         source: "/:path*",
         headers: securityHeaders,
@@ -48,6 +63,8 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    formats: ["image/avif", "image/webp"],
+    qualities: [75, 80, 95],
     remotePatterns: [
       {
         protocol: "https",

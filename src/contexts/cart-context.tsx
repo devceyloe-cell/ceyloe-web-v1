@@ -24,6 +24,8 @@ export interface CartItem {
 interface CartContextValue {
   items: CartItem[];
   itemCount: number;
+  /** Sum of item prices (AUD/catalog currency as stored) */
+  itemsTotal: number;
   addItem: (product: Pick<Product, "id" | "handle" | "title" | "price" | "image" | "specs">) => {
     ok: boolean;
     reason?: "duplicate" | "unavailable" | "auth";
@@ -171,6 +173,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     () => ({
       items,
       itemCount: items.length,
+      itemsTotal: items.reduce((sum, item) => sum + (Number(item.price) || 0), 0),
       addItem,
       removeItem,
       clearCart,

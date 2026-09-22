@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Explore our carefully curated collection of natural gemstones, sourced from Sri Lanka and selected for their beauty, rarity and quality.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function GemstonesLandingPage() {
   const section = await getNaturalGemstones();
