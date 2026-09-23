@@ -19,15 +19,19 @@ async function uploadVideos() {
   console.log('');
 
   // Check for token
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.error('❌ Error: BLOB_READ_WRITE_TOKEN environment variable not set');
+  const token = process.env.CEYLOE_READ_WRITE_TOKEN || process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) {
+    console.error('❌ Error: CEYLOE_READ_WRITE_TOKEN environment variable not set');
     console.log('\nTo get your token:');
     console.log('1. Go to: https://vercel.com/dashboard/stores/store_P3pmh1n6wU63K9Yi');
     console.log('2. Click ".env.local" tab');
-    console.log('3. Copy the BLOB_READ_WRITE_TOKEN value');
-    console.log('4. Run: $env:BLOB_READ_WRITE_TOKEN="your_token_here"; node scripts/upload-to-vercel-blob.mjs');
+    console.log('3. Copy the CEYLOE_READ_WRITE_TOKEN value');
+    console.log('4. Run: $env:CEYLOE_READ_WRITE_TOKEN="your_token_here"; node scripts/upload-to-vercel-blob.mjs');
     process.exit(1);
   }
+  
+  // Set token for @vercel/blob SDK
+  process.env.BLOB_READ_WRITE_TOKEN = token;
 
   try {
     // Get all video files
