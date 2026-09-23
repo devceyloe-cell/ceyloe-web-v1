@@ -5,7 +5,6 @@ import { ArrowLeft } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { CatalogFilters } from "@/components/catalog/catalog-filters";
 import { ProductGrid } from "@/components/catalog/product-grid";
-import { CompareBar } from "@/components/compare/compare-bar";
 import { CatalogLandingHero } from "@/components/catalog/catalog-landing-hero";
 import {
   deriveCatalogView,
@@ -115,7 +114,6 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
           </div>
         </div>
       </Container>
-      <CompareBar />
     </div>
   );
 }

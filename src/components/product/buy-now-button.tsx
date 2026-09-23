@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { CreditCard, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { checkoutActionIconClass } from "@/components/product/afterpay-mark";
 
 interface BuyNowButtonProps {
   handle: string;
@@ -10,6 +11,9 @@ interface BuyNowButtonProps {
   className?: string;
   size?: "sm" | "md";
 }
+
+const shell =
+  "inline-flex w-full items-center justify-center gap-1.5 font-manrope font-semibold uppercase tracking-[0.12em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50";
 
 export function BuyNowButton({
   handle,
@@ -46,36 +50,37 @@ export function BuyNowButton({
     setLoading(false);
   }
 
+  const sizeClass = size === "sm" ? "h-10 px-3 text-[10px]" : "h-12 px-5 text-[11px]";
+
   if (!inStock) {
     return (
-      <span
-        className={cn(
-          "inline-flex cursor-not-allowed items-center justify-center bg-surface-dim font-manrope font-bold uppercase tracking-[0.14em] text-muted",
-          size === "sm" ? "min-h-9 px-4 text-[10px]" : "min-h-12 px-5 text-[11px]",
-          className,
-        )}
-      >
+      <span className={cn(shell, sizeClass, "bg-surface-dim text-muted", className)}>
         Sold out
       </span>
     );
   }
 
   return (
-    <div className="inline-flex flex-col items-center gap-1">
+    <div className="flex min-w-0 flex-1 flex-col items-stretch gap-1">
       <button
         type="button"
         onClick={handleBuyNow}
         disabled={loading}
         className={cn(
-          "inline-flex items-center justify-center gap-1.5 bg-rich-gold font-manrope font-bold uppercase tracking-[0.14em] text-black transition hover:bg-[#c49a4a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold disabled:opacity-50",
-          size === "sm" ? "min-h-9 px-4 text-[10px]" : "min-h-12 px-5 text-[11px]",
+          shell,
+          sizeClass,
+          "bg-rich-gold text-black hover:bg-[#c49a4a]",
           className,
         )}
       >
-        {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
-        {loading ? "Redirecting…" : "Buy Now"}
+        {loading ? (
+          <Loader2 className={cn(checkoutActionIconClass, "animate-spin")} />
+        ) : (
+          <CreditCard className={checkoutActionIconClass} strokeWidth={2} />
+        )}
+        <span>{loading ? "Redirecting…" : "Buy Now"}</span>
       </button>
-      {error ? <span className="text-[10px] text-red-600">{error}</span> : null}
+      {error ? <span className="text-center text-[10px] text-red-600">{error}</span> : null}
     </div>
   );
 }

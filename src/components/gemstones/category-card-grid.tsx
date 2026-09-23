@@ -30,12 +30,12 @@ export function CategoryCardGrid({ categories, ctaLabel = "Explore" }: CategoryC
               src={category.image}
               alt={`${category.title} collection`}
               fill
-              className="object-cover object-right opacity-80 transition-[opacity,transform] duration-500 group-hover:scale-105 group-hover:opacity-100"
+              className="object-cover object-right opacity-100 transition-[opacity,transform] duration-500 group-hover:scale-105 group-hover:opacity-80"
               sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
             />
-            {/* Dark wash for text; lifts on hover so the photo is full opacity */}
+            {/* Normal: lighter overlay showing image color; Hover: darker overlay */}
             <div
-              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/35 transition-opacity duration-500 group-hover:opacity-40"
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/35 opacity-40 transition-opacity duration-500 group-hover:opacity-100"
               aria-hidden
             />
 

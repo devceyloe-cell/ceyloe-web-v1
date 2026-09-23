@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Gem, Loader2, ShoppingBag } from "lucide-react";
+import { CreditCard, Gem, Loader2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/cart-context";
 import { AfterpayPlacement } from "@/components/product/afterpay-placement";
+import {
+  AfterpayMark,
+  checkoutActionIconClass,
+} from "@/components/product/afterpay-mark";
 import type { Product } from "@/types";
 import { cn } from "@/lib/utils";
 import { isAfterpayUiEnabled } from "@/config/afterpay-public";
@@ -147,7 +151,11 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
             disabled={buyLoading}
             className={cn(btnBase, "bg-rich-gold text-black hover:bg-[#c49a4a]")}
           >
-            {buyLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {buyLoading ? (
+              <Loader2 className={cn(checkoutActionIconClass, "animate-spin")} />
+            ) : (
+              <CreditCard className={checkoutActionIconClass} strokeWidth={2} />
+            )}
             {buyLoading ? "Redirecting..." : "Buy Now"}
           </button>
         </div>
@@ -202,14 +210,21 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
             type="button"
             onClick={handleAfterpay}
             disabled={afterpayLoading}
+            aria-label={
+              showAfterpayForm ? "Continue with Afterpay" : "Pay with Afterpay"
+            }
             className={cn(
               btnBase,
               "w-full bg-[#b2fce4] text-[#000000] hover:bg-[#9af5d6]",
             )}
           >
-            {afterpayLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {afterpayLoading ? (
+              <Loader2 className={cn(checkoutActionIconClass, "animate-spin")} />
+            ) : (
+              <AfterpayMark className={checkoutActionIconClass} />
+            )}
             {afterpayLoading
-              ? "Opening Afterpay..."
+              ? "Opening..."
               : showAfterpayForm
                 ? "Continue with Afterpay"
                 : "Pay with Afterpay"}
