@@ -4,3 +4,5 @@ ceyloe-azure.zip
 node_modules
 coverage
 *.log
+# Exclude videos - they should be hosted externally
+public/videos/

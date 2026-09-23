@@ -17,9 +17,14 @@ import type { CatalogFilters, Product, RecommendRequest } from "@/types";
 const PRODUCTS_REVALIDATE_SECONDS = 60;
 
 function withCeyloeVideo(product: Product): Product {
+  // Use default video if videoUrl is falsy (null, undefined, or empty string)
+  const videoUrl = product.videoUrl && product.videoUrl.trim() !== "" 
+    ? product.videoUrl 
+    : getCeyloeProductVideoUrl(product.handle);
+  
   return {
     ...product,
-    videoUrl: product.videoUrl ?? getCeyloeProductVideoUrl(product.handle),
+    videoUrl,
   };
 }
 

@@ -2,9 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Images, Maximize2, Play, RotateCw, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Images, Maximize2, Play, X } from "lucide-react";
 import { ProductVideo } from "@/components/product/product-video";
-import { Product360Viewer } from "@/components/product/product-360-viewer";
 import { cn } from "@/lib/utils";
 
 interface ProductMediaGalleryProps {
@@ -14,7 +13,7 @@ interface ProductMediaGalleryProps {
   poster?: string;
 }
 
-type MediaTab = "photos" | "360" | "video";
+type MediaTab = "photos" | "video";
 
 export function ProductMediaGallery({
   images,
@@ -28,7 +27,6 @@ export function ProductMediaGallery({
   const [fullscreen, setFullscreen] = useState(false);
 
   const hasVideo = Boolean(videoUrl);
-  const has360 = galleryImages.length >= 2;
   const videoPoster = poster ?? galleryImages[0];
   const safeIndex = Math.min(activeIndex, Math.max(galleryImages.length - 1, 0));
 
@@ -63,9 +61,8 @@ export function ProductMediaGallery({
     );
   }
 
-  const tabs: { id: MediaTab; label: string; icon: typeof RotateCw; show: boolean }[] = [
+  const tabs: { id: MediaTab; label: string; icon: typeof Images | typeof Play; show: boolean }[] = [
     { id: "photos", label: "Photos", icon: Images, show: true },
-    { id: "360", label: "360°", icon: RotateCw, show: has360 },
     { id: "video", label: "Video", icon: Play, show: hasVideo },
   ];
 
@@ -104,9 +101,7 @@ export function ProductMediaGallery({
         </div>
 
         <div className="relative aspect-square overflow-hidden border border-border bg-surface-elevated">
-          {tab === "360" && has360 ? (
-            <Product360Viewer images={galleryImages} title={title} />
-          ) : tab === "video" && hasVideo ? (
+          {tab === "video" && hasVideo ? (
             <ProductVideo
               variant="gallery"
               videoUrl={videoUrl}
@@ -183,12 +178,6 @@ export function ProductMediaGallery({
               );
             })}
           </div>
-        )}
-
-        {tab === "360" && has360 && (
-          <p className="font-manrope text-center text-xs text-muted">
-            Drag left or right to spin through all {galleryImages.length} photos
-          </p>
         )}
       </div>
 
