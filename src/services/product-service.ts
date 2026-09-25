@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache";
 import { mockProducts } from "@/data/mock/products";
 import { isMongoConfigured, isShopifyConfigured } from "@/config/env";
 import { getCeyloeProductVideoUrl } from "@/config/ceyloe-youtube-videos";
+import { productVideoProxyPath } from "@/lib/ceyloe-com-video";
 import {
   fetchShopifyProductByHandle,
   fetchShopifyProducts,
@@ -16,12 +17,25 @@ import type { CatalogFilters, Product, RecommendRequest } from "@/types";
 
 const PRODUCTS_REVALIDATE_SECONDS = 60;
 
+function isBlobVideoUrl(url: string): boolean {
+  return /\.public\.blob\.vercel-storage\.com\//i.test(url);
+}
+
 function withCeyloeVideo(product: Product): Product {
-  // Use default video if videoUrl is falsy (null, undefined, or empty string)
-  const videoUrl = product.videoUrl && product.videoUrl.trim() !== "" 
-    ? product.videoUrl 
-    : getCeyloeProductVideoUrl(product.handle);
-  
+  const stored = product.videoUrl?.trim();
+  const handle = product.handle?.trim();
+
+  // Blob store is suspended / URLs return 403 — use same-origin proxy (Blob or ceyloe.com).
+  if (handle && (!stored || isBlobVideoUrl(stored))) {
+    return {
+      ...product,
+      videoUrl: productVideoProxyPath(handle),
+    };
+  }
+
+  const videoUrl =
+    stored || (handle ? getCeyloeProductVideoUrl(handle) : undefined);
+
   return {
     ...product,
     videoUrl,
