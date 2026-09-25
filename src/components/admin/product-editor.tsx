@@ -13,7 +13,10 @@ import {
   Star,
   Trash2,
   Upload,
+  Play,
 } from "lucide-react";
+import { upload } from "@vercel/blob/client";
+import { ceyloeBlobVideoPathname } from "@/lib/blob/config";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
@@ -70,6 +73,7 @@ export function ProductEditor({ initial }: ProductEditorProps) {
   const [product, setProduct] = useState<Product>(initial ?? emptyProduct());
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [error, setError] = useState("");
 
@@ -133,6 +137,32 @@ export function ProductEditor({ initial }: ProductEditorProps) {
       setError(data.error || "Upload failed");
     }
     setUploading(false);
+  }
+
+  async function uploadVideoFile(file: File) {
+    const handle = slugify(product.handle || product.title);
+    if (!handle) {
+      setError("Set a title or URL handle before uploading a video.");
+      return;
+    }
+
+    setUploadingVideo(true);
+    setError("");
+
+    try {
+      const pathname = ceyloeBlobVideoPathname(handle);
+      const blob = await upload(pathname, file, {
+        access: "public",
+        handleUploadUrl: "/api/admin/upload/video",
+        multipart: file.size > 20 * 1024 * 1024,
+        contentType: file.type || "video/mp4",
+      });
+      updateField("videoUrl", blob.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Video upload failed");
+    } finally {
+      setUploadingVideo(false);
+    }
   }
 
   async function handleSave() {
@@ -398,6 +428,79 @@ export function ProductEditor({ initial }: ProductEditorProps) {
                 )}
 
                 <GalleryUrlAdd onAdd={addGalleryImage} />
+              </div>
+
+              <div className="border-t border-border p-4">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-gold">
+                      Product video
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted">
+                      Stored in Vercel Blob as{" "}
+                      <code className="text-foreground">videos/{"{handle}"}.mp4</code>
+                    </p>
+                  </div>
+                  <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs transition hover:border-gold">
+                    <Upload className="h-3.5 w-3.5" />
+                    {uploadingVideo ? "Uploading…" : "Upload video"}
+                    <input
+                      type="file"
+                      accept="video/mp4,video/quicktime,.mp4"
+                      className="hidden"
+                      disabled={uploadingVideo}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) await uploadVideoFile(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {product.videoUrl ? (
+                  <div className="space-y-2">
+                    <div className="relative aspect-video overflow-hidden border border-border bg-black">
+                      <video
+                        src={product.videoUrl}
+                        controls
+                        playsInline
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
+                    <input
+                      type="url"
+                      value={product.videoUrl}
+                      onChange={(e) => updateField("videoUrl", e.target.value)}
+                      className={inputClass}
+                      placeholder="https://….public.blob.vercel-storage.com/videos/…"
+                    />
+                    <button
+                      type="button"
+                      className="text-xs text-muted hover:text-red-500"
+                      onClick={() => updateField("videoUrl", undefined)}
+                    >
+                      Remove video URL
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex cursor-pointer flex-col items-center justify-center gap-2 border border-dashed border-border px-4 py-8 text-center transition hover:border-gold">
+                    <Play className="h-8 w-8 text-muted" />
+                    <p className="text-sm text-muted">Upload MP4 to Vercel Blob</p>
+                    <span className="text-xs text-gold">Choose file</span>
+                    <input
+                      type="file"
+                      accept="video/mp4,video/quicktime,.mp4"
+                      className="hidden"
+                      disabled={uploadingVideo}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) await uploadVideoFile(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                )}
               </div>
             </div>
           </section>

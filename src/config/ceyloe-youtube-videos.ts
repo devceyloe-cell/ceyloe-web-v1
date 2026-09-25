@@ -1,3 +1,5 @@
+import { ceyloeBlobVideoUrlForHandle } from "@/lib/blob/config";
+
 /** Videos from https://www.youtube.com/@Ceyloe.Gem.Stones */
 export const ceyloeYoutubeChannel = "https://www.youtube.com/@Ceyloe.Gem.Stones";
 
@@ -109,5 +111,9 @@ export const productVideoByHandle: Record<string, string> = {
 };
 
 export function getCeyloeProductVideoUrl(handle: string): string | undefined {
-  return productVideoByHandle[handle] ?? defaultCeyloeProductVideoUrl;
+  return (
+    productVideoByHandle[handle] ??
+    ceyloeBlobVideoUrlForHandle(handle) ??
+    defaultCeyloeProductVideoUrl
+  );
 }

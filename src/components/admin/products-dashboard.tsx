@@ -23,11 +23,28 @@ function productImage(product: Product) {
 
 export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboardProps) {
   const [seeding, setSeeding] = useState(false);
+  const [syncingVideos, setSyncingVideos] = useState(false);
   const [message, setMessage] = useState("");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [stock, setStock] = useState<StockFilter>("all");
   const [sort, setSort] = useState<SortKey>("newest");
+
+  async function syncVideosFromBlob() {
+    setSyncingVideos(true);
+    setMessage("");
+    const res = await fetch("/api/admin/products/sync-videos", { method: "POST" });
+    const data = await res.json();
+    if (res.ok) {
+      setMessage(
+        `Synced ${data.updated} product video URL(s) from Blob (${data.blobCount} videos in store).`,
+      );
+      if (data.updated > 0) window.location.reload();
+    } else {
+      setMessage(data.error || "Video sync failed");
+    }
+    setSyncingVideos(false);
+  }
 
   async function seedFromMock() {
     setSeeding(true);
@@ -112,6 +129,17 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                 disabled={seeding}
               >
                 {seeding ? "Importing..." : "Import samples"}
+              </Button>
+            ) : null}
+            {products.length > 0 && mongoConfigured ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={syncVideosFromBlob}
+                disabled={syncingVideos}
+              >
+                {syncingVideos ? "Syncing videos…" : "Sync videos from Blob"}
               </Button>
             ) : null}
             <Link href="/admin/products/new">
