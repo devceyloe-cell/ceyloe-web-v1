@@ -18,5 +18,6 @@ export function getYouTubeEmbedUrl(url: string): string | null {
 
 export function isDirectVideoUrl(url: string): boolean {
   if (isYouTubeUrl(url)) return false;
+  if (/\.public\.blob\.vercel-storage\.com\//i.test(url)) return true;
   return /\.(mp4|webm|ogg)(\?|$)/i.test(url) || url.startsWith("/");
 }

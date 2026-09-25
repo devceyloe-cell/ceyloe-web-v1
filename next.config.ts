@@ -28,7 +28,7 @@ const securityHeaders = [
       "font-src 'self' data:",
       "connect-src 'self' https://api.stripe.com https://global-api.afterpay.com https://global-api-sandbox.afterpay.com https://*.afterpay.com https://*.mongodb.net https://cdn.sanity.io",
       "frame-src 'self' https://js.stripe.com https://*.afterpay.com https://portal.afterpay.com https://portal.sandbox.afterpay.com https://www.youtube.com https://www.youtube-nocookie.com",
-      "media-src 'self' https://cdn.sanity.io https://ceyloe.com https://www.ceyloe.com https://www.youtube.com",
+      "media-src 'self' blob: https://cdn.sanity.io https://ceyloe.com https://www.ceyloe.com https://www.youtube.com https://*.public.blob.vercel-storage.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self' https://*.afterpay.com",
