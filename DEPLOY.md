@@ -13,11 +13,11 @@
 | `MONGODB_URI` | MongoDB Atlas connection string |
 | `MONGODB_DB_NAME` | Database name (`ceyloe`) |
 | `ADMIN_JWT_SECRET` | Signs admin login sessions |
-| `RESEND_API_KEY` | **Recommended** — confirmation emails via Resend |
+| `RESEND_API_KEY` | Optional — confirmation emails via Resend (best deliverability) |
 | `EMAIL_FROM` | Branded sender, e.g. `Ceyloe <noreply@ceyloe.com>` (domain must be verified in Resend) |
 | `EMAIL_REPLY_TO` | Optional reply address |
-| `OUTLOOK_CLIENT_ID` / `OUTLOOK_REFRESH_TOKEN` | Optional Graph fallback |
-| `SMTP_HOST` / `SMTP_USER` / `SMTP_PASS` | Optional SMTP fallback |
+| `OUTLOOK_CLIENT_ID` / `OUTLOOK_REFRESH_TOKEN` / `OUTLOOK_TENANT` | **Required for Outlook mailboxes** — Graph API (SMTP AUTH is often disabled on Outlook) |
+| `SMTP_HOST` / `SMTP_USER` / `SMTP_PASS` | Optional fallback only (skipped when Graph is configured for Outlook SMTP hosts) |
 | `NEXT_PUBLIC_SITE_URL` | Production site URL (Stripe redirects) |
 | `STRIPE_SECRET_KEY` | Stripe server key |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe public key |

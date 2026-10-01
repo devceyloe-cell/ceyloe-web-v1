@@ -69,7 +69,17 @@ async function sendViaResend(options: {
   return true;
 }
 
+function shouldSkipSmtpForOutlookGraph() {
+  if (!isOutlookGraphConfigured()) return false;
+  const host = (process.env.SMTP_HOST?.trim() || "smtp-mail.outlook.com").toLowerCase();
+  return host.includes("outlook") || host.includes("office365") || host.includes("live.com");
+}
+
 async function sendViaSmtp(to: string, subject: string, html: string, text?: string) {
+  if (shouldSkipSmtpForOutlookGraph()) {
+    return false;
+  }
+
   const host = process.env.SMTP_HOST?.trim() || "smtp-mail.outlook.com";
   const user = process.env.SMTP_USER?.trim();
   const pass = process.env.SMTP_PASS?.trim();
@@ -118,15 +128,15 @@ export async function sendEmail(options: {
 }): Promise<{ sent: boolean; loggedOnly?: boolean; provider?: string }> {
   const text = options.text || options.html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
-  // Order: Resend (best deliverability) → Outlook SMTP → Graph
+  // Order: Resend → Outlook Graph (works when SMTP AUTH is disabled) → SMTP
   if (await sendViaResend({ to: options.to, subject: options.subject, html: options.html, text })) {
     return { sent: true, provider: "resend" };
   }
-  if (await sendViaSmtp(options.to, options.subject, options.html, text)) {
-    return { sent: true, provider: "smtp" };
-  }
   if (await sendViaOutlookGraph(options)) {
     return { sent: true, provider: "outlook-graph" };
+  }
+  if (await sendViaSmtp(options.to, options.subject, options.html, text)) {
+    return { sent: true, provider: "smtp" };
   }
 
   if (process.env.NODE_ENV !== "production") {
@@ -136,7 +146,7 @@ export async function sendEmail(options: {
   }
 
   throw new Error(
-    "Email is not configured. Set SMTP (smtp-mail.outlook.com) or RESEND_API_KEY / Outlook Graph credentials.",
+    "Email is not configured. Set RESEND_API_KEY, Outlook Graph (OUTLOOK_CLIENT_ID + OUTLOOK_REFRESH_TOKEN), or SMTP credentials.",
   );
 }
 
