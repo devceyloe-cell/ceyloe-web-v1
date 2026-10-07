@@ -10,12 +10,12 @@ import { AdminDashboard } from "@/components/admin/admin-dashboard";
 export default async function AdminHomePage() {
   const mongo = isMongoConfigured();
   const [pages, session, products, appointments, users, collection] = await Promise.all([
-    getAllPages(true),
-    getAdminSession(),
-    mongo ? getAllProductsFromDb() : Promise.resolve([]),
-    mongo ? getAllAppointments() : Promise.resolve([]),
-    mongo ? getAllUsers() : Promise.resolve([]),
-    getHomepageCollection(),
+    getAllPages(true).catch(() => []),
+    getAdminSession().catch(() => null),
+    mongo ? getAllProductsFromDb().catch(() => []) : Promise.resolve([]),
+    mongo ? getAllAppointments().catch(() => []) : Promise.resolve([]),
+    mongo ? getAllUsers().catch(() => []) : Promise.resolve([]),
+    getHomepageCollection().catch(() => ({ items: [] })),
   ]);
 
   const newAppointments = appointments.filter((a) => a.status === "new").length;

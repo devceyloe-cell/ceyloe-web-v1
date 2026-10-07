@@ -188,9 +188,13 @@ export async function verifyUserByToken(token: string): Promise<User | null> {
 }
 
 export async function getAllUsers(): Promise<User[]> {
-  const collection = await getCollection();
-  const docs = await collection.find({}).sort({ createdAt: -1 }).toArray();
-  return docs.map((doc) => toUser(doc as StoredUser & { _id: ObjectId }));
+  try {
+    const collection = await getCollection();
+    const docs = await collection.find({}).sort({ createdAt: -1 }).toArray();
+    return docs.map((doc) => toUser(doc as StoredUser & { _id: ObjectId }));
+  } catch {
+    return [];
+  }
 }
 
 export async function deleteUser(id: string): Promise<boolean> {
