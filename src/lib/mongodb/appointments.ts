@@ -51,7 +51,10 @@ export async function createAppointment(input: CreateAppointmentInput): Promise<
 
 export async function getAllAppointments(): Promise<Appointment[]> {
   const db = await getDb();
-  if (!db) return [];
+  if (!db) {
+    console.warn("[appointments] getDb() returned null — MongoDB unavailable");
+    return [];
+  }
 
   try {
     const docs = await db
@@ -60,8 +63,10 @@ export async function getAllAppointments(): Promise<Appointment[]> {
       .sort({ createdAt: -1 })
       .toArray();
 
+    console.log(`[appointments] fetched ${docs.length} doc(s) from collection "${COLLECTION}"`);
     return docs.map((doc) => toAppointment(doc as StoredAppointment & { _id: ObjectId }));
-  } catch {
+  } catch (err) {
+    console.error("[appointments] query failed:", err instanceof Error ? err.message : err);
     return [];
   }
 }
