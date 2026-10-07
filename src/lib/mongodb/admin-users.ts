@@ -93,7 +93,7 @@ async function getCollection() {
 export async function getAdminUserByUsername(
   username: string,
 ): Promise<(AdminUser & { passwordHash: string }) | null> {
-  const collection = await getCollection();
+  const collection = await getCollection(); // throws if MongoDB unavailable — callers must handle
   const doc = await collection.findOne({ username: normalizeUsername(username) });
   if (!doc) return null;
   return {
@@ -104,10 +104,14 @@ export async function getAdminUserByUsername(
 
 export async function getAdminUserById(id: string): Promise<AdminUser | null> {
   if (!ObjectId.isValid(id)) return null;
-  const collection = await getCollection();
-  const doc = await collection.findOne({ _id: new ObjectId(id) });
-  if (!doc) return null;
-  return toAdminUser(doc as StoredAdminUser & { _id: ObjectId });
+  try {
+    const collection = await getCollection();
+    const doc = await collection.findOne({ _id: new ObjectId(id) });
+    if (!doc) return null;
+    return toAdminUser(doc as StoredAdminUser & { _id: ObjectId });
+  } catch {
+    return null;
+  }
 }
 
 export async function authenticateAdminUser(

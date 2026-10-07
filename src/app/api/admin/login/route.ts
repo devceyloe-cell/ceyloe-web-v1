@@ -58,7 +58,18 @@ export async function POST(request: NextRequest) {
   }
 
   const { username, password } = parsed.data;
-  const user = await authenticateAdminUser(username, password);
+
+  let user;
+  try {
+    user = await authenticateAdminUser(username, password);
+  } catch (err) {
+    console.error("[admin/login] authenticateAdminUser threw:", err);
+    return NextResponse.json(
+      { error: "Database unavailable. Check MongoDB connection and Atlas Network Access." },
+      { status: 503 },
+    );
+  }
+
   if (!user) {
     return NextResponse.json({ error: "Invalid username or password" }, { status: 401 });
   }

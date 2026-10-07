@@ -32,7 +32,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const user = await verifyAdminLoginOtp(pending.username, parsed.data.otp);
+  let user;
+  try {
+    user = await verifyAdminLoginOtp(pending.username, parsed.data.otp);
+  } catch (err) {
+    console.error("[admin/verify-otp] verifyAdminLoginOtp threw:", err);
+    return NextResponse.json(
+      { error: "Database unavailable. Check MongoDB connection." },
+      { status: 503 },
+    );
+  }
   if (!user || user.id !== pending.id) {
     return NextResponse.json({ error: "Invalid or expired code" }, { status: 401 });
   }
