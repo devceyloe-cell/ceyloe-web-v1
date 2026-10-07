@@ -128,9 +128,16 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
 
 async function fetchAllProducts(): Promise<Product[]> {
   if (isMongoConfigured()) {
-    const products = await getAllProductsFromDb();
-    if (products.length > 0) {
-      return products.map(withCeyloeVideo);
+    try {
+      const products = await getAllProductsFromDb();
+      if (products.length > 0) {
+        return products.map(withCeyloeVideo);
+      }
+    } catch (err) {
+      console.warn(
+        "[product-service] MongoDB unavailable, falling back to Shopify/mock:",
+        err instanceof Error ? err.message : err,
+      );
     }
   }
 
@@ -167,8 +174,15 @@ export function deriveCatalogView(
 
 export async function getProductByHandle(handle: string): Promise<Product | null> {
   if (isMongoConfigured()) {
-    const product = await getProductByHandleFromDb(handle);
-    if (product) return withCeyloeVideo(product);
+    try {
+      const product = await getProductByHandleFromDb(handle);
+      if (product) return withCeyloeVideo(product);
+    } catch (err) {
+      console.warn(
+        "[product-service] MongoDB unavailable for handle lookup, falling back:",
+        err instanceof Error ? err.message : err,
+      );
+    }
   }
 
   if (isShopifyConfigured()) {
