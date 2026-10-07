@@ -16,7 +16,7 @@ import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
 import type { Appointment, AppointmentStatus } from "@/types/appointment";
 
-const statusStyles: Record<AppointmentStatus, string> = {
+const statusStyles: Record<string, string> = {
   new: "bg-gold/15 text-gold",
   confirmed: "bg-emerald-500/15 text-emerald-700",
   completed: "bg-surface-elevated text-muted",
