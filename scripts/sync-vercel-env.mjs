@@ -4,7 +4,19 @@
  * Usage: node scripts/sync-vercel-env.mjs [.env.local]
  */
 import { readFile } from "node:fs/promises";
-import { spawnSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
+
+const vercelBin = process.platform === "win32" ? "vercel.cmd" : "vercel";
+
+function runVercelEnvAdd(args) {
+  if (process.platform === "win32") {
+    // Node spawn rejects `<` in argv on Windows; run via PowerShell instead.
+    const quoted = args.map((a) => `'${String(a).replace(/'/g, "''")}'`).join(" ");
+    execSync(`vercel ${quoted}`, { shell: "powershell.exe", stdio: "pipe", encoding: "utf8" });
+    return;
+  }
+  execFileSync(vercelBin, args, { stdio: "pipe", encoding: "utf8" });
+}
 
 const SKIP = new Set(["VERCEL_OIDC_TOKEN"]);
 const envFile = process.argv[2] || ".env.local";
@@ -36,16 +48,13 @@ for (const [name, value] of Object.entries(vars)) {
   } else {
     args.push("--sensitive");
   }
-  const r = spawnSync("vercel", args, {
-    stdio: "pipe",
-    encoding: "utf8",
-    shell: process.platform === "win32",
-  });
-  if (r.status === 0) {
+  try {
+    runVercelEnvAdd(args);
     console.log(`✓ ${name}`);
     ok++;
-  } else {
-    console.error(`✗ ${name}:`, (r.stderr || r.stdout || "").trim());
+  } catch (err) {
+    const out = `${err.stdout ?? ""}${err.stderr ?? ""}`.trim();
+    console.error(`✗ ${name}:`, out || err.message);
     fail++;
   }
 }

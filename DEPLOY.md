@@ -5,6 +5,19 @@
 - **Vercel project:** `thilankacs-projects/ceyloe-web`
 - **GitHub:** https://github.com/Thilankac/ceyloe-web
 - **Region:** Singapore (`sin1` in `vercel.json`)
+- **Production URL:** https://ceyloe-web.vercel.app
+
+### Deploy to a different Vercel team (e.g. devceyloe)
+
+The CLI only sees teams for the logged-in user. To deploy under another account/team:
+
+1. `npx vercel login` — sign in with that account (complete the device link in the browser).
+2. `npx vercel teams ls` — note the team **slug**.
+3. `npx vercel link --yes --project <project-name> --scope <team-slug>`
+4. `node scripts/sync-vercel-env.mjs .env.local` — push env vars (edit `.env.local` first, e.g. `MONGODB_URI` from Atlas integration).
+5. `npx vercel deploy --prod --yes --no-wait` — then check the deployment in the Vercel dashboard.
+
+If new deployments stay **BLOCKED** or **UNKNOWN**, open the deployment in the dashboard (billing, spend limits, or Hobby usage caps).
 
 ## Environment variables (set in Vercel — never commit `.env.local`)
 
