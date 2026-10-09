@@ -29,21 +29,36 @@ async function verifyToken(token: string): Promise<boolean> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ── Secret path rewrite ────────────────────────────────────────────────────
-  // /ceyloe-portal/...  →  /admin/...  (browser URL stays as secret path)
-  if (SECRET_PATH && (pathname === `/${SECRET_PATH}` || pathname.startsWith(`/${SECRET_PATH}/`))) {
-    const rest = pathname.slice(`/${SECRET_PATH}`.length) || "/";
-    const url = request.nextUrl.clone();
-    url.pathname = `/admin${rest === "/" ? "" : rest}`;
-    return NextResponse.rewrite(url);
-  }
-
   // ── Public login API routes ────────────────────────────────────────────────
   if (PUBLIC_API_PATHS.has(pathname)) {
     return NextResponse.next();
   }
 
-  // ── Guard all /admin and /api/admin routes ─────────────────────────────────
+  // ── Secret path handler ────────────────────────────────────────────────────
+  // /ceyloe-portal        → check auth → /admin  (or /admin/login if not authed)
+  // /ceyloe-portal/login  → always rewrite to /admin/login (public)
+  // /ceyloe-portal/xyz    → check auth → /admin/xyz
+  if (SECRET_PATH && (pathname === `/${SECRET_PATH}` || pathname.startsWith(`/${SECRET_PATH}/`))) {
+    const rest = pathname.slice(`/${SECRET_PATH}`.length) || "/";
+    const targetPath = `/admin${rest === "/" ? "" : rest}`;
+
+    // Always allow the login page through (no auth needed)
+    if (targetPath === "/admin/login" || targetPath.startsWith("/admin/login/")) {
+      const url = request.nextUrl.clone();
+      url.pathname = targetPath;
+      return NextResponse.rewrite(url);
+    }
+
+    // All other secret-path pages require authentication
+    const token = request.cookies.get(COOKIE_NAME)?.value;
+    const authed = token ? await verifyToken(token) : false;
+
+    const url = request.nextUrl.clone();
+    url.pathname = authed ? targetPath : "/admin/login";
+    return NextResponse.rewrite(url);
+  }
+
+  // ── Block direct /admin access (hide from bots/scanners) ──────────────────
   const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
   const isAdminApi = pathname.startsWith("/api/admin/");
 
@@ -55,8 +70,6 @@ export async function middleware(request: NextRequest) {
   const authed = token ? await verifyToken(token) : false;
 
   if (!authed) {
-    // Return 404 — hides the admin panel from scanners and bots.
-    // Authenticated users can still reach /admin via internal navigation after login.
     if (isAdminApi) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
