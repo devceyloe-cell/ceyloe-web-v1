@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Libre_Caslon_Text, Manrope } from "next/font/google";
+import { Libre_Caslon_Text, Manrope, Playfair_Display, Montserrat } from "next/font/google";
 import { SiteShell } from "@/components/layout/site-shell";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { siteConfig } from "@/config/site";
@@ -19,6 +19,20 @@ const caslon = Libre_Caslon_Text({
   subsets: ["latin"],
   weight: ["400", "700"],
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -51,7 +65,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`light scroll-smooth ${manrope.variable} ${caslon.variable} ${bellMt.variable} ${poppins.variable}`}
+      className={`light scroll-smooth ${manrope.variable} ${caslon.variable} ${bellMt.variable} ${poppins.variable} ${playfair.variable} ${montserrat.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-surface font-manrope text-foreground antialiased">
