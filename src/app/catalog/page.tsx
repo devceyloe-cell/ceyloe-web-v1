@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/container";
 import { CatalogFilters } from "@/components/catalog/catalog-filters";
 import { ProductGrid } from "@/components/catalog/product-grid";
 import { CatalogLandingHero } from "@/components/catalog/catalog-landing-hero";
+import { FineJewelleryHero } from "@/components/catalog/fine-jewellery-hero";
 import {
   deriveCatalogView,
   loadAllProducts,
@@ -84,23 +85,35 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     PRODUCT_CATEGORIES.find((c) => c.value === filters.category)?.label ??
     (filters.category ? titleCase(filters.category) : "Gemstones");
 
+  const isJewellery = filters.category === "jewellery";
+
   return (
     <div className="bg-white">
-      <CatalogLandingHero
-        cover={cover}
-        description={
-          cover.description ??
-          `${products.length} exceptional ${categoryLabel.toLowerCase()} available`
-        }
-      />
+      {isJewellery ? (
+        <FineJewelleryHero />
+      ) : (
+        <CatalogLandingHero
+          cover={cover}
+          description={
+            cover.description ??
+            `${products.length} exceptional ${categoryLabel.toLowerCase()} available`
+          }
+        />
+      )}
+
+      {/* Scroll anchor target for the "Shop Jewellery" button */}
+      <div id="jewellery-collection" />
+
       <Container className="py-12 md:py-20">
-        <Link
-          href={back.href}
-          className="mb-8 inline-flex items-center gap-2 text-sm uppercase tracking-widest text-muted transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {back.label}
-        </Link>
+        {!isJewellery && (
+          <Link
+            href={back.href}
+            className="mb-8 inline-flex items-center gap-2 text-sm uppercase tracking-widest text-muted transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {back.label}
+          </Link>
+        )}
 
         <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
           <aside className="lg:sticky lg:top-28 lg:self-start">
