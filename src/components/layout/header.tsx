@@ -16,9 +16,18 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Start false to match SSR — updated after hydration to avoid hydration mismatch
+  const [isJewellery, setIsJewellery] = useState(false);
   const { itemCount } = useCart();
   const { user, logout } = useUserAuth();
 
+  // Detect Fine Jewellery route client-side only (avoids SSR/client mismatch)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setIsJewellery(pathname === "/catalog" && params.get("category") === "jewellery");
+  }, [pathname]);
+
+  // Sync header height CSS variable for sticky offset calculations
   useEffect(() => {
     const header = document.querySelector("header");
     if (!header) return;
@@ -48,15 +57,23 @@ export function Header() {
     router.refresh();
   }
 
+  // Only the logo changes — header always stays dark
+  const logoVariant = isJewellery ? "jewellery" : "white";
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black">
       <Container>
         <nav className="flex h-20 items-center justify-between gap-4">
-          <Logo size="md" variant="white" />
+          <Logo size="md" variant={logoVariant} />
 
           <div className="hidden flex-1 items-center justify-center gap-8 lg:flex xl:gap-10">
             {landingNavigation.map((item) => {
-              const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+              const active =
+                item.label === "Fine Jewellery"
+                  ? isJewellery
+                  : item.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.href.split("?")[0]) && !isJewellery;
               return (
                 <Link
                   key={item.href}

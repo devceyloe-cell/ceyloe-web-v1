@@ -3,6 +3,8 @@ import { heroSlides, getHeroSlideImage } from "@/data/hero-slides";
 export const images = {
   logo: "/images/hero/ceyloe-logo.png",
   logoWhite: "/images/hero/ceyloe-logo-white.png",
+  logoBlack: "/images/hero/ceyloe-logo-black.png",
+  logoJewellery: "/images/hero/ceyloe-logo-jewellery.png",
   favicon: "/favicon.png",
   siteBackground: "/images/site-bg-sketch.jpg",
   hero: {

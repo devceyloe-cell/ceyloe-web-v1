@@ -91,6 +91,7 @@ export const mainNavigation: NavItem[] = [
 export const landingNavigation: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Gemstones", href: "/gemstones" },
+  { label: "Fine Jewellery", href: "/catalog?category=jewellery" },
   { label: "Bespoke Jewellery", href: "/custom-jewelry" },
   { label: "Our Story", href: "/about" },
   { label: "Education", href: "/journal" },
