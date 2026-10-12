@@ -3,44 +3,44 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 
 /**
- * Fine Jewellery hero banner — Ceyloe brand typography style guide.
- * Fonts: Playfair Display (serif) + Montserrat (sans).
- * Both are loaded via next/font/google in layout.tsx and available
- * as CSS variables --font-playfair / --font-montserrat on <html>.
+ * Fine Jewellery hero banner — fonts and colours matched to /gemstones hero.
+ * Heading  → font-bell (Bell MT Bold), uppercase, gold #C09A4A
+ * Body     → font-poppins, navy #004B69
+ * Button   → btn-stitch-primary (deep navy, matches "Browse Collection")
  */
 
-const PLAYFAIR = "var(--font-playfair), Georgia, serif";
-const MONTSERRAT = "var(--font-montserrat), Arial, sans-serif";
+const GOLD = "#C09A4A";
+const NAVY = "#004B69";
 
 export function FineJewelleryHero() {
   return (
     <section
       aria-labelledby="fine-jewellery-hero-title"
-      className="relative w-full overflow-hidden"
-      style={{ backgroundColor: "#F6F0E7", minHeight: "465px" }}
+      className="relative w-full overflow-hidden bg-white"
+      style={{ minHeight: "465px" }}
     >
       {/* ── Hero image — right half on desktop, full bg on mobile ─────── */}
       <div className="absolute inset-0 lg:left-[42%]">
         <Image
-          src="/images/fine-jewellery/hero-jewellery.png"
-          alt="Ceylon Blue Sapphire Ring, Ruby Earrings and Teal Sapphire Pendant on marble"
+          src="/images/fine-jewellery/hero-jewellery.jpg"
+          alt="Fine jewellery collection — sapphire, ruby, emerald and spinel rings, earrings and pendants on marble"
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 58vw"
           className="object-cover object-center"
         />
-        {/* Desktop: cream gradient fade so text on the left reads clearly */}
+        {/* Desktop: white gradient fade so text on the left reads clearly */}
         <div
           className="absolute inset-0 hidden lg:block"
           style={{
             background:
-              "linear-gradient(to right, #F6F0E7 0%, #F6F0E7 8%, rgba(246,240,231,0.6) 30%, transparent 55%)",
+              "linear-gradient(to right, #ffffff 0%, #ffffff 8%, rgba(255,255,255,0.6) 30%, transparent 55%)",
           }}
         />
-        {/* Mobile: strong overlay so text has contrast against the image */}
+        {/* Mobile: strong white overlay so text has contrast against the image */}
         <div
           className="absolute inset-0 lg:hidden"
-          style={{ background: "rgba(246,240,231,0.90)" }}
+          style={{ background: "rgba(255,255,255,0.90)" }}
         />
       </div>
 
@@ -48,94 +48,48 @@ export function FineJewelleryHero() {
       <Container className="relative z-10">
         <div className="flex min-h-[465px] flex-col justify-center py-14 lg:py-20 lg:max-w-[46%]">
 
-          {/* Eyebrow — Montserrat 15px / 400 / #A58A60 / 3px tracking */}
+          {/* Eyebrow — font-poppins, navy, uppercase, matches "Explore Our" */}
           <p
-            style={{
-              fontFamily: MONTSERRAT,
-              fontSize: "15px",
-              fontWeight: 400,
-              letterSpacing: "3px",
-              textTransform: "uppercase",
-              color: "#A58A60",
-              marginBottom: "8px",
-            }}
+            className="font-poppins text-[clamp(12px,0.8vw,14px)] font-normal uppercase leading-none tracking-[0.18em]"
+            style={{ color: NAVY }}
           >
             Ready to Wear
           </p>
 
-          {/* H1 — Playfair Display clamp(40px→76px) / 400 / #111111 / -1.5px tracking */}
+          {/* H1 — font-bell, bold, uppercase, gold — matches "GEMSTONES" */}
           <h1
             id="fine-jewellery-hero-title"
-            style={{
-              fontFamily: PLAYFAIR,
-              fontSize: "clamp(40px, 5vw, 76px)",
-              lineHeight: 1.08,
-              fontWeight: 400,
-              letterSpacing: "-1.5px",
-              color: "#111111",
-              margin: "0 0 10px",
-            }}
+            className="font-bell mt-2 text-[clamp(30px,3.2vw,48px)] font-bold uppercase leading-[1.02] tracking-[0.01em] text-left lg:mt-2.5"
+            style={{ color: GOLD }}
           >
             Fine Jewellery
           </h1>
 
-          {/* Subtitle — Playfair Display clamp(22px→30px) / 400 / #111111 */}
+          {/* Subtitle — font-poppins, navy */}
           <p
-            style={{
-              fontFamily: PLAYFAIR,
-              fontSize: "clamp(22px, 2.1vw, 30px)",
-              fontWeight: 400,
-              lineHeight: 1.2,
-              color: "#111111",
-              margin: "0 0 20px",
-            }}
+            className="font-poppins mt-3 text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] text-left lg:mt-3.5"
+            style={{ color: NAVY }}
           >
-            Natural gemstones. Timeless jewellery.
-            <br />
-            Ready to become yours.
+            Natural gemstones. Timeless jewellery. Ready to become yours.
           </p>
 
-          {/* Description — Montserrat 18px / 400 / #252525 */}
+          {/* Description — font-poppins, slightly darker for readability */}
           <p
-            style={{
-              fontFamily: MONTSERRAT,
-              fontSize: "18px",
-              fontWeight: 400,
-              lineHeight: 1.38,
-              color: "#252525",
-              maxWidth: "490px",
-              margin: "0 0 22px",
-            }}
+            className="font-poppins mt-4 max-w-[460px] text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.6] lg:mt-4"
+            style={{ color: "#1b1b1d" }}
           >
             Discover our collection of finished jewellery, featuring natural
             gemstones carefully selected for their beauty, character and
-            individuality. Each piece is thoughtfully crafted and available to
+            individuality. Each piece is thoughtfully created and available to
             purchase without the wait of a bespoke order.
           </p>
 
-          {/* CTA — Montserrat 14px / 600 / #B58B42 bg / #111111 text */}
-          <Link
-            href="#jewellery-collection"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "18px",
-              minHeight: "53px",
-              padding: "15px 32px",
-              backgroundColor: "#B58B42",
-              color: "#111111",
-              fontFamily: MONTSERRAT,
-              fontSize: "14px",
-              fontWeight: 600,
-              letterSpacing: "1.4px",
-              textTransform: "uppercase",
-              textDecoration: "none",
-              alignSelf: "flex-start",
-            }}
-          >
-            Shop Jewellery
-          </Link>
+          {/* CTA — btn-stitch-primary matches "Browse Collection" on /gemstones */}
+          <div className="mt-6 lg:mt-7">
+            <Link href="#jewellery-collection" className="btn-stitch-primary inline-flex">
+              Shop Jewellery
+            </Link>
+          </div>
         </div>
       </Container>
     </section>
