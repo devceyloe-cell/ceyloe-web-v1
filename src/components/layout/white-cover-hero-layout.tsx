@@ -45,9 +45,9 @@ export function WhiteCoverHeroLayout({
                 alt=""
                 fill
                 priority
-                quality={80}
+                quality={95}
                 sizes="100vw"
-                className="h-full w-full object-cover object-right"
+                className="h-full w-full object-cover object-center"
               />
               {overlay === "black" ? (
                 <div
@@ -61,10 +61,10 @@ export function WhiteCoverHeroLayout({
 
         <div
           className={cn(
-            "pointer-events-none absolute inset-y-0 left-0 z-[1] w-[72%] md:w-[58%]",
+            "pointer-events-none absolute inset-y-0 left-0 z-[1] w-[60%] md:w-[45%]",
             overlay === "black"
               ? "bg-gradient-to-r from-black/70 via-black/25 to-transparent"
-              : "bg-gradient-to-r from-white via-white/95 to-transparent",
+              : "bg-gradient-to-r from-white via-white/85 to-transparent",
           )}
           aria-hidden
         />

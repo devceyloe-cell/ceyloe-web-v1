@@ -29,7 +29,7 @@ export const gemstoneTypePages: Record<string, GemstoneTypePageConfig> = {
     slug: "sapphires",
     title: "Sapphires",
     catalogCategory: "sapphires",
-    image: "/images/covers/sapphires.webp",
+    image: "/images/covers/sapphires-hero.jpg",
     heroLayout: "stacked",
     traits: DEFAULT_TRAITS,
     exploreLabel: "Explore our finest sapphire collection.",

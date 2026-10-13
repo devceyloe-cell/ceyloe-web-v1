@@ -17,7 +17,7 @@ export const bespokeLandingCards: GemstoneCategoryCard[] = [
     description:
       "Browse our natural gemstone collection and choose the perfect centrepiece for your custom jewellery.",
     href: "/gemstones",
-    image: images.categories.sapphires,
+    image: "/images/bespoke/choose-gemstone.jpg",
   },
   {
     id: "book-consultation",
@@ -25,7 +25,7 @@ export const bespokeLandingCards: GemstoneCategoryCard[] = [
     description:
       "Book a private appointment to discuss your ideas and custom jewellery requirements.",
     href: "/book",
-    image: stitchImages.founder,
+    image: "/images/bespoke/book-consultation.jpg",
   },
 ];
 

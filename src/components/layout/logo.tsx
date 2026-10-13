@@ -70,6 +70,7 @@ export function Logo({
       height={natH}
       className={cn(appliedClass, "object-contain object-left", className)}
       priority={size === "hero"}
+      suppressHydrationWarning
     />
   );
 

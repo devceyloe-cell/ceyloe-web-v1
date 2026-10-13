@@ -39,7 +39,7 @@ const home: WebCoverContent = {
 };
 
 const ourGemstones: WebCoverContent = {
-  image: coverPath("our-gemstones.webp"),
+  image: "/images/covers/gemstones-hero-hq.webp",
   eyebrow: "Explore Our",
   titleLines: ["Gemstones"],
   description: "Discover a world of rare, natural and exceptional beauty.",
@@ -104,7 +104,7 @@ const showroom: WebCoverContent = {
 };
 
 const sapphires: WebCoverContent = {
-  image: coverPath("sapphires.webp"),
+  image: "/images/covers/sapphires-hero.jpg",
   titleLines: ["Sapphires"],
   description: "Explore our finest sapphire collection.",
   primaryCta: {
@@ -250,7 +250,7 @@ const otherGemstones: WebCoverContent = {
 };
 
 const allGemstones: WebCoverContent = {
-  image: coverPath("all-gemstones.webp"),
+  image: "/images/covers/catalog-hero.jpg",
   titleLines: ["All", "Gemstones"],
   description: "Browse the complete curated collection.",
   primaryCta: { label: "Browse Catalog", href: "/catalog" },

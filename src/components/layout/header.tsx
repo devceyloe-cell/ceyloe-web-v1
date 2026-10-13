@@ -61,7 +61,7 @@ export function Header() {
   const logoVariant = isJewellery ? "jewellery" : "white";
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black" suppressHydrationWarning>
       <Container>
         <nav className="flex h-20 items-center justify-between gap-4">
           <Logo size="md" variant={logoVariant} />

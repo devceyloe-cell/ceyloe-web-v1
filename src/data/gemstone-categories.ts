@@ -11,14 +11,16 @@ export interface GemstoneCategoryCard {
 }
 
 const covers = {
-  blue: "/images/covers/cards/blue-sapphires.webp",
-  pink: "/images/covers/cards/pink-sapphires.webp",
-  yellow: "/images/covers/cards/yellow-sapphires.webp",
-  teal: "/images/covers/cards/teal-sapphires.webp",
-  parti: "/images/covers/parti-sapphires.webp",
-  padparadscha: "/images/covers/cards/padparadscha.webp",
-  allSapphires: "/images/covers/cards/all-sapphires.webp",
-  other: "/images/covers/cards/other-gemstones.webp",
+  // Sapphire sub-category cards — new Ceyloe brand images
+  blue:         "/images/covers/cards/sapphires/blue.png",
+  pink:         "/images/covers/cards/sapphires/pink.webp",
+  yellow:       "/images/covers/cards/sapphires/yellow.webp",
+  white:        "/images/covers/cards/sapphires/white.webp",
+  teal:         "/images/covers/cards/sapphires/teal.webp",
+  parti:        "/images/covers/cards/sapphires/parti.png",
+  padparadscha: "/images/covers/cards/sapphires/other.png",
+  allSapphires: "/images/covers/cards/sapphires/blue.png",
+  other:        "/images/covers/cards/sapphires/fallback.png",
 } as const;
 
 /** Top-level gemstone landing categories. */
@@ -114,7 +116,7 @@ export const sapphireLandingCategories: GemstoneCategoryCard[] = [
     id: "white",
     title: "White Sapphire",
     href: "/catalog?category=sapphires&color=white",
-    image: covers.allSapphires,
+    image: covers.white,
   },
   {
     id: "teal",

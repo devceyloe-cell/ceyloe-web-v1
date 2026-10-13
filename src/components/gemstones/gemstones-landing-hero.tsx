@@ -5,7 +5,7 @@ import { BrowseCollectionButton } from "@/components/gemstones/browse-collection
 /** Attachment / PDF page 2 palette — aligned with homepage cover styles */
 const NAVY = "#004B69";
 const GOLD = "#C09A4A";
-const HERO_ART = "/images/covers/our-gemstones.webp";
+const HERO_ART = "/images/covers/gemstones-hero-hq.webp";
 
 /**
  * /gemstones hero — white PDF page 2 benchmark (Explore Our Gemstones).
