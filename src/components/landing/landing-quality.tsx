@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { stitchImages } from "@/config/stitch-images";
-
 const points = [
   "Direct access to Sri Lankan sources",
   "Hand-selected quality gemstones",
@@ -39,8 +37,8 @@ export function LandingQuality() {
 
           <div className="relative mx-auto aspect-[4/3] w-full max-w-md overflow-hidden bg-stone-gray lg:max-w-none lg:aspect-[5/4]">
             <Image
-              src={stitchImages.founder}
-              alt="Expert gemologist inspecting a Ceylon gemstone"
+              src="/images/bespoke/book-consultation.jpg"
+              alt="Book a private gemstone consultation with Ceyloe"
               fill
               className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 40vw"
