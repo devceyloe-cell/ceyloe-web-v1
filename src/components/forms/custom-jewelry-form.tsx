@@ -51,7 +51,7 @@ export function CustomJewelryForm({ defaultStone = "" }: CustomJewelryFormProps)
           <input id="phone" name="phone" className={inputClass} />
         </div>
         <div>
-          <label htmlFor="budget" className="mb-2 block text-xs uppercase tracking-widest text-muted">Budget (USD)</label>
+          <label htmlFor="budget" className="mb-2 block text-xs uppercase tracking-widest text-muted">Budget (AUD)</label>
           <input id="budget" name="budget" type="number" className={inputClass} placeholder="e.g. 5000" />
         </div>
       </div>

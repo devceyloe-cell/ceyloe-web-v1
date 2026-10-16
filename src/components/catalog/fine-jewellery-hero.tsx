@@ -12,7 +12,7 @@ import { Container } from "@/components/ui/container";
 const GOLD = "#C09A4A";
 const NAVY = "#004B69";
 
-export function FineJewelleryHero() {
+export function FineJewelleryHero({ imageOverride }: { imageOverride?: string }) {
   return (
     <section
       aria-labelledby="fine-jewellery-hero-title"
@@ -22,7 +22,7 @@ export function FineJewelleryHero() {
       {/* ── Hero image — right half on desktop, full bg on mobile ─────── */}
       <div className="absolute inset-0 lg:left-[42%]">
         <Image
-          src="/images/fine-jewellery/hero-jewellery.jpg"
+          src={imageOverride || "/images/fine-jewellery/hero-jewellery.jpg"}
           alt="Fine jewellery collection — sapphire, ruby, emerald and spinel rings, earrings and pendants on marble"
           fill
           priority

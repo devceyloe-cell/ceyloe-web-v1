@@ -4,6 +4,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { CategoryCardGrid } from "@/components/gemstones/category-card-grid";
 import { GemstonesLandingHero } from "@/components/gemstones/gemstones-landing-hero";
 import { getNaturalGemstones } from "@/lib/mongodb/natural-gemstones";
+import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
   title: "Natural Gemstones",
@@ -14,11 +15,11 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function GemstonesLandingPage() {
-  const section = await getNaturalGemstones();
+  const [section, heroImages] = await Promise.all([getNaturalGemstones(), getHeroImages()]);
 
   return (
     <div className="bg-white">
-      <GemstonesLandingHero />
+      <GemstonesLandingHero imageOverride={heroImages.gemstones} />
 
       <Container id="natural-gemstones" className="scroll-mt-28 py-12 md:py-16">
         <SectionHeading

@@ -6,9 +6,9 @@ const NAVY = "#004B69";
 const GOLD = "#C09A4A";
 const HERO_ART = "/images/covers/education.webp";
 
-export function EducationLandingHero() {
+export function EducationLandingHero({ imageOverride }: { imageOverride?: string }) {
   return (
-    <WhiteCoverHeroLayout image={HERO_ART} ariaLabelledBy="education-hero-title">
+    <WhiteCoverHeroLayout image={imageOverride || HERO_ART} ariaLabelledBy="education-hero-title">
       <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
       <h1

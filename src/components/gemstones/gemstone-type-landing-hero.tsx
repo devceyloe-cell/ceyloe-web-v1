@@ -20,17 +20,18 @@ function TitleDivider() {
 
 interface GemstoneTypeLandingHeroProps {
   config: GemstoneTypePageConfig;
+  imageOverride?: string;
 }
 
 /**
  * Shared white cover hero for /gemstones/[type] pages.
  */
-export function GemstoneTypeLandingHero({ config }: GemstoneTypeLandingHeroProps) {
+export function GemstoneTypeLandingHero({ config, imageOverride }: GemstoneTypeLandingHeroProps) {
   const titleId = `${config.slug}-hero-title`;
   const exploreHref = `#${config.slug}-collection`;
 
   return (
-    <WhiteCoverHeroLayout image={config.image} ariaLabelledBy={titleId}>
+    <WhiteCoverHeroLayout image={imageOverride || config.image} ariaLabelledBy={titleId}>
       <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
       <h1

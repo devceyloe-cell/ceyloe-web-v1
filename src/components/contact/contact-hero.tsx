@@ -6,9 +6,9 @@ const NAVY = "#004B69";
 const GOLD = "#C09A4A";
 const HERO_ART = "/images/covers/contact.webp";
 
-export function ContactHero() {
+export function ContactHero({ imageOverride }: { imageOverride?: string }) {
   return (
-    <WhiteCoverHeroLayout image={HERO_ART} ariaLabelledBy="contact-hero-title">
+    <WhiteCoverHeroLayout image={imageOverride || HERO_ART} ariaLabelledBy="contact-hero-title">
       <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
       <h1

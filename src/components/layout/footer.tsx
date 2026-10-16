@@ -125,8 +125,20 @@ export function Footer() {
                   info@ceyloe.com
                 </a>
               </p>
-              <p>{contact.headOffice.lines.join(", ")}</p>
-              <p className="pt-2">{contact.miningOffice.lines.join(", ")}</p>
+              <div className="space-y-0.5">
+                {contact.headOffice.lines.map((line) => (
+                  <p key={line} className="font-bold text-white">
+                    {line}
+                  </p>
+                ))}
+              </div>
+              <div className="space-y-0.5 pt-3">
+                {contact.miningOffice.lines.map((line) => (
+                  <p key={line} className="font-bold text-white">
+                    {line}
+                  </p>
+                ))}
+              </div>
             </address>
 
             <div className="mt-8 inline-flex items-center gap-2 rounded border border-white/15 px-3 py-2">

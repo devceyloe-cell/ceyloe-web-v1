@@ -10,10 +10,10 @@ const HERO_ART = "/images/covers/gemstones-hero-hq.webp";
 /**
  * /gemstones hero — white PDF page 2 benchmark (Explore Our Gemstones).
  */
-export function GemstonesLandingHero() {
+export function GemstonesLandingHero({ imageOverride }: { imageOverride?: string }) {
   return (
     <WhiteCoverHeroLayout
-      image={HERO_ART}
+      image={imageOverride || HERO_ART}
       ariaLabelledBy="gemstones-landing-title"
       variant="wide"
     >

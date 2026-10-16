@@ -2,8 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { stitchImages } from "@/config/stitch-images";
-
 export function StitchFounder() {
   return (
     <section className="overflow-hidden bg-stone-gray py-[var(--section-padding)]">
@@ -11,8 +9,8 @@ export function StitchFounder() {
         <div className="grid items-center gap-14 md:gap-16 lg:grid-cols-2 lg:gap-20 xl:gap-28">
           <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-gray sm:aspect-[3/2] lg:aspect-[4/3]">
             <Image
-              src={stitchImages.founder}
-              alt="Fine Ceylon gemstone on gemology reference book with expert inspection"
+              src="/images/covers/book-appointment.webp"
+              alt="Book a private gemstone consultation with Ceyloe"
               fill
               className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 45vw"
@@ -42,8 +40,9 @@ export function StitchFounder() {
 
             <p className="mt-10 text-base leading-relaxed text-on-surface-variant md:text-lg">
               Combining deep knowledge of gemstones, direct-to-source purchasing, and a truly custom design
-              process, Ceyloe connects Sri Lankan heritage with collectors worldwide — from our mining office in
-              Minuwangoda to our head office in Kalgoorlie.
+              process, Ceyloe connects Sri Lankan heritage with collectors worldwide — from our mining office in{" "}
+              <strong className="font-bold text-deep-navy">Minuwangoda, Sri Lanka</strong> to our head office at{" "}
+              <strong className="font-bold text-deep-navy">273 Hannan Street, Kalgoorlie WA</strong>.
             </p>
 
             <div className="mt-12 flex flex-wrap items-center gap-6">

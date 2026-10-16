@@ -15,6 +15,7 @@ import { getFilterOptions, getCatalogBounds } from "@/lib/product-utils";
 import { PRODUCT_CATEGORIES } from "@/config/product-categories";
 import { getCatalogCoverKey, getWebCover } from "@/config/web-covers";
 import type { CatalogFilters as Filters } from "@/types";
+import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
   title: "Gemstone Catalog",
@@ -70,7 +71,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     maxCarat: params.maxCarat ? Number(params.maxCarat) : undefined,
   };
 
-  const allProducts = await loadAllProducts();
+  const [allProducts, heroImages] = await Promise.all([loadAllProducts(), getHeroImages()]);
   const { products, selectionProducts, categories } = deriveCatalogView(
     allProducts,
     filters,
@@ -90,7 +91,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   return (
     <div className="bg-white">
       {isJewellery ? (
-        <FineJewelleryHero />
+        <FineJewelleryHero imageOverride={heroImages.fineJewellery} />
       ) : (
         <CatalogLandingHero
           cover={cover}

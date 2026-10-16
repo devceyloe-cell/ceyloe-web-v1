@@ -9,10 +9,10 @@ const HERO_IMAGE = "/images/covers/hero-image.webp";
 /**
  * Homepage hero — Natural Ceylon Gemstones over hero artwork with black overlay.
  */
-export function LandingHero() {
+export function LandingHero({ imageOverride }: { imageOverride?: string }) {
   return (
     <WhiteCoverHeroLayout
-      image={HERO_IMAGE}
+      image={imageOverride || HERO_IMAGE}
       ariaLabelledBy="home-hero-title"
       variant="wide"
       overlay="black"

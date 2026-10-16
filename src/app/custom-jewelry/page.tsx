@@ -7,6 +7,7 @@ import { CustomJewelryForm } from "@/components/forms/custom-jewelry-form";
 import { BespokeLandingHero } from "@/components/bespoke/bespoke-landing-hero";
 import { bespokeLandingCards } from "@/data/bespoke-content";
 import { Price } from "@/components/ui/price";
+import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
   title: "Bespoke Jewellery",
@@ -24,7 +25,7 @@ interface CustomJewelryPageProps {
 }
 
 export default async function CustomJewelryPage({ searchParams }: CustomJewelryPageProps) {
-  const params = await searchParams;
+  const [params, heroImages] = await Promise.all([searchParams, getHeroImages()]);
   const stone = params.stone?.trim() || "";
   const handle = params.handle?.trim() || "";
   const image = params.image?.trim() || "";
@@ -33,7 +34,7 @@ export default async function CustomJewelryPage({ searchParams }: CustomJewelryP
 
   return (
     <div className="bg-white">
-      <BespokeLandingHero />
+      <BespokeLandingHero imageOverride={heroImages.bespoke} />
 
       <Container id="design-form" className="scroll-mt-28 py-12 md:py-20">
         {hasSelectedGem && (

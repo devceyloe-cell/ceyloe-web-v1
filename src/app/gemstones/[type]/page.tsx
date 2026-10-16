@@ -16,6 +16,7 @@ import {
 import { getProducts } from "@/services/product-service";
 import { getCatalogBounds, getProductCaratWeight } from "@/lib/product-utils";
 import type { CatalogFilters as Filters } from "@/types";
+import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const dynamic = "force-dynamic";
 
@@ -61,9 +62,12 @@ export default async function GemstoneTypePage({
   const sort = (query.sort as Filters["sort"]) ?? "featured";
 
   // Full category set (no price/carat filters) drives filter Min/Max bounds
-  const categoryProducts = hasSubcategories
-    ? []
-    : await getProducts({ category: config.catalogCategory, sort });
+  const [categoryProducts, heroImages] = await Promise.all([
+    hasSubcategories
+      ? Promise.resolve([])
+      : getProducts({ category: config.catalogCategory, sort }),
+    getHeroImages(),
+  ]);
 
   const bounds = getCatalogBounds(categoryProducts);
 
@@ -86,7 +90,7 @@ export default async function GemstoneTypePage({
 
   return (
     <div className="bg-white">
-      <GemstoneTypeLandingHero config={config} />
+      <GemstoneTypeLandingHero config={config} imageOverride={heroImages[config.slug]} />
 
       <Container id={collectionId} className="scroll-mt-28 py-12 md:py-20">
         <Link

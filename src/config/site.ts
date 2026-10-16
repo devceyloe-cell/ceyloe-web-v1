@@ -13,7 +13,7 @@ export const siteConfig = {
     whatsapp: "61449938172",
     headOffice: {
       label: "Head Office",
-      lines: ["Kalgoorlie WA", "Australia"],
+      lines: ["273 Hannan Street", "Kalgoorlie, WA"],
     },
     miningOffice: {
       label: "Mining and Production",

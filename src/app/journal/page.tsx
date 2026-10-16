@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { EducationPage } from "@/components/journal/education-page";
+import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
   title: "Gemstone Education — Ceyloe",
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
     "Learn about sapphire colours, gemstone treatments, certifications, birthstones, and jewellery care.",
 };
 
-export default function JournalPage() {
-  return <EducationPage />;
+export default async function JournalPage() {
+  const heroImages = await getHeroImages();
+  return <EducationPage imageOverride={heroImages.journal} />;
 }

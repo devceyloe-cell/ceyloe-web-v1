@@ -7,7 +7,7 @@ import { EducationHero } from "@/components/journal/education-hero";
 import { EducationCta } from "@/components/journal/education-cta";
 import { educationTopics } from "@/data/education-content";
 
-export function EducationPage() {
+export function EducationPage({ imageOverride }: { imageOverride?: string }) {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
@@ -22,7 +22,7 @@ export function EducationPage() {
 
   return (
     <div className="bg-[#F7F4EF]">
-      <EducationHero searchValue={query} onSearchChange={setQuery} />
+      <EducationHero searchValue={query} onSearchChange={setQuery} imageOverride={imageOverride} />
 
       <section
         id="education-topics"

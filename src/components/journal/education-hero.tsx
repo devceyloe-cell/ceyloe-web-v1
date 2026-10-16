@@ -9,9 +9,10 @@ import { educationHero } from "@/data/education-content";
 interface EducationHeroProps {
   onSearchChange?: (query: string) => void;
   searchValue?: string;
+  imageOverride?: string;
 }
 
-export function EducationHero({ onSearchChange, searchValue }: EducationHeroProps) {
+export function EducationHero({ onSearchChange, searchValue, imageOverride }: EducationHeroProps) {
   const [localQuery, setLocalQuery] = useState("");
   const query = searchValue ?? localQuery;
 
@@ -24,7 +25,7 @@ export function EducationHero({ onSearchChange, searchValue }: EducationHeroProp
 
   return (
     <>
-      <EducationLandingHero />
+      <EducationLandingHero imageOverride={imageOverride} />
       <section className="border-b border-border bg-white px-[var(--margin-mobile)] py-6 md:px-[var(--margin-desktop)] md:py-8">
         <FadeIn className="mx-auto max-w-[720px]">
           <label className="relative block">

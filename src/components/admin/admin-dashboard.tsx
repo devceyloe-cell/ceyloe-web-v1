@@ -8,6 +8,7 @@ import {
   FilePlus2,
   FileText,
   Gem,
+  ImagePlay,
   Images,
   Pencil,
   Users,
@@ -72,6 +73,14 @@ const modules = [
     statKey: "pages" as const,
     accent: "bg-amber-500/10 text-amber-700",
   },
+  {
+    href: "/admin/hero-images",
+    label: "Hero Images",
+    description: "Upload and crop hero artwork for every page",
+    icon: ImagePlay,
+    statKey: null as unknown as keyof DashboardStats,
+    accent: "bg-teal-500/10 text-teal-700",
+  },
 ];
 
 export function AdminDashboard({
@@ -130,7 +139,7 @@ export function AdminDashboard({
         <section className="mb-10 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {modules.map((mod) => {
             const Icon = mod.icon;
-            const count = stats[mod.statKey];
+            const count = mod.statKey ? stats[mod.statKey] : null;
             const badge =
               "badgeKey" in mod && mod.badgeKey && stats[mod.badgeKey] > 0
                 ? stats[mod.badgeKey]
@@ -153,7 +162,9 @@ export function AdminDashboard({
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-4 text-3xl font-light tabular-nums text-foreground">{count}</p>
+                {count !== null && (
+                  <p className="mt-4 text-3xl font-light tabular-nums text-foreground">{count}</p>
+                )}
                 <h2 className="mt-1 text-sm font-semibold text-foreground">{mod.label}</h2>
                 <p className="mt-1 flex-1 text-xs leading-relaxed text-muted">{mod.description}</p>
                 <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-gold opacity-80 transition group-hover:opacity-100">
