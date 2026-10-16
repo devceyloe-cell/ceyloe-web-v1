@@ -39,7 +39,7 @@ export function emptyProduct(): Product {
     title: "",
     description: "",
     price: 0,
-    currency: "USD",
+    currency: "AUD",
     category: "sapphires",
     image: "",
     images: [],
@@ -125,8 +125,6 @@ export function ProductEditor({ initial }: ProductEditorProps) {
   }
 
   async function uploadFile(file: File) {
-    setUploading(true);
-    setError("");
     const formData = new FormData();
     formData.append("file", file);
     const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
@@ -134,7 +132,16 @@ export function ProductEditor({ initial }: ProductEditorProps) {
     if (res.ok) {
       addGalleryImage(data.url);
     } else {
-      setError(data.error || "Upload failed");
+      setError(data.error || `Upload failed: ${file.name}`);
+    }
+  }
+
+  async function uploadFiles(files: FileList | File[]) {
+    setUploading(true);
+    setError("");
+    const list = Array.from(files);
+    for (const file of list) {
+      await uploadFile(file);
     }
     setUploading(false);
   }
@@ -330,15 +337,15 @@ export function ProductEditor({ initial }: ProductEditorProps) {
                   </div>
                   <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs transition hover:border-gold">
                     <Upload className="h-3.5 w-3.5" />
-                    {uploading ? "Uploading…" : "Upload"}
+                    {uploading ? "Uploading…" : "Upload images"}
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
                       className="hidden"
                       disabled={uploading}
                       onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) await uploadFile(file);
+                        if (e.target.files?.length) await uploadFiles(e.target.files);
                         e.target.value = "";
                       }}
                     />
@@ -397,11 +404,11 @@ export function ProductEditor({ initial }: ProductEditorProps) {
                         <input
                           type="file"
                           accept="image/*"
+                          multiple
                           className="hidden"
                           disabled={uploading}
                           onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) await uploadFile(file);
+                            if (e.target.files?.length) await uploadFiles(e.target.files);
                             e.target.value = "";
                           }}
                         />
@@ -411,16 +418,16 @@ export function ProductEditor({ initial }: ProductEditorProps) {
                 ) : (
                   <label className="flex cursor-pointer flex-col items-center justify-center gap-2 border border-dashed border-border px-4 py-10 text-center transition hover:border-gold">
                     <ImagePlus className="h-8 w-8 text-muted" />
-                    <p className="text-sm text-muted">Drop or upload product photos</p>
-                    <span className="text-xs text-gold">Choose files</span>
+                    <p className="text-sm text-muted">Upload product photos</p>
+                    <span className="text-xs text-gold">Choose one or more files</span>
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
                       className="hidden"
                       disabled={uploading}
                       onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) await uploadFile(file);
+                        if (e.target.files?.length) await uploadFiles(e.target.files);
                         e.target.value = "";
                       }}
                     />
@@ -559,7 +566,7 @@ export function ProductEditor({ initial }: ProductEditorProps) {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className={labelClass}>Price (USD)</label>
+                    <label className={labelClass}>Price (AUD)</label>
                     <input
                       type="number"
                       min={0}
