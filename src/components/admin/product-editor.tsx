@@ -53,6 +53,7 @@ export function emptyProduct(): Product {
 
 const SPEC_FIELDS = [
   ["carat", "Carat"],
+  ["dimensions", "Dimensions"],
   ["color", "Color"],
   ["clarity", "Clarity"],
   ["cut", "Cut"],
