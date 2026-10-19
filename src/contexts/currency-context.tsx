@@ -129,3 +129,4 @@ export function useCurrency() {
 }
 
 export { BASE_CURRENCY };
+// Base catalog currency is AUD — all product prices are stored and entered in AUD.

@@ -4,6 +4,7 @@ const CACHE_TTL_MS = 60 * 60 * 1000;
 let cachedRates: Record<string, number> | null = null;
 let cachedAt = 0;
 
+/** Fetches exchange rates from AUD (the base catalog currency). */
 export async function getExchangeRatesFromUsd(): Promise<Record<string, number>> {
   if (cachedRates && Date.now() - cachedAt < CACHE_TTL_MS) {
     return cachedRates;
@@ -30,11 +31,12 @@ export async function getExchangeRatesFromUsd(): Promise<Record<string, number>>
   return fallbackRatesFromUsd;
 }
 
+/** Converts an amount in AUD (base currency) to the target currency. */
 export function convertFromUsd(
-  amountUsd: number,
+  amountAud: number,
   targetCurrency: string,
   rates: Record<string, number>,
 ): number {
   const rate = rates[targetCurrency] ?? fallbackRatesFromUsd[targetCurrency] ?? 1;
-  return amountUsd * rate;
+  return amountAud * rate;
 }

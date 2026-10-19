@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     const { products } = loaded;
     const baseUrl = getRequestBaseUrl(request);
-    const currency = (products[0]?.currency || "USD").toLowerCase();
+    const currency = (products[0]?.currency || "AUD").toLowerCase();
     const stripe = getStripe();
     const fromCart = handles.length > 1 || body?.source === "cart";
     const cancelUrl = fromCart

@@ -3,7 +3,7 @@
 import { useCurrency } from "@/contexts/currency-context";
 
 interface PriceProps {
-  /** Amount in USD (base catalog currency) */
+  /** Amount in AUD (base catalog currency) */
   amount: number;
   className?: string;
 }

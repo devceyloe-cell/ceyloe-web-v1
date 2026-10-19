@@ -5,8 +5,8 @@ export interface CurrencyOption {
   country: string;
 }
 
-/** Base catalog prices are stored in USD; rates convert from USD. */
-export const BASE_CURRENCY = "USD";
+/** Base catalog prices are stored in AUD; rates convert from AUD. */
+export const BASE_CURRENCY = "AUD";
 
 export const currencyOptions: CurrencyOption[] = [
   { code: "AUD", symbol: "A$", label: "AUD $", country: "Australia" },
@@ -32,21 +32,21 @@ export function getCurrencyOption(code: string): CurrencyOption {
   return currencyOptions.find((c) => c.code === code) ?? defaultCurrency;
 }
 
-/** Fallback USD cross-rates when live API is unavailable. */
+/** Fallback AUD cross-rates when live API is unavailable (1 AUD = X). */
 export const fallbackRatesFromUsd: Record<string, number> = {
-  USD: 1,
-  AUD: 1.55,
-  GBP: 0.79,
-  EUR: 0.92,
-  CAD: 1.36,
-  NZD: 1.67,
-  SGD: 1.34,
-  HKD: 7.82,
-  JPY: 149,
-  AED: 3.67,
-  CHF: 0.88,
-  LKR: 300,
-  INR: 83,
-  CNY: 7.24,
-  KRW: 1320,
+  AUD: 1,
+  USD: 0.64,
+  GBP: 0.51,
+  EUR: 0.59,
+  CAD: 0.88,
+  NZD: 1.08,
+  SGD: 0.86,
+  HKD: 5.02,
+  JPY: 96,
+  AED: 2.35,
+  CHF: 0.57,
+  LKR: 192,
+  INR: 53,
+  CNY: 4.64,
+  KRW: 860,
 };

@@ -11,7 +11,7 @@ const baseProducts: Product[] = [
     description:
       "A stunning teal sapphire with exceptional brilliance, ethically mined from the gem-rich soils of Sri Lanka.",
     price: 1931,
-    currency: "USD",
+    currency: "AUD",
     category: "sapphires",
     image: "/images/Sapphires/14-2_web-1.jpg",
     images: [
@@ -42,7 +42,7 @@ const baseProducts: Product[] = [
     description:
       "Radiant yellow sapphire with warm golden hues, perfect for bespoke jewellery settings.",
     price: 2332,
-    currency: "USD",
+    currency: "AUD",
     category: "sapphires",
     image: "/images/Sapphires/05-3.jpg",
     images: ["/images/Sapphires/05-3.jpg", "/images/Sapphires/13-2.jpg_web.jpg"],
@@ -69,7 +69,7 @@ const baseProducts: Product[] = [
     description:
       "Classic Ceylon blue sapphire with deep, velvety color and exceptional transparency.",
     price: 2030,
-    currency: "USD",
+    currency: "AUD",
     category: "sapphires",
     image: "/images/Sapphires/1112023001-8.jpg",
     images: ["/images/Sapphires/1112023001-8.jpg"],
@@ -95,7 +95,7 @@ const baseProducts: Product[] = [
     description:
       "Rare padparadscha with the coveted pink-orange sunset hue — among the most sought-after sapphires.",
     price: 4200,
-    currency: "USD",
+    currency: "AUD",
     category: "sapphires",
     image: "/images/Sapphires/1112023001-9.jpg",
     images: ["/images/Sapphires/1112023001-9.jpg"],
@@ -121,7 +121,7 @@ const baseProducts: Product[] = [
     description:
       "Statement blue sapphire with remarkable size and presence, ideal for centre-stone settings.",
     price: 11400,
-    currency: "USD",
+    currency: "AUD",
     category: "sapphires",
     image: "/images/Sapphires/1112023001-10.jpg",
     images: ["/images/Sapphires/1112023001-10.jpg"],
@@ -147,7 +147,7 @@ const baseProducts: Product[] = [
     description:
       "Vivid green tsavorite garnet with exceptional fire — a rare alternative to emerald.",
     price: 3248,
-    currency: "USD",
+    currency: "AUD",
     category: "garnet",
     image: "/images/Garnet/1112023001-1.jpg",
     images: ["/images/Garnet/1112023001-1.jpg", "/images/Garnet/1112023001-2.jpg"],
@@ -174,7 +174,7 @@ const baseProducts: Product[] = [
     description:
       "Brilliant red spinel with ruby-like saturation, untreated and fully natural.",
     price: 1850,
-    currency: "USD",
+    currency: "AUD",
     category: "spinel",
     image: "/images/Spinel/110423001-14.jpg",
     images: ["/images/Spinel/110423001-14.jpg", "/images/Spinel/110423001-15.jpg"],
@@ -200,7 +200,7 @@ const baseProducts: Product[] = [
     description:
       "Electric blue zircon with extraordinary dispersion — often mistaken for tanzanite at a fraction of the price.",
     price: 980,
-    currency: "USD",
+    currency: "AUD",
     category: "zircon",
     image: "/images/Zircon/110423001-24.jpg",
     images: ["/images/Zircon/110423001-24.jpg"],
@@ -226,7 +226,7 @@ const baseProducts: Product[] = [
     description:
       "Handcrafted fine jewellery featuring a Ceylon sapphire centre stone with diamond accents.",
     price: 8500,
-    currency: "USD",
+    currency: "AUD",
     category: "jewellery",
     image: "/images/Jewellery/130723001-1.jpg",
     images: ["/images/Jewellery/130723001-1.jpg", "/images/Jewellery/130723001-4.jpg"],
@@ -249,7 +249,7 @@ const baseProducts: Product[] = [
     description:
       "Elegant pendant featuring a natural Ceylon sapphire in a refined gold setting.",
     price: 4200,
-    currency: "USD",
+    currency: "AUD",
     category: "jewellery",
     image: "/images/Jewellery/130723001-4.jpg",
     images: ["/images/Jewellery/130723001-4.jpg"],
@@ -271,7 +271,7 @@ const baseProducts: Product[] = [
     description:
       "Handcrafted earrings pairing natural sapphires with brilliant diamond accents.",
     price: 5600,
-    currency: "USD",
+    currency: "AUD",
     category: "jewellery",
     image: "/images/Jewellery/still-10.jpg",
     images: ["/images/Jewellery/still-10.jpg", "/images/Jewellery/still-9.jpg"],
@@ -292,7 +292,7 @@ const baseProducts: Product[] = [
     description:
       "Bespoke bracelet design featuring natural sapphires in an elegant chain setting.",
     price: 7200,
-    currency: "USD",
+    currency: "AUD",
     category: "jewellery",
     image: "/images/hero/slide-3-desktop.webp",
     images: ["/images/hero/slide-3-desktop.webp", "/images/hero/slide-3-tablet.webp"],
