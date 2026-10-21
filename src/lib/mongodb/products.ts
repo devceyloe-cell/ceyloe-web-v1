@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/mongodb/client";
+import { normalizeAvailability } from "@/lib/product-availability";
 import type { Product } from "@/types";
 
 const COLLECTION = "products";
@@ -9,7 +10,13 @@ type StoredProductDoc = StoredProduct & { _id: ObjectId };
 
 function toProduct(doc: StoredProductDoc): Product {
   const { _id, ...rest } = doc;
-  return { ...rest, id: _id.toString() };
+  const availability = normalizeAvailability(rest.availability, rest.inStock);
+  return {
+    ...rest,
+    id: _id.toString(),
+    availability,
+    inStock: availability === "available",
+  };
 }
 
 function slugify(text: string) {
@@ -82,12 +89,15 @@ export async function saveProductToDb(product: Product): Promise<Product> {
   if (!handle) throw new Error("Handle is required");
 
   const now = new Date().toISOString();
+  const availability = normalizeAvailability(product.availability, product.inStock);
   const fields: StoredProduct = {
     ...product,
     handle,
     image: product.image || product.images[0] || "",
     images: product.images.length > 0 ? product.images : product.image ? [product.image] : [],
     createdAt: product.createdAt || now,
+    availability,
+    inStock: availability === "available",
   };
 
   const collection = db.collection<StoredProduct>(COLLECTION);

@@ -8,6 +8,8 @@ import { checkoutActionIconClass } from "@/components/product/afterpay-mark";
 interface BuyNowButtonProps {
   handle: string;
   inStock?: boolean;
+  /** Shown when not purchasable (e.g. "Sold out" or "Hold"). */
+  unavailableLabel?: string;
   className?: string;
   size?: "sm" | "md";
 }
@@ -18,6 +20,7 @@ const shell =
 export function BuyNowButton({
   handle,
   inStock = true,
+  unavailableLabel = "Sold out",
   className,
   size = "sm",
 }: BuyNowButtonProps) {
@@ -55,7 +58,7 @@ export function BuyNowButton({
   if (!inStock) {
     return (
       <span className={cn(shell, sizeClass, "bg-surface-dim text-muted", className)}>
-        Sold out
+        {unavailableLabel}
       </span>
     );
   }

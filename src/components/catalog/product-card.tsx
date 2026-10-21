@@ -5,6 +5,12 @@ import Image from "next/image";
 import { Price } from "@/components/ui/price";
 import { BuyNowButton } from "@/components/product/buy-now-button";
 import { AfterpayButton } from "@/components/product/afterpay-button";
+import { ProductStatusBanner } from "@/components/product/product-status-banner";
+import {
+  availabilityLabel,
+  getProductAvailability,
+  isProductPurchasable,
+} from "@/lib/product-availability";
 import type { Product } from "@/types";
 
 interface ProductCardProps {
@@ -14,6 +20,9 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const darkImage =
     product.image.includes("/hero/slide-") || product.handle === "custom-sapphire-bracelet";
+  const purchasable = isProductPurchasable(product);
+  const status = getProductAvailability(product);
+  const unavailableLabel = status === "hold" ? "Hold" : availabilityLabel("sold_out");
 
   return (
     <div className="group relative">
@@ -30,11 +39,12 @@ export function ProductCard({ product }: ProductCardProps) {
             className="object-cover"
             sizes="(max-width: 640px) 100vw, 33vw"
           />
-          {product.isNew && (
-            <span className="label-caps absolute left-3 top-3 bg-deep-navy px-2 py-1 text-white">
+          <ProductStatusBanner product={product} />
+          {product.isNew && purchasable ? (
+            <span className="label-caps absolute left-3 top-3 z-10 bg-deep-navy px-2 py-1 text-white">
               New
             </span>
-          )}
+          ) : null}
         </div>
         <div className="text-center">
           <h3 className="font-caslon text-xl transition-colors group-hover:text-rich-gold">
@@ -47,8 +57,12 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
       <div className="mx-auto mt-5 flex w-full max-w-[280px] flex-wrap items-start gap-2">
-        <BuyNowButton handle={product.handle} inStock={product.inStock} />
-        <AfterpayButton handle={product.handle} inStock={product.inStock} />
+        <BuyNowButton
+          handle={product.handle}
+          inStock={purchasable}
+          unavailableLabel={unavailableLabel}
+        />
+        <AfterpayButton handle={product.handle} inStock={purchasable} />
       </div>
     </div>
   );

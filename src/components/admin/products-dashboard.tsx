@@ -7,14 +7,19 @@ import { Eye, Gem, Pencil, Plus, Search } from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
-import type { Product } from "@/types";
+import { ProductStatusBanner } from "@/components/product/product-status-banner";
+import {
+  availabilityLabel,
+  getProductAvailability,
+} from "@/lib/product-availability";
+import type { Product, ProductAvailability } from "@/types";
 
 interface ProductsDashboardProps {
   products: Product[];
   mongoConfigured: boolean;
 }
 
-type StockFilter = "all" | "in" | "out";
+type StockFilter = "all" | ProductAvailability;
 type SortKey = "newest" | "title" | "price-asc" | "price-desc";
 
 function productImage(product: Product) {
@@ -73,8 +78,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
     const q = query.trim().toLowerCase();
     let list = products.filter((p) => {
       if (category !== "all" && p.category !== category) return false;
-      if (stock === "in" && !p.inStock) return false;
-      if (stock === "out" && p.inStock) return false;
+      if (stock !== "all" && getProductAvailability(p) !== stock) return false;
       if (!q) return true;
       return (
         p.title.toLowerCase().includes(q) ||
@@ -100,7 +104,13 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
     return list;
   }, [products, query, category, stock, sort]);
 
-  const inStock = products.filter((p) => p.inStock).length;
+  const availableCount = products.filter(
+    (p) => getProductAvailability(p) === "available",
+  ).length;
+  const soldOutCount = products.filter(
+    (p) => getProductAvailability(p) === "sold_out",
+  ).length;
+  const holdCount = products.filter((p) => getProductAvailability(p) === "hold").length;
 
   return (
     <>
@@ -114,7 +124,8 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
               Click a gem to edit · images from the catalog
               {products.length > 0 ? (
                 <span className="ml-2 rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold">
-                  {products.length} total · {inStock} in stock
+                  {products.length} total · {availableCount} available · {soldOutCount} sold
+                  out · {holdCount} hold
                 </span>
               ) : null}
             </p>
@@ -204,9 +215,10 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                   className="rounded-md border border-border bg-background px-3 py-2.5 text-sm outline-none ring-gold/40 focus:ring-2"
                   aria-label="Filter by stock"
                 >
-                  <option value="all">All stock</option>
-                  <option value="in">In stock</option>
-                  <option value="out">Out of stock</option>
+                  <option value="all">All availability</option>
+                  <option value="available">Available</option>
+                  <option value="sold_out">Sold out</option>
+                  <option value="hold">Hold</option>
                 </select>
                 <select
                   value={sort}
@@ -271,16 +283,13 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                           )}
                         </Link>
 
-                        <div className="pointer-events-none absolute left-2 top-2 z-10 flex flex-wrap gap-1.5">
-                          {product.inStock ? (
+                        <ProductStatusBanner product={product} />
+                        <div className="pointer-events-none absolute left-2 top-12 z-10 flex flex-wrap gap-1.5">
+                          {getProductAvailability(product) === "available" ? (
                             <span className="rounded-full bg-emerald-600/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur">
-                              In stock
+                              {availabilityLabel("available")}
                             </span>
-                          ) : (
-                            <span className="rounded-full bg-neutral-800/85 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur">
-                              Out of stock
-                            </span>
-                          )}
+                          ) : null}
                           {product.featured ? (
                             <span className="rounded-full bg-gold/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white">
                               Featured

@@ -4,13 +4,16 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Images, Maximize2, Play, X } from "lucide-react";
 import { ProductVideo } from "@/components/product/product-video";
+import { ProductStatusBanner } from "@/components/product/product-status-banner";
 import { cn } from "@/lib/utils";
+import type { Product } from "@/types";
 
 interface ProductMediaGalleryProps {
   images: string[];
   title: string;
   videoUrl?: string;
   poster?: string;
+  product?: Pick<Product, "availability" | "inStock">;
 }
 
 type MediaTab = "photos" | "video";
@@ -20,6 +23,7 @@ export function ProductMediaGallery({
   title,
   videoUrl,
   poster,
+  product,
 }: ProductMediaGalleryProps) {
   const galleryImages = images.length > 0 ? images : poster ? [poster] : [];
   const [activeIndex, setActiveIndex] = useState(0);
@@ -101,6 +105,7 @@ export function ProductMediaGallery({
         </div>
 
         <div className="relative aspect-square overflow-hidden border border-border bg-surface-elevated">
+          {product ? <ProductStatusBanner product={product} /> : null}
           {tab === "video" && hasVideo ? (
             <ProductVideo
               variant="gallery"
@@ -121,7 +126,7 @@ export function ProductMediaGallery({
               <button
                 type="button"
                 onClick={() => setFullscreen(true)}
-                className="absolute top-3 right-3 flex h-10 w-10 items-center justify-center bg-black/55 text-white transition-colors hover:bg-black/75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold"
+                className="absolute top-3 right-3 z-20 flex h-10 w-10 items-center justify-center bg-black/55 text-white transition-colors hover:bg-black/75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold"
                 aria-label="Zoom image"
               >
                 <Maximize2 className="h-4 w-4" />

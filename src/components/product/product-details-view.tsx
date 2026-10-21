@@ -51,6 +51,7 @@ export function ProductDetailsView({
               title={product.title}
               videoUrl={product.videoUrl}
               poster={product.image}
+              product={product}
             />
             <ProductInformation
               product={product}

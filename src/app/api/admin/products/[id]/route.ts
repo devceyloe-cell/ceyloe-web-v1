@@ -7,6 +7,7 @@ import {
   isHandleTakenInDb,
   saveProductToDb,
 } from "@/lib/mongodb/products";
+import { normalizeAvailability } from "@/lib/product-availability";
 import type { Product } from "@/types";
 
 async function requireAuth() {
@@ -70,6 +71,8 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: "Handle already exists" }, { status: 400 });
   }
 
+  const availability = normalizeAvailability(body.availability, body.inStock ?? true);
+
   const saved = await saveProductToDb({
     ...body,
     id,
@@ -78,7 +81,8 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     images: body.images?.length ? body.images : body.image ? [body.image] : [],
     image: body.image || body.images?.[0] || "",
     specs: body.specs || {},
-    inStock: body.inStock ?? true,
+    availability,
+    inStock: availability === "available",
   });
 
   return NextResponse.json({ product: saved });

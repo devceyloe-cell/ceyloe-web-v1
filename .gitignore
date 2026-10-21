@@ -27,6 +27,7 @@
 *.pem
 tmp-wc*.json
 tmp-imported-products.json
+/backups
 
 # debug
 npm-debug.log*

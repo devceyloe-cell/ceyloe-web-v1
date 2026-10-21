@@ -8,6 +8,7 @@ import { Price } from "@/components/ui/price";
 import { useCart } from "@/contexts/cart-context";
 import { siteConfig } from "@/config/site";
 import type { Product } from "@/types";
+import { isProductPurchasable } from "@/lib/product-availability";
 import { cn } from "@/lib/utils";
 
 interface StickyProductActionBarProps {
@@ -45,9 +46,10 @@ export function StickyProductActionBar({
   )}`;
 
   const inCart = hasItem(product.handle);
+  const purchasable = isProductPurchasable(product);
 
   async function handleAdd() {
-    if (!product.inStock || adding || inCart) return;
+    if (!purchasable || adding || inCart) return;
     setAdding(true);
     const result = addItem(product);
     if (result.reason === "auth") {
@@ -91,7 +93,7 @@ export function StickyProductActionBar({
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          {product.inStock && (
+          {purchasable && (
             <button
               type="button"
               onClick={handleAdd}

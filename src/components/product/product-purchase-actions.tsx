@@ -12,6 +12,10 @@ import {
 import type { Product } from "@/types";
 import { cn } from "@/lib/utils";
 import { isAfterpayUiEnabled } from "@/config/afterpay-public";
+import {
+  getProductAvailability,
+  isProductPurchasable,
+} from "@/lib/product-availability";
 
 interface ProductPurchaseActionsProps {
   product: Product;
@@ -33,10 +37,13 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
 
   const alreadyInCart = hasItem(product.handle);
   const afterpayEnabled = isAfterpayUiEnabled();
+  const purchasable = isProductPurchasable(product);
+  const unavailableLabel =
+    getProductAvailability(product) === "hold" ? "Hold" : "Sold Out";
   const bespokeHref = `/custom-jewelry?stone=${encodeURIComponent(product.title)}&handle=${encodeURIComponent(product.handle)}&price=${product.price}&image=${encodeURIComponent(product.image)}`;
 
   async function handleAddToCart() {
-    if (!product.inStock || cartStatus === "adding") return;
+    if (!purchasable || cartStatus === "adding") return;
     setCartStatus("adding");
     const result = addItem(product);
     if (result.ok) {
@@ -54,7 +61,7 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
   }
 
   async function handleBuyNow() {
-    if (!product.inStock || buyLoading) return;
+    if (!purchasable || buyLoading) return;
     setBuyLoading(true);
     setBuyError("");
 
@@ -77,7 +84,7 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
   }
 
   async function handleAfterpay() {
-    if (!product.inStock || afterpayLoading) return;
+    if (!purchasable || afterpayLoading) return;
     if (!showAfterpayForm) {
       setShowAfterpayForm(true);
       setBuyError("");
@@ -122,7 +129,7 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
 
   return (
     <div ref={actionsRef} className="mt-6 space-y-3">
-      {product.inStock ? (
+      {purchasable ? (
         <div className="grid gap-3 sm:grid-cols-2">
           <button
             type="button"
@@ -165,11 +172,11 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
           disabled
           className={cn(btnBase, "w-full cursor-not-allowed bg-surface-dim text-muted")}
         >
-          Sold Out
+          {unavailableLabel}
         </button>
       )}
 
-      {product.inStock && afterpayEnabled ? (
+      {purchasable && afterpayEnabled ? (
         <div className="space-y-3 border border-border bg-surface-elevated/60 p-4">
           <AfterpayPlacement amount={product.price} />
 

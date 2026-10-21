@@ -21,7 +21,13 @@ import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
 import { PRODUCT_CATEGORIES } from "@/config/product-categories";
-import type { Product } from "@/types";
+import type { Product, ProductAvailability } from "@/types";
+import {
+  PRODUCT_AVAILABILITY_OPTIONS,
+  getProductAvailability,
+  withSyncedAvailability,
+} from "@/lib/product-availability";
+import { ProductStatusBanner } from "@/components/product/product-status-banner";
 import { cn } from "@/lib/utils";
 
 function slugify(text: string) {
@@ -47,6 +53,7 @@ export function emptyProduct(): Product {
     isNew: false,
     createdAt: new Date().toISOString(),
     specs: {},
+    availability: "available",
     inStock: true,
   };
 }
@@ -71,7 +78,10 @@ interface ProductEditorProps {
 export function ProductEditor({ initial }: ProductEditorProps) {
   const router = useRouter();
   const isNew = !initial;
-  const [product, setProduct] = useState<Product>(initial ?? emptyProduct());
+  const [product, setProduct] = useState<Product>(() => {
+    if (!initial) return emptyProduct();
+    return withSyncedAvailability(initial, getProductAvailability(initial));
+  });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
@@ -301,16 +311,13 @@ export function ProductEditor({ initial }: ProductEditorProps) {
                   </div>
                 )}
 
-                <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-                  {product.inStock ? (
+                <ProductStatusBanner product={product} />
+                <div className="absolute left-3 top-12 z-20 flex flex-wrap gap-1.5">
+                  {getProductAvailability(product) === "available" ? (
                     <span className="rounded-full bg-emerald-600/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
-                      In stock
+                      Available
                     </span>
-                  ) : (
-                    <span className="rounded-full bg-neutral-800/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
-                      Out of stock
-                    </span>
-                  )}
+                  ) : null}
                   {product.featured ? (
                     <span className="rounded-full bg-gold/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
                       Featured
@@ -593,10 +600,31 @@ export function ProductEditor({ initial }: ProductEditorProps) {
                   </div>
                 </div>
 
-                <div className="grid gap-2 sm:grid-cols-3">
+                <div>
+                  <label className={labelClass}>Availability banner</label>
+                  <select
+                    value={getProductAvailability(product)}
+                    onChange={(e) => {
+                      const availability = e.target.value as ProductAvailability;
+                      setProduct((prev) => withSyncedAvailability(prev, availability));
+                    }}
+                    className={inputClass}
+                  >
+                    {PRODUCT_AVAILABILITY_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="mt-1.5 text-xs text-muted">
+                    Sold out and Hold show a banner on the catalog and product page. Purchase buttons
+                    are disabled for both.
+                  </p>
+                </div>
+
+                <div className="grid gap-2 sm:grid-cols-2">
                   {(
                     [
-                      ["inStock", "In stock", product.inStock],
                       ["featured", "Featured", Boolean(product.featured)],
                       ["isNew", "New arrival", Boolean(product.isNew)],
                     ] as const

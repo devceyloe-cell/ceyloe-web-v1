@@ -12,6 +12,9 @@ export interface GemstoneSpec {
   certificateNumber?: string;
 }
 
+/** Storefront availability — drives Sold out / Hold banners and purchase buttons. */
+export type ProductAvailability = "available" | "sold_out" | "hold";
+
 export interface Product {
   id: string;
   handle: string;
@@ -28,6 +31,9 @@ export interface Product {
   createdAt?: string;
   specs: GemstoneSpec;
   certificationUrl?: string;
+  /** Prefer this over inStock. Legacy products may only have inStock. */
+  availability?: ProductAvailability;
+  /** Kept in sync with availability === "available" for older code paths. */
   inStock: boolean;
 }
 

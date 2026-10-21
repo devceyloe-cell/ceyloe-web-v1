@@ -12,7 +12,8 @@
     "lint": "eslint",
     "generate:hero": "node scripts/generate-hero-webp.mjs",
     "admin:create": "node --env-file=.env.local scripts/create-admin.mjs",
-    "import:ceyloe": "node --env-file=.env.local scripts/import-ceyloe-products.mjs"
+    "import:ceyloe": "node --env-file=.env.local scripts/import-ceyloe-products.mjs",
+    "db:backup": "node --env-file=.env.local scripts/backup-mongodb.mjs"
   },
   "dependencies": {
     "@sanity/client": "^7.22.1",

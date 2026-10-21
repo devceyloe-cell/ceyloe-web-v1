@@ -87,6 +87,7 @@ export function mapShopifyProduct(node: ShopifyProductNode): Product {
       treatment: getMetafield(node.metafields, "treatment"),
       certification: getMetafield(node.metafields, "certification"),
     },
+    availability: node.availableForSale ? "available" : "sold_out",
     inStock: node.availableForSale,
   };
 }
