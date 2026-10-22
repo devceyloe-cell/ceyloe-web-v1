@@ -81,20 +81,20 @@ function toQuote(review: GoogleReviewInput): string | null {
 }
 
 /** Google reviews with displayable copy for the homepage carousel. */
-export const googleReviews: Testimonial[] = rawReviews
-  .map((review, index) => {
-    const quote = toQuote(review);
-    if (!quote) return null;
-    return {
+export const googleReviews: Testimonial[] = rawReviews.flatMap((review, index) => {
+  const quote = toQuote(review);
+  if (!quote) return [];
+  return [
+    {
       id: `google-${index + 1}`,
       name: review.name,
       location: `Google · ${review.dateLabel}`,
       quote,
       rating: review.rating,
       date: review.dateLabel,
-    } satisfies Testimonial;
-  })
-  .filter((item): item is Testimonial => item !== null);
+    },
+  ];
+});
 
 export const googleReviewStats = {
   averageRating: googleBusiness.rating,
