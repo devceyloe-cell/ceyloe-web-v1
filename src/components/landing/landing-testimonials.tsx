@@ -2,12 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { ExternalLink, Star, Quote } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import type { Testimonial } from "@/types";
 
+interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+  pageUrl: string;
+}
+
 interface LandingTestimonialsProps {
   testimonials: Testimonial[];
+  stats?: ReviewStats;
 }
 
 const INTERVAL_MS = 5000;
@@ -33,7 +40,7 @@ function TestimonialCard({ item }: { item: Testimonial }) {
   );
 }
 
-export function LandingTestimonials({ testimonials }: LandingTestimonialsProps) {
+export function LandingTestimonials({ testimonials, stats }: LandingTestimonialsProps) {
   const items = testimonials.length > 0 ? testimonials : [];
   const [index, setIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(VISIBLE_DESKTOP);
@@ -73,6 +80,39 @@ export function LandingTestimonials({ testimonials }: LandingTestimonialsProps) 
           <h2 className="font-caslon mt-4 text-4xl font-normal !text-white md:text-5xl">
             What Our Clients Say
           </h2>
+          {stats ? (
+            <div className="mt-5 flex flex-col items-center gap-2">
+              <div className="flex items-center gap-2">
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${
+                        i < Math.round(stats.averageRating)
+                          ? "fill-rich-gold text-rich-gold"
+                          : "text-white/25"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="font-manrope text-sm font-semibold text-white">
+                  {stats.averageRating.toFixed(1)}
+                </span>
+              </div>
+              <p className="font-manrope text-xs text-white/55">
+                Based on {stats.totalReviews} Google reviews
+              </p>
+              <a
+                href={stats.pageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-manrope inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-rich-gold transition-opacity hover:opacity-80"
+              >
+                View on Google
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          ) : null}
         </div>
 
         <div className="overflow-hidden">

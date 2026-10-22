@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { getDb } from "@/lib/mongodb/client";
 import {
   DEFAULT_HOMEPAGE_COLLECTION,
@@ -7,6 +7,7 @@ import {
 } from "@/lib/homepage/collection";
 
 const SETTINGS_KEY = "homepage-collection";
+const CACHE_TAG = "homepage-collection";
 const REVALIDATE_SECONDS = 60;
 
 async function fetchHomepageCollection(): Promise<HomepageCollection> {
@@ -25,8 +26,8 @@ async function fetchHomepageCollection(): Promise<HomepageCollection> {
 
 export const getHomepageCollection = unstable_cache(
   fetchHomepageCollection,
-  ["homepage-collection"],
-  { revalidate: REVALIDATE_SECONDS, tags: ["homepage-collection"] },
+  [CACHE_TAG],
+  { revalidate: REVALIDATE_SECONDS, tags: [CACHE_TAG] },
 );
 
 export async function saveHomepageCollection(
@@ -55,5 +56,6 @@ export async function saveHomepageCollection(
     { upsert: true },
   );
 
+  revalidateTag(CACHE_TAG, "max");
   return normalized;
 }

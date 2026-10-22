@@ -6,7 +6,7 @@ import { LandingQuality } from "@/components/landing/landing-quality";
 import { LandingBespoke } from "@/components/landing/landing-bespoke";
 import { LandingStory } from "@/components/landing/landing-story";
 import { LandingAppointmentCta } from "@/components/landing/landing-appointment-cta";
-import { facebookReviews } from "@/data/facebook-reviews";
+import { googleReviews, googleReviewStats } from "@/data/google-reviews";
 import { getHomepageCollection } from "@/lib/mongodb/homepage-collection";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
@@ -30,7 +30,7 @@ export default async function HomePage() {
       <LandingQuality />
       <LandingBespoke />
       <LandingStory />
-      <LandingTestimonials testimonials={facebookReviews} />
+      <LandingTestimonials testimonials={googleReviews} stats={googleReviewStats} />
       <LandingAppointmentCta />
     </>
   );
