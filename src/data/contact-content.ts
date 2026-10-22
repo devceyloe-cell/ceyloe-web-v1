@@ -73,9 +73,9 @@ export const contactEnquiry = {
 };
 
 export const contactLocation = {
-  title: "Based in Kalgoorlie, Western Australia",
+  title: "Our Locations",
   description:
-    "Private appointments are available by booking. We also offer secure Australia-wide shipping for our natural gemstones and bespoke jewellery.",
+    "Private appointments are available by booking in Kalgoorlie, Western Australia. Mining and production are based in Minuwangoda, Sri Lanka. We also offer secure Australia-wide shipping for our natural gemstones and bespoke jewellery.",
 };
 
 export const contactCta = {

@@ -26,12 +26,33 @@ export function ContactLocation() {
           <p className="font-manrope mt-4 text-[14px] leading-[1.6] text-[#555555] md:text-[15px]">
             {contactLocation.description}
           </p>
-          <div className="font-manrope mt-6 space-y-2 text-[13px] text-[#666666]">
-            <div className="space-y-0.5">
-              {contact.headOffice.lines.map((line) => (
-                <p key={line} className="font-bold text-[#2A1F14]">{line}</p>
-              ))}
+          <div className="font-manrope mt-6 space-y-5 text-[13px] text-[#666666]">
+            <div className="space-y-1.5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#C89B3C]">
+                {contact.headOffice.label}
+              </p>
+              <div className="space-y-0.5">
+                {contact.headOffice.lines.map((line) => (
+                  <p key={line} className="font-bold text-[#2A1F14]">
+                    {line}
+                  </p>
+                ))}
+              </div>
             </div>
+
+            <div className="space-y-1.5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#C89B3C]">
+                {contact.miningOffice.label}
+              </p>
+              <div className="space-y-0.5">
+                {contact.miningOffice.lines.map((line) => (
+                  <p key={line} className="font-bold text-[#2A1F14]">
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+
             <p>
               <a
                 href={`tel:${contact.phoneInternational.replace(/\s/g, "")}`}

@@ -70,12 +70,90 @@ export const aboutHero = {
     "Luxury jewellery design desk with sapphire ring, loose gemstones, tweezers and a ring sketch",
 };
 
+export interface AboutJourneyPhoto {
+  src: string;
+  alt: string;
+  /** Optional short caption under the photo */
+  caption?: string;
+  /** Layout hint for the mosaic */
+  span?: "wide" | "tall" | "normal";
+}
+
 export const aboutJourney = {
   title: "Our Journey",
   description:
-    "Our journey began with a love for natural gemstones and a vision to bring genuine Ceylon gemstones directly to customers in Australia. Today, Ceyloe proudly offers hand-selected gemstones and custom jewellery services with a personal touch.",
-  image: "/images/about/our-journey.webp",
-  imageAlt: "Sri Lankan mountains with gemstones and a jewellery loupe in the foreground",
+    "Our journey began with a love for natural gemstones and a vision to bring genuine Ceylon gemstones directly to customers in Australia. From the mine pit to the cutting table, every stage is guided by people we know and trust.",
+  /** Legacy single-image field (kept for any older references) */
+  image: "/images/about/journey/banner.webp",
+  imageAlt: "Ceyloe Our Story — from Sri Lankan mines to finished gemstones",
+  banner: {
+    src: "/images/about/journey/banner.webp",
+    alt: "Ceyloe Our Story banner — family heritage in gemstones",
+  },
+  video: {
+    src: "https://xh1ejxayjj3e2ngb.public.blob.vercel-storage.com/about/journey/gem-final.mov",
+    poster: "/images/about/journey/hpp_6169.jpg",
+    caption: "From the mine to the finished gem — our journey in Sri Lanka",
+  },
+  gallery: [
+    {
+      src: "/images/about/journey/4hpp7055.jpg",
+      alt: "Miners working a gem pit in Sri Lanka",
+      caption: "At the pit",
+      span: "wide",
+    },
+    {
+      src: "/images/about/journey/hpp_6169.jpg",
+      alt: "Washing gravel with a traditional wicker basket",
+      caption: "Washing the gravel",
+    },
+    {
+      src: "/images/about/journey/hpp_5805.jpg",
+      alt: "Miner digging in a muddy trench",
+      caption: "Hands in the earth",
+    },
+    {
+      src: "/images/about/journey/hpp_6275.jpg",
+      alt: "A raw find held in an open palm",
+      caption: "The find",
+    },
+    {
+      src: "/images/about/journey/hpp_6087.jpg",
+      alt: "Examining a small stone beside a basket of concentrate",
+      caption: "A closer look",
+    },
+    {
+      src: "/images/about/journey/hpp_5987.jpg",
+      alt: "Washed gravel and sand in a woven basket",
+      caption: "Washed gravel",
+    },
+    {
+      src: "/images/about/journey/hpp_5880.jpg",
+      alt: "Gem mining work in Sri Lanka",
+      caption: "On site",
+    },
+    {
+      src: "/images/about/journey/hpp_6105.jpg",
+      alt: "Mining landscape and work in progress",
+      caption: "The landscape",
+      span: "wide",
+    },
+    {
+      src: "/images/about/journey/hpp_6326.jpg",
+      alt: "Gem mining craftsmanship in Sri Lanka",
+      caption: "Craft & care",
+    },
+    {
+      src: "/images/about/journey/hpp_5903.jpg",
+      alt: "Gem mining day in Sri Lanka",
+      caption: "A day at the mine",
+    },
+    {
+      src: "/images/about/journey/hpp_6056.jpg",
+      alt: "Work around the gem pit",
+      caption: "Alongside the pit",
+    },
+  ] satisfies AboutJourneyPhoto[],
 };
 
 export interface AboutTeamMember {

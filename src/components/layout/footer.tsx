@@ -125,19 +125,29 @@ export function Footer() {
                   info@ceyloe.com
                 </a>
               </p>
-              <div className="space-y-0.5">
-                {contact.headOffice.lines.map((line) => (
-                  <p key={line} className="font-bold text-white">
-                    {line}
-                  </p>
-                ))}
+              <div className="space-y-1.5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-rich-gold">
+                  {contact.headOffice.label}
+                </p>
+                <div className="space-y-0.5">
+                  {contact.headOffice.lines.map((line) => (
+                    <p key={line} className="font-bold text-white">
+                      {line}
+                    </p>
+                  ))}
+                </div>
               </div>
-              <div className="space-y-0.5 pt-3">
-                {contact.miningOffice.lines.map((line) => (
-                  <p key={line} className="font-bold text-white">
-                    {line}
-                  </p>
-                ))}
+              <div className="space-y-1.5 pt-3">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-rich-gold">
+                  {contact.miningOffice.label}
+                </p>
+                <div className="space-y-0.5">
+                  {contact.miningOffice.lines.map((line) => (
+                    <p key={line} className="font-bold text-white">
+                      {line}
+                    </p>
+                  ))}
+                </div>
               </div>
             </address>
 

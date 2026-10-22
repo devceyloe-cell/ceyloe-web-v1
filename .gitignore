@@ -29,6 +29,9 @@ tmp-wc*.json
 tmp-imported-products.json
 /backups
 
+# Large local journey masters (served from Vercel Blob in production)
+/public/images/about/journey/videos/gem-final.mov
+
 # debug
 npm-debug.log*
 yarn-debug.log*
