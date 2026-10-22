@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
   const saved = await saveProductToDb({
     ...body,
     handle,
-    currency: body.currency || "USD",
+    currency: body.currency || "AUD",
     images: body.images?.length ? body.images : body.image ? [body.image] : [],
     image: body.image || body.images?.[0] || "",
     specs: body.specs || {},

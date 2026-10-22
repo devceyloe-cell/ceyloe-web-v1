@@ -77,7 +77,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     ...body,
     id,
     handle,
-    currency: body.currency || "USD",
+    currency: body.currency || "AUD",
     images: body.images?.length ? body.images : body.image ? [body.image] : [],
     image: body.image || body.images?.[0] || "",
     specs: body.specs || {},
