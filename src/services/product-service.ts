@@ -50,11 +50,17 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
   }
 
   if (filters.color) {
-    const wanted = filters.color.toLowerCase();
-    result = result.filter((p) => {
-      const color = p.specs.color?.toLowerCase() ?? "";
-      return color === wanted || color.includes(wanted) || wanted.includes(color);
-    });
+    const wanted = (Array.isArray(filters.color) ? filters.color : [filters.color])
+      .map((c) => c.trim().toLowerCase())
+      .filter(Boolean);
+    if (wanted.length > 0) {
+      result = result.filter((p) => {
+        const color = p.specs.color?.toLowerCase() ?? "";
+        return wanted.some(
+          (w) => color === w || color.includes(w) || w.includes(color),
+        );
+      });
+    }
   }
 
   if (filters.shape) {

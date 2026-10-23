@@ -32,6 +32,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
   const [message, setMessage] = useState("");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
+  const [color, setColor] = useState("all");
   const [stock, setStock] = useState<StockFilter>("all");
   const [sort, setSort] = useState<SortKey>("newest");
 
@@ -74,16 +75,28 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [products]);
 
+  const colors = useMemo(() => {
+    const set = new Set(
+      products
+        .map((p) => p.specs?.color?.trim())
+        .filter((c): c is string => Boolean(c)),
+    );
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [products]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = products.filter((p) => {
       if (category !== "all" && p.category !== category) return false;
+      if (color !== "all" && (p.specs?.color?.trim() || "") !== color) return false;
       if (stock !== "all" && getProductAvailability(p) !== stock) return false;
       if (!q) return true;
+      const productColor = p.specs?.color?.toLowerCase() ?? "";
       return (
         p.title.toLowerCase().includes(q) ||
         p.handle.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q)
+        p.category.toLowerCase().includes(q) ||
+        productColor.includes(q)
       );
     });
 
@@ -102,7 +115,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
     });
 
     return list;
-  }, [products, query, category, stock, sort]);
+  }, [products, query, category, color, stock, sort]);
 
   const availableCount = products.filter(
     (p) => getProductAvailability(p) === "available",
@@ -191,7 +204,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                   type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search title, handle, or category…"
+                  placeholder="Search title, handle, category, or color…"
                   className="w-full rounded-md border border-border bg-background py-2.5 pl-9 pr-3 text-sm outline-none ring-gold/40 placeholder:text-muted focus:ring-2"
                 />
               </label>
@@ -204,6 +217,19 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                 >
                   <option value="all">All categories</option>
                   {categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className="rounded-md border border-border bg-background px-3 py-2.5 text-sm outline-none ring-gold/40 focus:ring-2"
+                  aria-label="Filter by color"
+                >
+                  <option value="all">All colors</option>
+                  {colors.map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>
@@ -247,6 +273,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                   onClick={() => {
                     setQuery("");
                     setCategory("all");
+                    setColor("all");
                     setStock("all");
                   }}
                 >
@@ -331,6 +358,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                         </div>
                         <p className="truncate text-[11px] uppercase tracking-[0.12em] text-muted">
                           {product.category}
+                          {product.specs?.color ? ` · ${product.specs.color}` : null}
                           {product.specs?.carat ? ` · ${product.specs.carat}` : null}
                         </p>
                         <p className="mt-auto pt-1.5 text-sm font-medium text-gold">

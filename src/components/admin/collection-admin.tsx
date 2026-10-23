@@ -5,20 +5,35 @@ import { ExternalLink } from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { CollectionEditor } from "@/components/admin/collection-editor";
 import { NaturalGemstonesEditor } from "@/components/admin/natural-gemstones-editor";
+import { TypeSubcategoriesEditor } from "@/components/admin/type-subcategories-editor";
 import type { HomepageCollection } from "@/lib/homepage/collection";
 import type { NaturalGemstonesSection } from "@/lib/gemstones/natural-categories";
+import type { GemstoneTypeSubcategories } from "@/lib/gemstones/type-subcategories";
 import { cn } from "@/lib/utils";
 
-type Tab = "homepage" | "natural";
+type Tab = "homepage" | "natural" | "sapphires";
 
 interface CollectionAdminProps {
   homepage: HomepageCollection;
   natural: NaturalGemstonesSection;
+  sapphires: GemstoneTypeSubcategories;
   mongoConfigured: boolean;
 }
 
-export function CollectionAdmin({ homepage, natural, mongoConfigured }: CollectionAdminProps) {
+export function CollectionAdmin({
+  homepage,
+  natural,
+  sapphires,
+  mongoConfigured,
+}: CollectionAdminProps) {
   const [tab, setTab] = useState<Tab>("natural");
+
+  const previewHref =
+    tab === "natural"
+      ? "/gemstones#natural-gemstones"
+      : tab === "sapphires"
+        ? "/gemstones/sapphires"
+        : "/#collection";
 
   return (
     <>
@@ -29,11 +44,11 @@ export function CollectionAdmin({ homepage, natural, mongoConfigured }: Collecti
             <p className="text-xs uppercase tracking-[0.2em] text-gold">Site content</p>
             <h1 className="mt-1 font-display text-3xl font-light tracking-tight">Collection</h1>
             <p className="mt-1 text-sm text-muted">
-              Edit Natural Gemstones photos on /gemstones and homepage circle gems
+              Edit Natural Gemstones, sapphire colour cards, and homepage circle gems
             </p>
           </div>
           <a
-            href={tab === "natural" ? "/gemstones#natural-gemstones" : "/#collection"}
+            href={previewHref}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-gold"
@@ -43,7 +58,7 @@ export function CollectionAdmin({ homepage, natural, mongoConfigured }: Collecti
           </a>
         </div>
 
-        <div className="mb-6 flex gap-1 border-b border-border">
+        <div className="mb-6 flex flex-wrap gap-1 border-b border-border">
           <button
             type="button"
             onClick={() => setTab("natural")}
@@ -55,6 +70,18 @@ export function CollectionAdmin({ homepage, natural, mongoConfigured }: Collecti
             )}
           >
             Natural Gemstones
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("sapphires")}
+            className={cn(
+              "px-4 py-2.5 text-sm transition",
+              tab === "sapphires"
+                ? "border-b-2 border-gold font-medium text-gold"
+                : "text-muted hover:text-foreground",
+            )}
+          >
+            Sapphire colours
           </button>
           <button
             type="button"
@@ -72,6 +99,8 @@ export function CollectionAdmin({ homepage, natural, mongoConfigured }: Collecti
 
         {tab === "natural" ? (
           <NaturalGemstonesEditor initial={natural} mongoConfigured={mongoConfigured} />
+        ) : tab === "sapphires" ? (
+          <TypeSubcategoriesEditor initial={sapphires} mongoConfigured={mongoConfigured} />
         ) : (
           <CollectionEditor
             initial={homepage}

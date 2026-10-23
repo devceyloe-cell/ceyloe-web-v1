@@ -25,7 +25,7 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
 
   const current = {
     category: searchParams.get("category") ?? "",
-    color: searchParams.get("color") ?? "",
+    colors: searchParams.getAll("color").filter(Boolean),
     sort: searchParams.get("sort") ?? "featured",
     minPrice: searchParams.get("minPrice") ?? "",
     maxPrice: searchParams.get("maxPrice") ?? "",
@@ -43,7 +43,9 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
   function clearAll() {
     const params = new URLSearchParams();
     if (current.category) params.set("category", current.category);
-    if (current.color) params.set("color", current.color);
+    for (const color of current.colors) {
+      params.append("color", color);
+    }
     const qs = params.toString();
     router.push(qs ? `/catalog?${qs}` : "/catalog");
   }

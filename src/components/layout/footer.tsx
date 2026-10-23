@@ -40,7 +40,7 @@ export function Footer() {
   const { contact } = siteConfig;
 
   return (
-    <footer className="border-t border-white/10 bg-[#111111] pt-8 pb-8 text-white md:pt-10">
+    <footer className="site-footer border-t border-white/10 bg-[#111111] pt-8 pb-8 text-white md:pt-10">
       <Container>
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
           <div>
@@ -81,7 +81,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-manrope mb-6 text-[11px] font-bold uppercase tracking-[0.18em] text-rich-gold">
+            <h4 className="font-manrope mb-6 text-[11px] font-bold uppercase tracking-[0.18em] !text-[#C89B3C]">
               Quick Links
             </h4>
             <ul className="space-y-3">
@@ -96,7 +96,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-manrope mb-6 text-[11px] font-bold uppercase tracking-[0.18em] text-rich-gold">
+            <h4 className="font-manrope mb-6 text-[11px] font-bold uppercase tracking-[0.18em] !text-[#C89B3C]">
               Customer Care
             </h4>
             <ul className="space-y-3">
@@ -111,7 +111,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-manrope mb-6 text-[11px] font-bold uppercase tracking-[0.18em] text-rich-gold">
+            <h4 className="font-manrope mb-6 text-[11px] font-bold uppercase tracking-[0.18em] !text-[#C89B3C]">
               Contact
             </h4>
             <address className="font-manrope space-y-3 text-sm not-italic leading-relaxed text-white/70">

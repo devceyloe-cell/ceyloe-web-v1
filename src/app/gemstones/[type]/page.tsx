@@ -17,6 +17,7 @@ import { getProducts } from "@/services/product-service";
 import { getCatalogBounds, getProductCaratWeight } from "@/lib/product-utils";
 import type { CatalogFilters as Filters } from "@/types";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
+import { getTypeSubcategories } from "@/lib/mongodb/gemstone-type-subcategories";
 
 export const dynamic = "force-dynamic";
 
@@ -57,17 +58,21 @@ export default async function GemstoneTypePage({
   if (!config) notFound();
 
   const collectionId = `${config.slug}-collection`;
-  const hasSubcategories = Boolean(config.subcategories?.length);
 
   const sort = (query.sort as Filters["sort"]) ?? "featured";
 
   // Full category set (no price/carat filters) drives filter Min/Max bounds
-  const [categoryProducts, heroImages] = await Promise.all([
-    hasSubcategories
+  const [categoryProducts, heroImages, typeSubcategories] = await Promise.all([
+    config.subcategories?.length
       ? Promise.resolve([])
       : getProducts({ category: config.catalogCategory, sort }),
     getHeroImages(),
+    getTypeSubcategories(type),
   ]);
+
+  const subcategoryCards =
+    typeSubcategories?.cards ?? config.subcategories ?? undefined;
+  const hasSubcategories = Boolean(subcategoryCards?.length);
 
   const bounds = getCatalogBounds(categoryProducts);
 
@@ -102,7 +107,7 @@ export default async function GemstoneTypePage({
         </Link>
 
         {hasSubcategories ? (
-          <CategoryCardGrid categories={config.subcategories!} />
+          <CategoryCardGrid categories={subcategoryCards!} />
         ) : (
           <div>
             <div className="mb-8">

@@ -76,7 +76,8 @@ export interface SiteContent {
 
 export interface CatalogFilters {
   category?: string;
-  color?: string;
+  /** One colour, or several (`?color=green&color=teal`) — matches any. */
+  color?: string | string[];
   shape?: string;
   origin?: string;
   minPrice?: number;

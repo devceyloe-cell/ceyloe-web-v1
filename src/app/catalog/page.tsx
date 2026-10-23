@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 interface CatalogPageProps {
   searchParams: Promise<{
     category?: string;
-    color?: string;
+    color?: string | string[];
     shape?: string;
     origin?: string;
     sort?: string;
@@ -35,6 +35,16 @@ interface CatalogPageProps {
     minCarat?: string;
     maxCarat?: string;
   }>;
+}
+
+function normalizeColorParam(color?: string | string[]): string | string[] | undefined {
+  if (!color) return undefined;
+  const list = (Array.isArray(color) ? color : [color])
+    .map((c) => c.trim())
+    .filter(Boolean);
+  if (list.length === 0) return undefined;
+  if (list.length === 1) return list[0];
+  return list;
 }
 
 function titleCase(value: string) {
@@ -56,7 +66,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
   const baseFilters: Filters = {
     category: params.category,
-    color: params.color,
+    color: normalizeColorParam(params.color),
     shape: params.shape,
     origin: params.origin,
     sort: (params.sort as Filters["sort"]) ?? "featured",
@@ -80,7 +90,12 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
   const filterOptions = getFilterOptions(allProducts);
   const bounds = getCatalogBounds(selectionProducts);
-  const cover = getWebCover(getCatalogCoverKey(filters.category, filters.color));
+  const coverColor = Array.isArray(filters.color)
+    ? filters.color.length === 1
+      ? filters.color[0]
+      : undefined
+    : filters.color;
+  const cover = getWebCover(getCatalogCoverKey(filters.category, coverColor));
   const back = getCatalogBackLink(filters);
   const categoryLabel =
     PRODUCT_CATEGORIES.find((c) => c.value === filters.category)?.label ??
