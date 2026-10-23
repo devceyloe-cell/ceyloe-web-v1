@@ -39,7 +39,7 @@ export const faqItems: FaqItem[] = [
     id: "returns",
     question: "If we don't like the product, can it be returned?",
     answer:
-      "Please choose carefully before purchasing. We do not accept change-of-mind returns, though store credit may be offered at our discretion. See our Returns & Refunds Policy for full details.",
+      "Ceyloe may offer a change-of-mind exchange within 7 days of purchase or delivery, subject to conditions (original unused condition, certificate and documentation returned, proof of purchase, and no cash refund). Custom or bespoke jewellery is not eligible once production has commenced. See our Returns & Refunds Policy for full details and your rights under Australian Consumer Law.",
   },
   {
     id: "loose-gems",

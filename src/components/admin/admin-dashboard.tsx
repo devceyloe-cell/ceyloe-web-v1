@@ -7,6 +7,7 @@ import {
   Eye,
   FilePlus2,
   FileText,
+  GalleryHorizontal,
   Gem,
   ImagePlay,
   Images,
@@ -72,6 +73,14 @@ const modules = [
     icon: FileText,
     statKey: "pages" as const,
     accent: "bg-amber-500/10 text-amber-700",
+  },
+  {
+    href: "/admin/homepage-banner",
+    label: "Homepage Banner",
+    description: "3–5 sliding hero images on the homepage",
+    icon: GalleryHorizontal,
+    statKey: null as unknown as keyof DashboardStats,
+    accent: "bg-indigo-500/10 text-indigo-700",
   },
   {
     href: "/admin/hero-images",

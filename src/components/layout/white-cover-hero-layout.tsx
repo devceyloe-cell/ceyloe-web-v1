@@ -1,8 +1,11 @@
 import Image from "next/image";
+import { LandingHeroBackground } from "@/components/landing/landing-hero-background";
 import { cn } from "@/lib/utils";
 
 type WhiteCoverHeroLayoutProps = {
-  image: string;
+  image?: string;
+  /** When more than one image is provided, the homepage-style background slides. */
+  images?: string[];
   ariaLabelledBy?: string;
   /** Full-width 1920×800 heroes (home, gemstones). Others use fixed desktop height. */
   variant?: "wide" | "standard";
@@ -17,12 +20,15 @@ type WhiteCoverHeroLayoutProps = {
  */
 export function WhiteCoverHeroLayout({
   image,
+  images,
   ariaLabelledBy,
   variant = "standard",
   overlay = "none",
   children,
 }: WhiteCoverHeroLayoutProps) {
   const isWide = variant === "wide";
+  const slideImages = (images?.length ? images : image ? [image] : []).filter(Boolean);
+  const useSlider = slideImages.length > 1;
 
   return (
     <section
@@ -37,27 +43,33 @@ export function WhiteCoverHeroLayout({
             : "min-h-[clamp(260px,calc(100vw*600/1920),440px)]",
         )}
       >
-        <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
-          <div className="sticky top-0 h-full w-full">
-            <div className="relative h-full w-full">
-              <Image
-                src={image}
-                alt=""
-                fill
-                priority
-                quality={95}
-                sizes="100vw"
-                className="h-full w-full object-cover object-center"
-              />
-              {overlay === "black" ? (
-                <div
-                  className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent"
-                  aria-hidden
-                />
-              ) : null}
+        {useSlider ? (
+          <LandingHeroBackground images={slideImages} overlay={overlay} />
+        ) : (
+          <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+            <div className="sticky top-0 h-full w-full">
+              <div className="relative h-full w-full">
+                {slideImages[0] ? (
+                  <Image
+                    src={slideImages[0]}
+                    alt=""
+                    fill
+                    priority
+                    quality={95}
+                    sizes="100vw"
+                    className="h-full w-full object-cover object-center"
+                  />
+                ) : null}
+                {overlay === "black" ? (
+                  <div
+                    className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent"
+                    aria-hidden
+                  />
+                ) : null}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div
           className={cn(

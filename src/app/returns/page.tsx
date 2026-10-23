@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default function ReturnsPolicyPage() {
-  const { businessName, address, phone, website, websiteUrl, intro } = returnsPolicyContact;
+  const { businessName, address, title: contactTitle } = returnsPolicyContact;
 
   return (
     <>
@@ -69,34 +69,13 @@ export default function ReturnsPolicyPage() {
             ))}
 
             <article>
-              <h2 className="font-display text-2xl font-light text-foreground">Contact Us</h2>
+              <h2 className="font-display text-2xl font-light text-foreground">{contactTitle}</h2>
               <div className="mt-4 space-y-4 text-base leading-relaxed text-muted">
-                <p>{intro}</p>
                 <address className="not-italic">
                   <p className="font-medium text-foreground">{businessName}</p>
                   {address.map((line) => (
                     <p key={line}>{line}</p>
                   ))}
-                  <p className="mt-2">
-                    Phone:{" "}
-                    <a
-                      href={`tel:${phone.replace(/\s/g, "")}`}
-                      className="text-gold underline-offset-2 hover:underline"
-                    >
-                      {phone}
-                    </a>
-                  </p>
-                  <p>
-                    Website:{" "}
-                    <a
-                      href={websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gold underline-offset-2 hover:underline"
-                    >
-                      {website}
-                    </a>
-                  </p>
                 </address>
               </div>
             </article>

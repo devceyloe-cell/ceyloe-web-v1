@@ -1,73 +1,99 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { landingHeroSlides } from "@/data/landing-hero-slides";
+import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-const INTERVAL_MS = 6000;
-const FADE_DURATION = 1.2;
+interface LandingHeroBackgroundProps {
+  images: string[];
+  overlay?: "black" | "none";
+  intervalMs?: number;
+}
 
-export function LandingHeroBackground() {
+export function LandingHeroBackground({
+  images,
+  overlay = "black",
+  intervalMs = 5500,
+}: LandingHeroBackgroundProps) {
+  const slides = images.filter(Boolean);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    if (slides.length <= 1) return;
     const timer = setInterval(() => {
-      setIndex((i) => (i + 1) % landingHeroSlides.length);
-    }, INTERVAL_MS);
-
+      setIndex((i) => (i + 1) % slides.length);
+    }, intervalMs);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length, intervalMs]);
+
+  if (slides.length === 0) return null;
+
+  const current = slides[Math.min(index, slides.length - 1)];
 
   return (
-    <>
-      {landingHeroSlides.map((slide, i) => (
-        <motion.div
-          key={slide.id}
-          initial={false}
-          animate={{ opacity: i === index ? 1 : 0 }}
-          transition={{ duration: FADE_DURATION, ease: "easeInOut" }}
-          className="absolute inset-0"
-          aria-hidden={i !== index}
-        >
-          {slide.images.desktop.endsWith(".png") || slide.images.desktop.endsWith(".jpg") ? (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
-              src={slide.images.desktop}
-              alt={slide.alt}
-              className="h-full w-full object-cover object-center md:object-right"
-              fetchPriority={i === 0 ? "high" : "auto"}
+    <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+      <div className="sticky top-0 h-full w-full">
+        <div className="relative h-full w-full">
+          {slides.length === 1 ? (
+            <Image
+              src={current}
+              alt=""
+              fill
+              priority
+              quality={95}
+              sizes="100vw"
+              className="h-full w-full object-cover object-center"
             />
           ) : (
-            <picture>
-              <source media="(max-width: 767px)" srcSet={slide.images.mobile} type="image/webp" />
-              <source media="(max-width: 1199px)" srcSet={slide.images.tablet} type="image/webp" />
-              <source srcSet={slide.images.desktop} type="image/webp" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={slide.images.desktop}
-                alt={slide.alt}
-                className="h-full w-full object-cover object-center md:object-right"
-                fetchPriority={i === 0 ? "high" : "auto"}
-              />
-            </picture>
+            <AnimatePresence mode="sync">
+              <motion.div
+                key={current + index}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.1, ease: "easeInOut" }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={current}
+                  alt=""
+                  fill
+                  priority={index === 0}
+                  quality={95}
+                  sizes="100vw"
+                  className="h-full w-full object-cover object-center"
+                />
+              </motion.div>
+            </AnimatePresence>
           )}
-        </motion.div>
-      ))}
 
-      <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2">
-        {landingHeroSlides.map((slide, i) => (
-          <button
-            key={slide.id}
-            type="button"
-            aria-label={`Show slide ${i + 1}: ${slide.alt}`}
-            aria-current={i === index ? "true" : undefined}
-            onClick={() => setIndex(i)}
-            className={`h-1 rounded-full transition-all ${
-              i === index ? "w-8 bg-white" : "w-1 bg-white/40 hover:bg-white/70"
-            }`}
-          />
-        ))}
+          {overlay === "black" ? (
+            <div
+              className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent"
+              aria-hidden
+            />
+          ) : null}
+        </div>
       </div>
-    </>
+
+      {slides.length > 1 ? (
+        <div className="pointer-events-auto absolute bottom-4 right-4 z-20 flex gap-1.5 md:bottom-6 md:right-6">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Show banner image ${i + 1}`}
+              aria-current={i === index}
+              onClick={() => setIndex(i)}
+              className={cn(
+                "h-1.5 w-1.5 rounded-full transition sm:h-2 sm:w-2",
+                i === index ? "bg-white" : "bg-white/40 hover:bg-white/70",
+              )}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
   );
 }

@@ -1,18 +1,30 @@
 import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
 import { WhiteCoverHeroLayout } from "@/components/layout/white-cover-hero-layout";
+import { DEFAULT_BANNER_IMAGE } from "@/lib/homepage/banner-slides";
 
 const GOLD = "#C09A4A";
 const BTN_SECONDARY = "#7A8F9A";
-const HERO_IMAGE = "/images/covers/hero-image.webp";
 
 /**
- * Homepage hero — Natural Ceylon Gemstones over hero artwork with black overlay.
+ * Homepage hero — Natural Ceylon Gemstones over sliding banner artwork.
  */
-export function LandingHero({ imageOverride }: { imageOverride?: string }) {
+export function LandingHero({
+  images,
+  imageOverride,
+}: {
+  images?: string[];
+  /** @deprecated Prefer `images` from homepage banner slides. */
+  imageOverride?: string;
+}) {
+  const slideImages =
+    images && images.length > 0
+      ? images
+      : [imageOverride || DEFAULT_BANNER_IMAGE];
+
   return (
     <WhiteCoverHeroLayout
-      image={imageOverride || HERO_IMAGE}
+      images={slideImages}
       ariaLabelledBy="home-hero-title"
       variant="wide"
       overlay="black"

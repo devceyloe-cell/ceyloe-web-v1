@@ -8,7 +8,7 @@ import { LandingStory } from "@/components/landing/landing-story";
 import { LandingAppointmentCta } from "@/components/landing/landing-appointment-cta";
 import { googleReviews, googleReviewStats } from "@/data/google-reviews";
 import { getHomepageCollection } from "@/lib/mongodb/homepage-collection";
-import { getHeroImages } from "@/lib/mongodb/hero-images";
+import { getHomepageBannerSlides } from "@/lib/mongodb/homepage-banner-slides";
 
 const LandingTestimonials = dynamic(() =>
   import("@/components/landing/landing-testimonials").then((m) => m.LandingTestimonials),
@@ -17,14 +17,14 @@ const LandingTestimonials = dynamic(() =>
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [collection, heroImages] = await Promise.all([
+  const [collection, banner] = await Promise.all([
     getHomepageCollection(),
-    getHeroImages(),
+    getHomepageBannerSlides(),
   ]);
 
   return (
     <>
-      <LandingHero imageOverride={heroImages.home} />
+      <LandingHero images={banner.slides.map((s) => s.image)} />
       <LandingValueBar />
       <LandingGemstones collection={collection} />
       <LandingQuality />
