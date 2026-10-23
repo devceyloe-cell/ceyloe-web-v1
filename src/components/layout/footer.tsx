@@ -1,11 +1,28 @@
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { landingNavigation } from "@/config/navigation";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/layout/logo";
-import { CertificationPopup } from "@/components/layout/certification-popup";
 import { PaymentMethods } from "@/components/ui/payment-icons";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
+
+const memberships = [
+  {
+    name: "GIA Member",
+    href: "https://www.gia.edu/",
+    logo: "/images/memberships/gia-logo.svg",
+    width: 100,
+    height: 34,
+  },
+  {
+    name: "GAA WA Member",
+    href: "https://www.gem.org.au/western-australia/",
+    logo: "/images/memberships/gaa-logo.png",
+    width: 100,
+    height: 40,
+  },
+] as const;
 
 const footerLink =
   "font-manrope text-sm text-white/70 transition-colors duration-300 hover:text-rich-gold";
@@ -153,7 +170,34 @@ export function Footer() {
             </address>
 
             <div className="mt-8">
-              <CertificationPopup />
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-rich-gold">
+                Memberships
+              </p>
+              <ul className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
+                {memberships.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 rounded border border-white/15 bg-white px-3 py-2.5 transition hover:border-rich-gold"
+                      aria-label={`${item.name} (opens in a new tab)`}
+                    >
+                      <Image
+                        src={item.logo}
+                        alt=""
+                        width={item.width}
+                        height={item.height}
+                        unoptimized
+                        className="h-8 w-auto object-contain"
+                      />
+                      <span className="font-manrope text-[10px] font-bold uppercase tracking-[0.12em] text-neutral-800">
+                        {item.name}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
