@@ -3,6 +3,7 @@ import { siteConfig } from "@/config/site";
 import { landingNavigation } from "@/config/navigation";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/layout/logo";
+import { CertificationPopup } from "@/components/layout/certification-popup";
 import { PaymentMethods } from "@/components/ui/payment-icons";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
 
@@ -151,10 +152,8 @@ export function Footer() {
               </div>
             </address>
 
-            <div className="mt-8 inline-flex items-center gap-2 rounded border border-white/15 px-3 py-2">
-              <span className="font-manrope text-[10px] font-bold uppercase tracking-[0.14em] text-rich-gold">
-                AGTA Member
-              </span>
+            <div className="mt-8">
+              <CertificationPopup />
             </div>
           </div>
         </div>

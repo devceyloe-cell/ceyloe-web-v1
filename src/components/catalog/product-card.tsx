@@ -10,6 +10,7 @@ import {
   availabilityLabel,
   getProductAvailability,
   isProductPurchasable,
+  shouldShowAvailabilityInsteadOfPrice,
 } from "@/lib/product-availability";
 import type { Product } from "@/types";
 
@@ -52,7 +53,11 @@ export function ProductCard({ product }: ProductCardProps) {
           </h3>
           <div className="gold-divider my-3" />
           <p className="label-caps text-on-surface-variant">
-            <Price amount={product.price} />
+            {shouldShowAvailabilityInsteadOfPrice(product) ? (
+              status === "hold" ? "Hold" : "Sold Out"
+            ) : (
+              <Price amount={product.price} />
+            )}
           </p>
         </div>
       </Link>

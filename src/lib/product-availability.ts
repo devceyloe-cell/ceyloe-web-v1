@@ -51,3 +51,13 @@ export function availabilityLabel(status: ProductAvailability): string {
       return "Available";
   }
 }
+
+/** Prefer status text over a $0 (or blank) price for sold-out / hold pieces. */
+export function shouldShowAvailabilityInsteadOfPrice(
+  product: Pick<Product, "availability" | "inStock" | "price">,
+): boolean {
+  const status = getProductAvailability(product);
+  if (status === "sold_out") return true;
+  if (status === "hold" && !(product.price > 0)) return true;
+  return !(product.price > 0) && status !== "available";
+}

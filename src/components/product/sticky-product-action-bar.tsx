@@ -8,7 +8,11 @@ import { Price } from "@/components/ui/price";
 import { useCart } from "@/contexts/cart-context";
 import { siteConfig } from "@/config/site";
 import type { Product } from "@/types";
-import { isProductPurchasable } from "@/lib/product-availability";
+import {
+  getProductAvailability,
+  isProductPurchasable,
+  shouldShowAvailabilityInsteadOfPrice,
+} from "@/lib/product-availability";
 import { cn } from "@/lib/utils";
 
 interface StickyProductActionBarProps {
@@ -47,6 +51,8 @@ export function StickyProductActionBar({
 
   const inCart = hasItem(product.handle);
   const purchasable = isProductPurchasable(product);
+  const status = getProductAvailability(product);
+  const showStatusPrice = shouldShowAvailabilityInsteadOfPrice(product);
 
   async function handleAdd() {
     if (!purchasable || adding || inCart) return;
@@ -87,7 +93,11 @@ export function StickyProductActionBar({
               <span className="truncate text-white/55">{product.specs.origin}</span>
             )}
             <span className="font-semibold text-rich-gold">
-              <Price amount={product.price} />
+              {showStatusPrice ? (
+                status === "hold" ? "Hold" : "Sold Out"
+              ) : (
+                <Price amount={product.price} />
+              )}
             </span>
           </div>
         </div>

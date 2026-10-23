@@ -131,12 +131,18 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
           </Link>
         )}
 
-        <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
-          <aside className="lg:sticky lg:top-28 lg:self-start">
-            <Suspense fallback={<div className="h-40 animate-pulse bg-surface-elevated" />}>
-              <CatalogFilters categories={categories} {...filterOptions} bounds={bounds} />
-            </Suspense>
-          </aside>
+        <div
+          className={
+            isJewellery ? undefined : "grid gap-10 lg:grid-cols-[280px_1fr]"
+          }
+        >
+          {!isJewellery ? (
+            <aside className="lg:sticky lg:top-28 lg:self-start">
+              <Suspense fallback={<div className="h-40 animate-pulse bg-surface-elevated" />}>
+                <CatalogFilters categories={categories} {...filterOptions} bounds={bounds} />
+              </Suspense>
+            </aside>
+          ) : null}
 
           <div>
             <ProductGrid products={products} />

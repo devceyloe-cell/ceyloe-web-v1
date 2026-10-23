@@ -50,8 +50,9 @@ export const educationTopics: EducationTopic[] = [
   {
     id: "certification-guide",
     number: 3,
-    title: "Certification Guide",
-    description: "Learn how to read gemstone certificates and what to look for.",
+    title: "Certification at Ceyloe",
+    description:
+      "Every Ceyloe gemstone is accompanied by a laboratory certificate, with optional GIA reports available upon request.",
     href: "/journal/certification-guide",
     image: "/images/journal/education-certification.webp",
     imageAlt: "Gemstone laboratory report beside a blue sapphire",

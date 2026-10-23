@@ -23,9 +23,10 @@ export function ProductStatusBanner({
   variant = "banner",
 }: ProductStatusBannerProps) {
   const status = getProductAvailability(product);
-  if (status === "available") return null;
+  // Sold-out status is shown via price text ("Sold Out"), not a banner.
+  if (status === "available" || status === "sold_out") return null;
 
-  const label = status === "sold_out" ? "Sold out" : "Hold";
+  const label = "Hold";
 
   if (variant === "badge") {
     return (

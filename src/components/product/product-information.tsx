@@ -4,6 +4,10 @@ import { Price } from "@/components/ui/price";
 import { ProductPurchaseActions } from "@/components/product/product-purchase-actions";
 import { ProductSpecifications } from "@/components/product/product-specifications";
 import type { ProductSpecification } from "@/data/product-detail-content";
+import {
+  getProductAvailability,
+  shouldShowAvailabilityInsteadOfPrice,
+} from "@/lib/product-availability";
 import type { Product } from "@/types";
 
 interface ProductInformationProps {
@@ -19,6 +23,9 @@ export function ProductInformation({
   specifications,
   actionsRef,
 }: ProductInformationProps) {
+  const status = getProductAvailability(product);
+  const showStatusPrice = shouldShowAvailabilityInsteadOfPrice(product);
+
   return (
     <div className="flex flex-col lg:pt-1">
       <p className="font-manrope text-[11px] font-semibold tracking-[0.2em] text-rich-gold uppercase">
@@ -32,7 +39,7 @@ export function ProductInformation({
       )}
 
       <p className="font-caslon mt-4 text-[26px] text-rich-gold md:text-[30px]">
-        <Price amount={product.price} />
+        {showStatusPrice ? (status === "hold" ? "Hold" : "Sold Out") : <Price amount={product.price} />}
       </p>
 
       {product.description && (

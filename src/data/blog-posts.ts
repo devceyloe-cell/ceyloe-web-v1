@@ -33,17 +33,15 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "certification-guide",
-    title: "Certification Guide",
-    excerpt: "Learn how to read gemstone certificates and what to look for.",
+    title: "Certification at Ceyloe",
+    excerpt:
+      "Every Ceyloe gemstone is accompanied by a laboratory certificate, with optional GIA reports available upon request.",
     category: "Education",
-    readTime: "6 min read",
+    readTime: "3 min read",
     publishedAt: "2025-04-02",
     image: "/images/journal/education-certification.webp",
     content: [
-      "Independent laboratory reports confirm a gemstone's identity, quality characteristics, and treatment history. Trusted laboratories such as GIA provide documentation collectors rely on.",
-      "A thorough report typically covers species, weight, measurements, colour, clarity comments, and any treatments. Origin comments may also appear when evidence supports them.",
-      "Always match the report number and description to the physical stone. Certification is essential for investment-grade purchases and future resale.",
-      "We recommend reviewing certificates carefully and asking questions before you buy — clarity builds lasting confidence.",
+      "Every Ceyloe gemstone is accompanied by a laboratory certificate, providing independent documentation of the gemstone’s identity and characteristics and greater confidence in your purchase. For clients who would also like a GIA laboratory report, Ceyloe is happy to arrange submission to GIA upon request. The applicable GIA laboratory, handling and associated costs are payable by the customer. We are committed to transparency and are always happy to help our clients understand the information provided in their gemstone reports.",
     ],
   },
   {
