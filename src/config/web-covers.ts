@@ -171,6 +171,66 @@ const tealSapphires: WebCoverContent = {
   imagePosition: "right center",
 };
 
+const greenSapphires: WebCoverContent = {
+  image: coverPath("teal-sapphires.webp"),
+  titleLines: ["Green", "Sapphires"],
+  description: "Fresh greens and verdant Ceylon sapphires.",
+  primaryCta: {
+    label: "Browse Green Sapphires",
+    href: "/catalog?category=sapphires&color=green",
+  },
+  tone: "light",
+  imagePosition: "right center",
+};
+
+const greenTealSapphires: WebCoverContent = {
+  image: coverPath("teal-sapphires.webp"),
+  titleLines: ["Green & Teal", "Sapphires"],
+  description: "Green and teal Ceylon sapphires in one curated collection.",
+  primaryCta: {
+    label: "Browse Green & Teal",
+    href: "/catalog?category=sapphires&color=green&color=teal",
+  },
+  tone: "light",
+  imagePosition: "right center",
+};
+
+const whiteSapphires: WebCoverContent = {
+  image: coverPath("all-sapphires.webp"),
+  titleLines: ["White", "Sapphires"],
+  description: "Brilliant colourless and near-white Ceylon sapphires.",
+  primaryCta: {
+    label: "Browse White Sapphires",
+    href: "/catalog?category=sapphires&color=white",
+  },
+  tone: "light",
+  imagePosition: "right center",
+};
+
+const purpleSapphires: WebCoverContent = {
+  image: coverPath("pink-sapphires.webp"),
+  titleLines: ["Purple", "Sapphires"],
+  description: "Violet and purple Ceylon sapphires.",
+  primaryCta: {
+    label: "Browse Purple Sapphires",
+    href: "/catalog?category=sapphires&color=purple",
+  },
+  tone: "light",
+  imagePosition: "right center",
+};
+
+const starSapphires: WebCoverContent = {
+  image: coverPath("blue-sapphires.webp"),
+  titleLines: ["Star", "Sapphires"],
+  description: "Asterism — the rare six-rayed star within the stone.",
+  primaryCta: {
+    label: "Browse Star Sapphires",
+    href: "/catalog?category=sapphires&color=star",
+  },
+  tone: "light",
+  imagePosition: "right center",
+};
+
 const partiSapphires: WebCoverContent = {
   image: coverPath("parti-sapphires.webp"),
   titleLines: ["Parti", "Sapphires"],
@@ -293,6 +353,11 @@ export const webCovers = {
   pinkSapphires,
   yellowSapphires,
   tealSapphires,
+  greenSapphires,
+  greenTealSapphires,
+  whiteSapphires,
+  purpleSapphires,
+  starSapphires,
   partiSapphires,
   padparadscha,
   allSapphires,
@@ -312,19 +377,37 @@ export function getWebCover(key: WebCoverKey): WebCoverContent {
   return webCovers[key];
 }
 
-/** Resolve catalog cover from category + optional color query. */
+function normalizeColorList(color?: string | string[] | null): string[] {
+  if (!color) return [];
+  const list = (Array.isArray(color) ? color : [color])
+    .map((c) => c.trim().toLowerCase())
+    .filter(Boolean);
+  return [...new Set(list)].sort();
+}
+
+/** Resolve catalog cover from category + optional colour query (supports multi-colour). */
 export function getCatalogCoverKey(
   category?: string | null,
-  color?: string | null,
+  color?: string | string[] | null,
 ): WebCoverKey {
   const cat = (category ?? "").toLowerCase();
-  const col = (color ?? "").toLowerCase();
+  const colors = normalizeColorList(color);
+  const col = colors.length === 1 ? colors[0] : "";
 
   if (cat === "sapphires" || cat === "sapphire") {
+    if (colors.length > 1) {
+      const joined = colors.join("+");
+      if (joined === "green+teal") return "greenTealSapphires";
+      return "allSapphires";
+    }
     if (col === "blue") return "blueSapphireCollection";
     if (col === "pink") return "pinkSapphires";
     if (col === "yellow") return "yellowSapphires";
     if (col === "teal") return "tealSapphires";
+    if (col === "green") return "greenSapphires";
+    if (col === "white") return "whiteSapphires";
+    if (col === "purple") return "purpleSapphires";
+    if (col === "star") return "starSapphires";
     if (col === "parti") return "partiSapphires";
     if (col === "padparadscha") return "padparadscha";
     return "allSapphires";

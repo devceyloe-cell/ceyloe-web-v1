@@ -20,7 +20,7 @@ export default async function AboutPage() {
 
   return (
     <>
-      <AboutHero imageOverride={heroImages.about} />
+      <AboutHero contentOverride={heroImages.about} />
       <AboutJourney />
       <AboutTeam section={team} />
       <AboutValues />

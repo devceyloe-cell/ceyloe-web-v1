@@ -6,7 +6,7 @@ export default async function CartPage() {
   const heroImages = await getHeroImages();
   return (
     <div className="bg-white">
-      <CartLandingHero imageOverride={heroImages.cart} />
+      <CartLandingHero contentOverride={heroImages.cart} />
       <CartContent />
     </div>
   );

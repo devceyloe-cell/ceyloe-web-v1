@@ -15,6 +15,7 @@ import { getFilterOptions, getCatalogBounds } from "@/lib/product-utils";
 import { PRODUCT_CATEGORIES } from "@/config/product-categories";
 import { getCatalogCoverKey, getWebCover } from "@/config/web-covers";
 import type { CatalogFilters as Filters } from "@/types";
+import { mergeCoverWithOverride } from "@/lib/hero/content";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
@@ -90,12 +91,8 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
   const filterOptions = getFilterOptions(allProducts);
   const bounds = getCatalogBounds(selectionProducts);
-  const coverColor = Array.isArray(filters.color)
-    ? filters.color.length === 1
-      ? filters.color[0]
-      : undefined
-    : filters.color;
-  const cover = getWebCover(getCatalogCoverKey(filters.category, coverColor));
+  const coverKey = getCatalogCoverKey(filters.category, filters.color);
+  const cover = mergeCoverWithOverride(getWebCover(coverKey), heroImages[coverKey]);
   const back = getCatalogBackLink(filters);
   const categoryLabel =
     PRODUCT_CATEGORIES.find((c) => c.value === filters.category)?.label ??
@@ -106,7 +103,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   return (
     <div className="bg-white">
       {isJewellery ? (
-        <FineJewelleryHero imageOverride={heroImages.fineJewellery} />
+        <FineJewelleryHero contentOverride={heroImages.fineJewellery} />
       ) : (
         <CatalogLandingHero
           cover={cover}

@@ -51,7 +51,7 @@ export const blogPosts: BlogPost[] = [
     category: "Education",
     readTime: "5 min read",
     publishedAt: "2025-03-15",
-    image: "/images/journal/education-birthstones.webp",
+    image: "/images/journal/education-birthstones.jpg",
     content: [
       "Birthstones connect personal milestones with the beauty of natural gemstones. Each month carries a traditional stone with its own colour story and symbolism.",
       "From January garnet to September sapphire and December turquoise or zircon, birthstone jewellery offers a meaningful way to mark birthdays, anniversaries, and family heritage.",

@@ -64,8 +64,8 @@ export const educationTopics: EducationTopic[] = [
     title: "Birthstones",
     description: "Discover the meaning and beauty of traditional birthstones.",
     href: "/journal/birthstones",
-    image: "/images/journal/education-birthstones.webp",
-    imageAlt: "Row of colourful polished birthstone gemstones",
+    image: "/images/journal/education-birthstones.jpg",
+    imageAlt: "Ceyloe birthstones chart — gemstone for each month of the year",
     icon: "calendar",
   },
   {

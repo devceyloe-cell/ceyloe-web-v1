@@ -1,14 +1,31 @@
 import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
 import { WhiteCoverHeroLayout } from "@/components/layout/white-cover-hero-layout";
+import { resolveHeroCopy } from "@/lib/hero/use-hero-copy";
+import type { HeroOverrideRaw } from "@/lib/hero/content";
 
 const NAVY = "#004B69";
 const GOLD = "#C09A4A";
-const HERO_ART = "/images/covers/our-story.webp";
 
-export function AboutHero({ imageOverride }: { imageOverride?: string }) {
+export function AboutHero({
+  imageOverride,
+  contentOverride,
+}: {
+  imageOverride?: string;
+  contentOverride?: HeroOverrideRaw;
+}) {
+  const hero = resolveHeroCopy(
+    {
+      image: "/images/covers/our-story.webp",
+      title: "Our Story",
+      description:
+        "From our family mines in Sri Lanka to you in Australia. A journey of passion, heritage and trust.",
+    },
+    contentOverride ?? imageOverride,
+  );
+
   return (
-    <WhiteCoverHeroLayout image={imageOverride || HERO_ART} ariaLabelledBy="about-hero-title">
+    <WhiteCoverHeroLayout image={hero.image} ariaLabelledBy="about-hero-title">
       <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
       <h1
@@ -16,16 +33,21 @@ export function AboutHero({ imageOverride }: { imageOverride?: string }) {
         className="font-bell mt-5 text-[clamp(30px,3.2vw,48px)] font-bold uppercase leading-[1.02] tracking-[0.01em] text-left lg:mt-6 xl:mt-5"
         style={{ color: GOLD }}
       >
-        Our Story
+        {hero.titleLines.map((line) => (
+          <span key={line} className="block">
+            {line}
+          </span>
+        ))}
       </h1>
 
-      <p
-        className="font-poppins mt-3 max-w-[460px] text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] text-left lg:mt-3.5"
-        style={{ color: NAVY }}
-      >
-        From our family mines in Sri Lanka to you in Australia. A journey of passion,
-        heritage and trust.
-      </p>
+      {hero.description ? (
+        <p
+          className="font-poppins mt-3 max-w-[460px] text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] text-left lg:mt-3.5"
+          style={{ color: NAVY }}
+        >
+          {hero.description}
+        </p>
+      ) : null}
 
       <Link
         href="#journey-heading"

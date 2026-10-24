@@ -6,8 +6,15 @@ import { EducationCard } from "@/components/journal/education-card";
 import { EducationHero } from "@/components/journal/education-hero";
 import { EducationCta } from "@/components/journal/education-cta";
 import { educationTopics } from "@/data/education-content";
+import type { HeroOverrideRaw } from "@/lib/hero/content";
 
-export function EducationPage({ imageOverride }: { imageOverride?: string }) {
+export function EducationPage({
+  imageOverride,
+  contentOverride,
+}: {
+  imageOverride?: string;
+  contentOverride?: HeroOverrideRaw;
+}) {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
@@ -22,7 +29,12 @@ export function EducationPage({ imageOverride }: { imageOverride?: string }) {
 
   return (
     <div className="bg-[#F7F4EF]">
-      <EducationHero searchValue={query} onSearchChange={setQuery} imageOverride={imageOverride} />
+      <EducationHero
+        searchValue={query}
+        onSearchChange={setQuery}
+        imageOverride={imageOverride}
+        contentOverride={contentOverride}
+      />
 
       <section
         id="education-topics"

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
 import { WhiteCoverHeroLayout } from "@/components/layout/white-cover-hero-layout";
 import type { GemstoneTypePageConfig } from "@/data/gemstone-type-pages";
+import { resolveHeroCopy } from "@/lib/hero/use-hero-copy";
+import type { HeroOverrideRaw } from "@/lib/hero/content";
 
 const NAVY = "#004B69";
 const GOLD = "#C09A4A";
@@ -21,17 +23,30 @@ function TitleDivider() {
 interface GemstoneTypeLandingHeroProps {
   config: GemstoneTypePageConfig;
   imageOverride?: string;
+  contentOverride?: HeroOverrideRaw;
 }
 
 /**
  * Shared white cover hero for /gemstones/[type] pages.
  */
-export function GemstoneTypeLandingHero({ config, imageOverride }: GemstoneTypeLandingHeroProps) {
+export function GemstoneTypeLandingHero({
+  config,
+  imageOverride,
+  contentOverride,
+}: GemstoneTypeLandingHeroProps) {
   const titleId = `${config.slug}-hero-title`;
   const exploreHref = `#${config.slug}-collection`;
+  const hero = resolveHeroCopy(
+    {
+      image: config.image,
+      title: config.title,
+      description: config.exploreLabel,
+    },
+    contentOverride ?? imageOverride,
+  );
 
   return (
-    <WhiteCoverHeroLayout image={imageOverride || config.image} ariaLabelledBy={titleId}>
+    <WhiteCoverHeroLayout image={hero.image} ariaLabelledBy={titleId}>
       <Logo size="hero" className="!w-[clamp(160px,12vw,200px)]" />
 
       <h1
@@ -39,7 +54,11 @@ export function GemstoneTypeLandingHero({ config, imageOverride }: GemstoneTypeL
         className="font-bell mt-5 text-[clamp(30px,3.2vw,48px)] font-bold uppercase leading-[1.02] tracking-[0.01em] text-left lg:mt-6 xl:mt-5"
         style={{ color: GOLD }}
       >
-        {config.title}
+        {hero.titleLines.map((line) => (
+          <span key={line} className="block">
+            {line}
+          </span>
+        ))}
       </h1>
 
       {config.showTitleDivider ? <TitleDivider /> : null}
@@ -68,13 +87,13 @@ export function GemstoneTypeLandingHero({ config, imageOverride }: GemstoneTypeL
         </ul>
       ) : null}
 
-      {config.exploreLabel ? (
+      {hero.description ? (
         <p
           className="font-poppins mt-5 text-[clamp(13px,0.9vw,15px)] font-normal leading-[1.5] lg:mt-6"
           style={{ color: NAVY }}
         >
           <Link href={exploreHref} className="transition-opacity hover:opacity-80">
-            {config.exploreLabel}
+            {hero.description}
           </Link>
         </p>
       ) : null}

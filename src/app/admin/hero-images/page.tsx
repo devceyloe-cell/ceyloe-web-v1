@@ -15,10 +15,9 @@ export default async function HeroImagesPage() {
           <p className="text-xs uppercase tracking-[0.2em] text-gold">Site Management</p>
           <h1 className="font-display mt-1 text-3xl font-light tracking-tight">Hero Images</h1>
           <p className="mt-2 max-w-2xl text-sm text-muted">
-            Upload custom hero images for each page. Click <strong>Upload Image</strong> on any card
-            to select a photo — the cropper will lock to the correct aspect ratio automatically.
-            Changes are saved immediately. Use <strong>Revert</strong> to restore the original
-            default image.
+            Upload hero artwork and edit the title / supporting text for marketing pages, gemstone
+            landings, and catalog colour filters (including multi-colour URLs like green + teal).
+            Use <strong>Save text</strong> after editing copy. Image uploads save immediately.
           </p>
 
           <div className="mt-4 rounded-none border border-border bg-surface-elevated px-4 py-3">

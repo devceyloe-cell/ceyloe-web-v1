@@ -5,14 +5,21 @@ import { Search } from "lucide-react";
 import { FadeIn } from "@/components/about/fade-in";
 import { EducationLandingHero } from "@/components/journal/education-landing-hero";
 import { educationHero } from "@/data/education-content";
+import type { HeroOverrideRaw } from "@/lib/hero/content";
 
 interface EducationHeroProps {
   onSearchChange?: (query: string) => void;
   searchValue?: string;
   imageOverride?: string;
+  contentOverride?: HeroOverrideRaw;
 }
 
-export function EducationHero({ onSearchChange, searchValue, imageOverride }: EducationHeroProps) {
+export function EducationHero({
+  onSearchChange,
+  searchValue,
+  imageOverride,
+  contentOverride,
+}: EducationHeroProps) {
   const [localQuery, setLocalQuery] = useState("");
   const query = searchValue ?? localQuery;
 
@@ -25,7 +32,10 @@ export function EducationHero({ onSearchChange, searchValue, imageOverride }: Ed
 
   return (
     <>
-      <EducationLandingHero imageOverride={imageOverride} />
+      <EducationLandingHero
+        imageOverride={imageOverride}
+        contentOverride={contentOverride}
+      />
       <section className="border-b border-border bg-white px-[var(--margin-mobile)] py-6 md:px-[var(--margin-desktop)] md:py-8">
         <FadeIn className="mx-auto max-w-[720px]">
           <label className="relative block">

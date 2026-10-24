@@ -13,7 +13,7 @@ export default async function BookPage() {
   const heroImages = await getHeroImages();
   return (
     <div className="bg-white">
-      <BookLandingHero imageOverride={heroImages.book} />
+      <BookLandingHero contentOverride={heroImages.book} />
       <Container id="appointment-form" className="scroll-mt-28 py-12 md:py-20">
         <div className="mx-auto max-w-xl">
           <AppointmentForm />

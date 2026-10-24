@@ -184,8 +184,8 @@ export default function BirthstonesPage() {
             {/* Hero image */}
             <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden">
               <Image
-                src="/images/journal/education-birthstones.webp"
-                alt="Row of colourful polished birthstone gemstones"
+                src="/images/journal/education-birthstones.jpg"
+                alt="Ceyloe birthstones chart — gemstone for each month of the year"
                 fill
                 priority
                 className="object-cover object-center"

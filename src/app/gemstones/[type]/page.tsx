@@ -95,7 +95,7 @@ export default async function GemstoneTypePage({
 
   return (
     <div className="bg-white">
-      <GemstoneTypeLandingHero config={config} imageOverride={heroImages[config.slug]} />
+      <GemstoneTypeLandingHero config={config} contentOverride={heroImages[config.slug]} />
 
       <Container id={collectionId} className="scroll-mt-28 py-12 md:py-20">
         <Link

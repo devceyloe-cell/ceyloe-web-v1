@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 
 export default async function JournalPage() {
   const heroImages = await getHeroImages();
-  return <EducationPage imageOverride={heroImages.journal} />;
+  return <EducationPage contentOverride={heroImages.journal} />;
 }

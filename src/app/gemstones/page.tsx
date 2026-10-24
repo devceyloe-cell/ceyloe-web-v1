@@ -19,7 +19,7 @@ export default async function GemstonesLandingPage() {
 
   return (
     <div className="bg-white">
-      <GemstonesLandingHero imageOverride={heroImages.gemstones} />
+      <GemstonesLandingHero contentOverride={heroImages.gemstones} />
 
       <Container id="natural-gemstones" className="scroll-mt-28 py-12 md:py-16">
         <SectionHeading

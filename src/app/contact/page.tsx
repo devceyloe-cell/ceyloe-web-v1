@@ -16,7 +16,7 @@ export default async function ContactPage() {
   const heroImages = await getHeroImages();
   return (
     <div className="bg-[#F7F4EF]">
-      <ContactHero imageOverride={heroImages.contact} />
+      <ContactHero contentOverride={heroImages.contact} />
       <ContactOptions />
       <ContactForm />
       <ContactLocation />

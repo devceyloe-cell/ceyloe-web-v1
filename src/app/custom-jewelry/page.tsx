@@ -34,7 +34,7 @@ export default async function CustomJewelryPage({ searchParams }: CustomJewelryP
 
   return (
     <div className="bg-white">
-      <BespokeLandingHero imageOverride={heroImages.bespoke} />
+      <BespokeLandingHero contentOverride={heroImages.bespoke} />
 
       <Container id="design-form" className="scroll-mt-28 py-12 md:py-20">
         {hasSelectedGem && (
