@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { images } from "@/config/images";
+
+const OUR_STORY_IMAGE = "/images/about/our-story-landscape.jpg";
 
 export function LandingStory() {
   return (
@@ -36,10 +37,10 @@ export function LandingStory() {
 
           <div className="relative aspect-[16/10] w-full overflow-hidden bg-stone-gray">
             <Image
-              src={images.about.main}
-              alt="Sri Lankan landscape — Ceyloe gemstone heritage"
+              src={OUR_STORY_IMAGE}
+              alt="Inspecting a natural Ceylon gemstone at our Sri Lankan mining site"
               fill
-              className="object-cover"
+              className="object-cover object-[right_center]"
               sizes="(max-width: 1024px) 100vw, 45vw"
             />
           </div>

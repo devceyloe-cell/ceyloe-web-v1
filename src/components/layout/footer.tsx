@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { landingNavigation } from "@/config/navigation";
@@ -12,15 +11,11 @@ const memberships = [
     name: "GIA Member",
     href: "https://www.gia.edu/",
     logo: "/images/memberships/gia-logo.svg",
-    width: 100,
-    height: 34,
   },
   {
     name: "GAA WA Member",
     href: "https://www.gem.org.au/western-australia/",
     logo: "/images/memberships/gaa-logo.png",
-    width: 100,
-    height: 40,
   },
 ] as const;
 
@@ -169,46 +164,46 @@ export function Footer() {
               </div>
             </address>
 
-            <div className="mt-8">
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-rich-gold">
-                Memberships
-              </p>
-              <ul className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
-                {memberships.map((item) => (
-                  <li key={item.name}>
-                    <a
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 rounded border border-white/15 bg-white px-3 py-2.5 transition hover:border-rich-gold"
-                      aria-label={`${item.name} (opens in a new tab)`}
-                    >
-                      <Image
-                        src={item.logo}
-                        alt=""
-                        width={item.width}
-                        height={item.height}
-                        unoptimized
-                        className="h-8 w-auto object-contain"
-                      />
-                      <span className="font-manrope text-[10px] font-bold uppercase tracking-[0.12em] text-neutral-800">
-                        {item.name}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-center gap-6 border-t border-white/10 pt-8">
-          <PaymentMethods />
-          <div className="flex w-full flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
-            <p className="font-manrope text-xs uppercase tracking-widest text-white/40">
-              &copy; {year} {siteConfig.name.toUpperCase()}. All rights reserved.
+        <div className="mt-14 border-t border-white/10 pt-8">
+          <div className="mb-8 flex flex-col items-center gap-3">
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-rich-gold">
+              Memberships
             </p>
-            <p className="font-manrope text-xs text-white/40">Website by Ceyloe</p>
+            <ul className="flex flex-wrap items-center justify-center gap-3">
+              {memberships.map((item) => (
+                <li key={item.name}>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-14 w-[180px] items-center justify-center rounded border border-white/15 bg-white px-4 transition hover:border-rich-gold"
+                    aria-label={`${item.name} (opens in a new tab)`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.logo}
+                      alt={item.name}
+                      width={140}
+                      height={36}
+                      className="h-9 w-[140px] object-contain object-center"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex flex-col items-center gap-6">
+            <PaymentMethods />
+            <div className="flex w-full flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
+              <p className="font-manrope text-xs uppercase tracking-widest text-white/40">
+                &copy; {year} {siteConfig.name.toUpperCase()}. All rights reserved.
+              </p>
+              <p className="font-manrope text-xs text-white/40">Website by Ceyloe</p>
+            </div>
           </div>
         </div>
       </Container>
