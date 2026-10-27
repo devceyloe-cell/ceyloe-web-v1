@@ -106,6 +106,11 @@ export function ProductEditor({ initial }: ProductEditorProps) {
     }));
   }
 
+  function currentGallery(p: Product): string[] {
+    if (p.images.length > 0) return p.images;
+    return p.image ? [p.image] : [];
+  }
+
   function setGallery(images: string[], primary?: string) {
     setProduct((p) => ({
       ...p,
@@ -115,44 +120,76 @@ export function ProductEditor({ initial }: ProductEditorProps) {
   }
 
   function addGalleryImage(url: string) {
-    if (!url || gallery.includes(url)) return;
-    const images = [...gallery, url];
-    setGallery(images, product.image || url);
-    setActiveIndex(images.length - 1);
+    if (!url) return;
+    setProduct((p) => {
+      const current = currentGallery(p);
+      if (current.includes(url)) return p;
+      const images = [...current, url];
+      return {
+        ...p,
+        images,
+        image: p.image || url,
+      };
+    });
+    setActiveIndex(Number.MAX_SAFE_INTEGER);
   }
 
   function removeGalleryImage(index: number) {
-    const images = gallery.filter((_, i) => i !== index);
-    setGallery(images);
-    setActiveIndex((i) => Math.max(0, Math.min(i, images.length - 1)));
+    setProduct((p) => {
+      const images = currentGallery(p).filter((_, i) => i !== index);
+      return {
+        ...p,
+        images,
+        image: images[0] ?? "",
+      };
+    });
+    setActiveIndex((i) => Math.max(0, i - (i === index ? 1 : 0)));
   }
 
   function setPrimaryImage(index: number) {
-    const url = gallery[index];
-    if (!url) return;
-    const images = [url, ...gallery.filter((_, i) => i !== index)];
-    setGallery(images, url);
+    setProduct((p) => {
+      const current = currentGallery(p);
+      const url = current[index];
+      if (!url) return p;
+      const images = [url, ...current.filter((_, i) => i !== index)];
+      return { ...p, images, image: url };
+    });
     setActiveIndex(0);
   }
 
-  async function uploadFile(file: File) {
+  async function uploadFile(file: File): Promise<string | null> {
     const formData = new FormData();
     formData.append("file", file);
     const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
     const data = await res.json();
-    if (res.ok) {
-      addGalleryImage(data.url);
-    } else {
-      setError(data.error || `Upload failed: ${file.name}`);
-    }
+    if (res.ok && data.url) return String(data.url);
+    setError(data.error || `Upload failed: ${file.name}`);
+    return null;
   }
 
   async function uploadFiles(files: FileList | File[]) {
     setUploading(true);
     setError("");
     const list = Array.from(files);
+    const uploaded: string[] = [];
     for (const file of list) {
-      await uploadFile(file);
+      const url = await uploadFile(file);
+      if (url) uploaded.push(url);
+    }
+    if (uploaded.length > 0) {
+      setProduct((p) => {
+        const current = currentGallery(p);
+        const images = [...current];
+        for (const url of uploaded) {
+          if (!images.includes(url)) images.push(url);
+        }
+        return {
+          ...p,
+          images,
+          image: p.image || images[0] || "",
+        };
+      });
+      setActiveIndex(Number.MAX_SAFE_INTEGER);
     }
     setUploading(false);
   }
@@ -164,6 +201,12 @@ export function ProductEditor({ initial }: ProductEditorProps) {
       return;
     }
 
+    const type = file.type || "video/mp4";
+    if (type && !["video/mp4", "video/quicktime", "video/x-mp4"].includes(type)) {
+      setError("Please upload an MP4 video (or QuickTime .mov).");
+      return;
+    }
+
     setUploadingVideo(true);
     setError("");
 
@@ -172,12 +215,19 @@ export function ProductEditor({ initial }: ProductEditorProps) {
       const blob = await upload(pathname, file, {
         access: "public",
         handleUploadUrl: "/api/admin/upload/video",
-        multipart: file.size > 20 * 1024 * 1024,
-        contentType: file.type || "video/mp4",
+        multipart: file.size > 4 * 1024 * 1024,
+        contentType: type.startsWith("video/") ? type : "video/mp4",
       });
       updateField("videoUrl", blob.url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Video upload failed");
+      const message = err instanceof Error ? err.message : "Video upload failed";
+      const blocked =
+        /content security policy|refused to connect|failed to fetch|networkerror/i.test(message);
+      setError(
+        blocked
+          ? "Video upload was blocked by the browser. Restart the dev server after the latest update, then try again."
+          : message,
+      );
     } finally {
       setUploadingVideo(false);
     }

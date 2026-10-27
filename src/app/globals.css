@@ -129,6 +129,47 @@ h6 {
   opacity: var(--site-bg-opacity);
 }
 
+/* Portal mount — last child of body, above header (z-50) and FABs */
+#ceyloe-modal-root {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+#ceyloe-modal-root:not(:empty) {
+  pointer-events: auto;
+}
+
+.ceyloe-delivery-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgb(0 0 0 / 0.75);
+}
+
+@media (min-width: 640px) {
+  .ceyloe-delivery-overlay {
+    align-items: center;
+    padding: 1rem;
+  }
+}
+
+.ceyloe-delivery-dialog {
+  position: relative;
+  z-index: 100001;
+  max-height: min(92vh, 720px);
+  width: 100%;
+  max-width: 32rem;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
 .label-caps {
   font-family: var(--font-manrope), system-ui, sans-serif;
   font-size: 0.75rem;

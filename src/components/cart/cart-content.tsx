@@ -9,6 +9,8 @@ import { Container } from "@/components/ui/container";
 import { Price } from "@/components/ui/price";
 import { useCart } from "@/contexts/cart-context";
 import { useUserAuth } from "@/contexts/user-auth-context";
+import { DeliveryDetailsModal } from "@/components/checkout/delivery-details-modal";
+import type { DeliveryDetailsInput } from "@/types/order";
 
 function CartBody() {
   const searchParams = useSearchParams();
@@ -17,9 +19,10 @@ function CartBody() {
   const { items, removeItem, clearCart, itemCount, itemsTotal } = useCart();
   const { user, loading: authLoading } = useUserAuth();
   const [checkingOut, setCheckingOut] = useState(false);
+  const [deliveryOpen, setDeliveryOpen] = useState(false);
   const [error, setError] = useState("");
 
-  async function checkoutCart() {
+  async function checkoutCart(delivery: DeliveryDetailsInput) {
     if (items.length === 0 || checkingOut) return;
     setCheckingOut(true);
     setError("");
@@ -30,6 +33,7 @@ function CartBody() {
         body: JSON.stringify({
           handles: items.map((item) => item.handle),
           source: "cart",
+          delivery,
         }),
       });
       const data = await res.json();
@@ -160,14 +164,19 @@ function CartBody() {
             </dl>
 
             <p className="mt-4 text-xs leading-relaxed text-muted">
-              You will be charged this total securely via Stripe for all items in your cart.
+              Enter delivery details next, then pay securely via Stripe for all items in your cart.
             </p>
 
-            {error ? <p className="mt-4 font-manrope text-sm text-red-500">{error}</p> : null}
+            {error && !deliveryOpen ? (
+              <p className="mt-4 font-manrope text-sm text-red-500">{error}</p>
+            ) : null}
 
             <button
               type="button"
-              onClick={checkoutCart}
+              onClick={() => {
+                setError("");
+                setDeliveryOpen(true);
+              }}
               disabled={checkingOut || items.length === 0}
               className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-rich-gold px-4 font-manrope text-[11px] font-bold tracking-[0.14em] text-black uppercase disabled:opacity-50"
             >
@@ -175,6 +184,15 @@ function CartBody() {
               {checkingOut ? "Redirecting…" : "Proceed to payment"}
             </button>
           </aside>
+
+          <DeliveryDetailsModal
+            open={deliveryOpen}
+            onClose={() => !checkingOut && setDeliveryOpen(false)}
+            summary={`${itemCount} item${itemCount === 1 ? "" : "s"} · checkout`}
+            submitting={checkingOut}
+            error={error}
+            onSubmit={checkoutCart}
+          />
         </div>
       )}
     </Container>

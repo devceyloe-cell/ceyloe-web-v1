@@ -26,7 +26,8 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://cdn.shopify.com https://cdn.sanity.io https://static.afterpay.com https://*.afterpay.com https://ceyloe.com https://www.ceyloe.com",
       "font-src 'self' data:",
-      "connect-src 'self' https://api.stripe.com https://global-api.afterpay.com https://global-api-sandbox.afterpay.com https://*.afterpay.com https://*.mongodb.net https://cdn.sanity.io",
+      // vercel.com/api/blob + *.blob.vercel-storage.com required for admin product video uploads (@vercel/blob client)
+      "connect-src 'self' https://api.stripe.com https://vercel.com https://*.vercel.com https://*.blob.vercel-storage.com https://global-api.afterpay.com https://global-api-sandbox.afterpay.com https://*.afterpay.com https://*.mongodb.net https://cdn.sanity.io",
       "frame-src 'self' https://js.stripe.com https://*.afterpay.com https://portal.afterpay.com https://portal.sandbox.afterpay.com https://www.youtube.com https://www.youtube-nocookie.com",
       "media-src 'self' blob: https://cdn.sanity.io https://ceyloe.com https://www.ceyloe.com https://www.youtube.com https://*.public.blob.vercel-storage.com",
       "object-src 'none'",

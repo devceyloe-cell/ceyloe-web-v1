@@ -11,6 +11,7 @@ import {
   Gem,
   ImagePlay,
   Images,
+  Package,
   Pencil,
   Users,
 } from "lucide-react";
@@ -25,6 +26,8 @@ function formatRole(role: string) {
 
 type DashboardStats = {
   products: number;
+  orders: number;
+  paidOrders: number;
   appointments: number;
   newAppointments: number;
   users: number;
@@ -48,6 +51,15 @@ const modules = [
     icon: Images,
     statKey: "collectionItems" as const,
     accent: "bg-rose-500/10 text-rose-700",
+  },
+  {
+    href: "/admin/orders",
+    label: "Orders",
+    description: "Guest and account purchases with delivery and payment status",
+    icon: Package,
+    statKey: "orders" as const,
+    accent: "bg-orange-500/10 text-orange-700",
+    badgeKey: "paidOrders" as const,
   },
   {
     href: "/admin/appointments",

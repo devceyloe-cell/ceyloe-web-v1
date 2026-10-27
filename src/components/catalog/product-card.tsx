@@ -64,6 +64,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="mx-auto mt-5 flex w-full max-w-[280px] flex-wrap items-start gap-2">
         <BuyNowButton
           handle={product.handle}
+          title={product.title}
           inStock={purchasable}
           unavailableLabel={unavailableLabel}
         />

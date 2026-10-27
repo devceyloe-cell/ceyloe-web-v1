@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe/server";
 import {
+  markOrderPaidByStripeSession,
+  markOrderStatusByStripeSession,
+} from "@/lib/mongodb/orders";
+import {
   sendEmail,
   buildOrderConfirmationEmailHtml,
   buildOrderConfirmationEmailText,
@@ -57,9 +61,12 @@ export async function POST(request: NextRequest) {
         await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
         break;
 
-      case "checkout.session.expired":
-        console.info("[stripe/webhook] Checkout session expired:", event.data.object.id);
+      case "checkout.session.expired": {
+        const expired = event.data.object as Stripe.Checkout.Session;
+        console.info("[stripe/webhook] Checkout session expired:", expired.id);
+        await markOrderStatusByStripeSession(expired.id, "expired");
         break;
+      }
 
       case "payment_intent.payment_failed": {
         const pi = event.data.object as Stripe.PaymentIntent;
@@ -107,14 +114,29 @@ async function expandLineItems(sessionId: string): Promise<OrderLineItem[]> {
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const customerEmail = session.customer_details?.email;
-  const customerName = session.customer_details?.name ?? "Valued Customer";
+  const customerName =
+    session.metadata?.customerName ||
+    session.customer_details?.name ||
+    "Valued Customer";
   const amountTotal = session.amount_total ?? 0;
   const currency = (session.currency ?? "usd").toUpperCase();
   const sessionId = session.id;
 
   console.info(
-    `[stripe/webhook] checkout.session.completed — session=${sessionId}, customer=${customerEmail}, amount=${amountTotal / 100} ${currency}`,
+    `[stripe/webhook] checkout.session.completed — session=${sessionId}, order=${session.metadata?.orderId ?? "n/a"}, customer=${customerEmail}, amount=${amountTotal / 100} ${currency}`,
   );
+
+  const paidOrder = await markOrderPaidByStripeSession(sessionId, {
+    amountTotal,
+    currency,
+  });
+  if (paidOrder) {
+    console.info(`[stripe/webhook] Order ${paidOrder.id} marked paid`);
+  } else if (session.metadata?.orderId) {
+    console.warn(
+      `[stripe/webhook] No pending order found for session=${sessionId} orderId=${session.metadata.orderId}`,
+    );
+  }
 
   // Fetch line items with product name + image from Stripe
   const lineItems = await expandLineItems(sessionId);

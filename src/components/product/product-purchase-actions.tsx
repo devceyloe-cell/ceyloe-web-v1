@@ -16,6 +16,8 @@ import {
   getProductAvailability,
   isProductPurchasable,
 } from "@/lib/product-availability";
+import { DeliveryDetailsModal } from "@/components/checkout/delivery-details-modal";
+import type { DeliveryDetailsInput } from "@/types/order";
 
 interface ProductPurchaseActionsProps {
   product: Product;
@@ -28,6 +30,7 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
     "idle",
   );
   const [buyLoading, setBuyLoading] = useState(false);
+  const [deliveryOpen, setDeliveryOpen] = useState(false);
   const [afterpayLoading, setAfterpayLoading] = useState(false);
   const [buyError, setBuyError] = useState("");
   const [showAfterpayForm, setShowAfterpayForm] = useState(false);
@@ -60,7 +63,13 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
     }
   }
 
-  async function handleBuyNow() {
+  function handleBuyNow() {
+    if (!purchasable || buyLoading) return;
+    setBuyError("");
+    setDeliveryOpen(true);
+  }
+
+  async function startStripeCheckout(delivery: DeliveryDetailsInput) {
     if (!purchasable || buyLoading) return;
     setBuyLoading(true);
     setBuyError("");
@@ -69,7 +78,11 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ handle: product.handle }),
+        body: JSON.stringify({
+          handle: product.handle,
+          delivery,
+          source: "product",
+        }),
       });
       const data = await res.json();
       if (res.ok && data.url) {
@@ -263,9 +276,18 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
           </Link>
         </p>
       )}
-      {buyError && (
+      {buyError && !deliveryOpen && (
         <p className="font-manrope text-center text-[12px] text-red-600">{buyError}</p>
       )}
+
+      <DeliveryDetailsModal
+        open={deliveryOpen}
+        onClose={() => !buyLoading && setDeliveryOpen(false)}
+        summary={`Buying: ${product.title}`}
+        submitting={buyLoading}
+        error={buyError}
+        onSubmit={startStripeCheckout}
+      />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import {
   Images,
   LayoutDashboard,
   LogOut,
+  Package,
   Settings,
   Users,
 } from "lucide-react";
@@ -29,6 +30,7 @@ const navItems = [
   { href: "/admin/products", label: "Products", icon: Gem },
   { href: "/admin/collection", label: "Collection", icon: Images },
   { href: "/admin/team", label: "Our Team", icon: Contact },
+  { href: "/admin/orders", label: "Orders", icon: Package },
   { href: "/admin/appointments", label: "Appointments", icon: Calendar },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/settings", label: "Settings", icon: Settings },

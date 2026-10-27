@@ -4,9 +4,12 @@ import { useState } from "react";
 import { CreditCard, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { checkoutActionIconClass } from "@/components/product/afterpay-mark";
+import { DeliveryDetailsModal } from "@/components/checkout/delivery-details-modal";
+import type { DeliveryDetailsInput } from "@/types/order";
 
 interface BuyNowButtonProps {
   handle: string;
+  title?: string;
   inStock?: boolean;
   /** Shown when not purchasable (e.g. "Sold out" or "Hold"). */
   unavailableLabel?: string;
@@ -19,19 +22,17 @@ const shell =
 
 export function BuyNowButton({
   handle,
+  title,
   inStock = true,
   unavailableLabel = "Sold out",
   className,
   size = "sm",
 }: BuyNowButtonProps) {
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleBuyNow(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!inStock || loading) return;
-
+  async function startCheckout(delivery: DeliveryDetailsInput) {
     setLoading(true);
     setError("");
 
@@ -39,7 +40,7 @@ export function BuyNowButton({
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ handle }),
+        body: JSON.stringify({ handle, delivery, source: "product" }),
       });
       const data = await res.json();
       if (res.ok && data.url) {
@@ -67,7 +68,12 @@ export function BuyNowButton({
     <div className="flex min-w-0 flex-1 flex-col items-stretch gap-1">
       <button
         type="button"
-        onClick={handleBuyNow}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setError("");
+          setOpen(true);
+        }}
         disabled={loading}
         className={cn(
           shell,
@@ -83,7 +89,17 @@ export function BuyNowButton({
         )}
         <span>{loading ? "Redirecting…" : "Buy Now"}</span>
       </button>
-      {error ? <span className="text-center text-[10px] text-red-600">{error}</span> : null}
+      {error && !open ? <span className="text-center text-[10px] text-red-600">{error}</span> : null}
+
+      <DeliveryDetailsModal
+        key={open ? `delivery-${handle}` : "delivery-closed"}
+        open={open}
+        onClose={() => !loading && setOpen(false)}
+        summary={title ? `Buying: ${title}` : undefined}
+        submitting={loading}
+        error={error}
+        onSubmit={startCheckout}
+      />
     </div>
   );
 }

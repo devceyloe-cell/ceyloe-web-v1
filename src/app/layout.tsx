@@ -72,6 +72,18 @@ export default function RootLayout({
         <ThemeProvider>
           <SiteShell>{children}</SiteShell>
         </ThemeProvider>
+        {/* Checkout / delivery modals portal here so they always sit above the catalog */}
+        <div
+          id="ceyloe-modal-root"
+          suppressHydrationWarning
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 100000,
+            pointerEvents: "none",
+            isolation: "isolate",
+          }}
+        />
       </body>
     </html>
   );
