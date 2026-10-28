@@ -23,6 +23,11 @@ export interface Product {
   price: number;
   currency: string;
   category: string;
+  /**
+   * Colour/variety slug for catalog filters (`?color=`).
+   * Free-text display colour stays in `specs.color` (e.g. "Hot Pink").
+   */
+  subcategory?: string;
   image: string;
   images: string[];
   videoUrl?: string;

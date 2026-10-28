@@ -32,6 +32,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
   const [message, setMessage] = useState("");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
+  const [subcategory, setSubcategory] = useState("all");
   const [color, setColor] = useState("all");
   const [stock, setStock] = useState<StockFilter>("all");
   const [sort, setSort] = useState<SortKey>("newest");
@@ -84,18 +85,37 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [products]);
 
+  const subcategories = useMemo(() => {
+    const scoped =
+      category === "all" ? products : products.filter((p) => p.category === category);
+    const set = new Set(
+      scoped
+        .map((p) => p.subcategory?.trim().toLowerCase())
+        .filter((c): c is string => Boolean(c)),
+    );
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [products, category]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = products.filter((p) => {
       if (category !== "all" && p.category !== category) return false;
+      if (
+        subcategory !== "all" &&
+        (p.subcategory?.trim().toLowerCase() || "") !== subcategory
+      ) {
+        return false;
+      }
       if (color !== "all" && (p.specs?.color?.trim() || "") !== color) return false;
       if (stock !== "all" && getProductAvailability(p) !== stock) return false;
       if (!q) return true;
       const productColor = p.specs?.color?.toLowerCase() ?? "";
+      const productSub = p.subcategory?.toLowerCase() ?? "";
       return (
         p.title.toLowerCase().includes(q) ||
         p.handle.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q) ||
+        productSub.includes(q) ||
         productColor.includes(q)
       );
     });
@@ -115,7 +135,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
     });
 
     return list;
-  }, [products, query, category, color, stock, sort]);
+  }, [products, query, category, subcategory, color, stock, sort]);
 
   const availableCount = products.filter(
     (p) => getProductAvailability(p) === "available",
@@ -211,12 +231,28 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
               <div className="flex flex-wrap gap-2">
                 <select
                   value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={(e) => {
+                    setCategory(e.target.value);
+                    setSubcategory("all");
+                  }}
                   className="rounded-md border border-border bg-background px-3 py-2.5 text-sm outline-none ring-gold/40 focus:ring-2"
                   aria-label="Filter by category"
                 >
                   <option value="all">All categories</option>
                   {categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={subcategory}
+                  onChange={(e) => setSubcategory(e.target.value)}
+                  className="rounded-md border border-border bg-background px-3 py-2.5 text-sm outline-none ring-gold/40 focus:ring-2"
+                  aria-label="Filter by subcategory"
+                >
+                  <option value="all">All subcategories</option>
+                  {subcategories.map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>
@@ -273,6 +309,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                   onClick={() => {
                     setQuery("");
                     setCategory("all");
+                    setSubcategory("all");
                     setColor("all");
                     setStock("all");
                   }}
@@ -358,6 +395,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                         </div>
                         <p className="truncate text-[11px] uppercase tracking-[0.12em] text-muted">
                           {product.category}
+                          {product.subcategory ? ` · ${product.subcategory}` : null}
                           {product.specs?.color ? ` · ${product.specs.color}` : null}
                           {product.specs?.carat ? ` · ${product.specs.carat}` : null}
                         </p>

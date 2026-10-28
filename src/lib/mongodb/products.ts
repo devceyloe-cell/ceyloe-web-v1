@@ -90,6 +90,7 @@ export async function saveProductToDb(product: Product): Promise<Product> {
 
   const now = new Date().toISOString();
   const availability = normalizeAvailability(product.availability, product.inStock);
+  const subcategory = product.subcategory?.trim().toLowerCase() || undefined;
   const fields: StoredProduct = {
     ...product,
     handle,
@@ -98,12 +99,21 @@ export async function saveProductToDb(product: Product): Promise<Product> {
     createdAt: product.createdAt || now,
     availability,
     inStock: availability === "available",
+    subcategory,
   };
+  if (!subcategory) {
+    delete fields.subcategory;
+  }
 
   const collection = db.collection<StoredProduct>(COLLECTION);
 
   if (product.id && ObjectId.isValid(product.id)) {
-    await collection.updateOne({ _id: new ObjectId(product.id) }, { $set: fields });
+    await collection.updateOne(
+      { _id: new ObjectId(product.id) },
+      subcategory
+        ? { $set: fields }
+        : { $set: fields, $unset: { subcategory: "" } },
+    );
     const updated = await collection.findOne({ _id: new ObjectId(product.id) });
     if (!updated) throw new Error("Product not found after update");
     return toProduct(updated as StoredProductDoc);

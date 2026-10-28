@@ -1,5 +1,6 @@
 import type { GemstoneSpec, Product } from "@/types";
 import type { ProductSpecification } from "@/data/product-detail-content";
+import { getCatalogHrefForCategorySubcategory } from "@/config/product-subcategories";
 import { getProductShape } from "@/lib/product-utils";
 
 export function buildProductSpecifications(product: Product): ProductSpecification[] {
@@ -29,7 +30,10 @@ export function getProductTypeLabel(product: Product): string {
   return `Natural ${category}`.replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export function getCategoryHref(category: string): string {
+export function getCategoryHref(category: string, subcategory?: string | null): string {
+  if (subcategory?.trim()) {
+    return getCatalogHrefForCategorySubcategory(category, subcategory);
+  }
   if (category === "sapphires") return "/gemstones/sapphires";
   return `/catalog?category=${encodeURIComponent(category)}`;
 }
@@ -53,6 +57,11 @@ export function scoreSimilarProduct(current: Product, candidate: Product): numbe
   let score = 0;
   if (candidate.category === current.category) score += 5;
   if (
+    current.subcategory &&
+    candidate.subcategory?.toLowerCase() === current.subcategory.toLowerCase()
+  ) {
+    score += 4;
+  } else if (
     current.specs.color &&
     candidate.specs.color?.toLowerCase() === current.specs.color.toLowerCase()
   ) {

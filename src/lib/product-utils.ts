@@ -20,6 +20,7 @@ export function getFilterOptions(products: Product[]) {
   const origins = new Set<string>();
 
   for (const p of products) {
+    if (p.subcategory?.trim()) colors.add(p.subcategory.trim().toLowerCase());
     if (p.specs.color) colors.add(p.specs.color);
     const shape = getProductShape(p);
     if (shape) shapes.add(shape);

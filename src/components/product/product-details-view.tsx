@@ -36,7 +36,11 @@ export function ProductDetailsView({
     <>
       <div className="section-bg">
         <div className="mx-auto max-w-[1280px] px-[var(--margin-mobile)] py-8 md:px-[var(--margin-desktop)] md:py-10 lg:py-12">
-          <ProductBreadcrumbs title={product.title} category={product.category} />
+          <ProductBreadcrumbs
+            title={product.title}
+            category={product.category}
+            subcategory={product.subcategory}
+          />
 
           {checkoutCancelled && (
             <div className="mb-6 border border-border bg-surface-elevated px-5 py-4 font-manrope text-sm text-muted">
@@ -83,7 +87,11 @@ export function ProductDetailsView({
         </section>
       )}
 
-      <SimilarProducts products={similarProducts} category={product.category} />
+      <SimilarProducts
+        products={similarProducts}
+        category={product.category}
+        subcategory={product.subcategory}
+      />
       <ConsultationBanner productTitle={product.title} productUrl={productUrl} />
       <div className="h-20" aria-hidden />
       <StickyProductActionBar

@@ -55,6 +55,8 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
       .filter(Boolean);
     if (wanted.length > 0) {
       result = result.filter((p) => {
+        const subcategory = p.subcategory?.trim().toLowerCase() ?? "";
+        if (subcategory && wanted.includes(subcategory)) return true;
         const color = p.specs.color?.toLowerCase() ?? "";
         return wanted.some(
           (w) => color === w || color.includes(w) || w.includes(color),
@@ -104,6 +106,7 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
         p.title.toLowerCase().includes(q) ||
         p.description.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q) ||
+        p.subcategory?.toLowerCase().includes(q) ||
         p.specs.color?.toLowerCase().includes(q) ||
         getProductShape(p)?.toLowerCase().includes(q),
     );
@@ -249,8 +252,11 @@ export function recommendProducts(
       if (request.budget && p.price <= request.budget) score += 3;
       if (request.budget && p.price <= request.budget * 0.85) score += 1;
 
-      if (request.color && p.specs.color?.toLowerCase() === request.color.toLowerCase()) {
-        score += 4;
+      if (request.color) {
+        const wanted = request.color.toLowerCase();
+        if (p.subcategory?.toLowerCase() === wanted) score += 4;
+        else if (p.specs.color?.toLowerCase() === wanted) score += 4;
+        else if (p.specs.color?.toLowerCase().includes(wanted)) score += 2;
       }
 
       if (request.shape && getProductShape(p)?.toLowerCase() === request.shape.toLowerCase()) {

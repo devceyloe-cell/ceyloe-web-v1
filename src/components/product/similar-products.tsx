@@ -10,9 +10,14 @@ import type { Product } from "@/types";
 interface SimilarProductsProps {
   products: Product[];
   category: string;
+  subcategory?: string;
 }
 
-export function SimilarProducts({ products, category }: SimilarProductsProps) {
+export function SimilarProducts({
+  products,
+  category,
+  subcategory,
+}: SimilarProductsProps) {
   if (products.length === 0) return null;
 
   return (
@@ -23,7 +28,7 @@ export function SimilarProducts({ products, category }: SimilarProductsProps) {
             {getSimilarSectionTitle(category)}
           </h2>
           <Link
-            href={getCategoryHref(category)}
+            href={getCategoryHref(category, subcategory)}
             className="font-manrope inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.14em] text-rich-gold uppercase transition-colors hover:text-[#9a7532]"
           >
             View All

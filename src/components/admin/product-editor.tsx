@@ -21,6 +21,11 @@ import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
 import { PRODUCT_CATEGORIES } from "@/config/product-categories";
+import {
+  categoryHasSubcategories,
+  getSubcategoriesForCategory,
+  isValidSubcategory,
+} from "@/config/product-subcategories";
 import type { Product, ProductAvailability } from "@/types";
 import {
   PRODUCT_AVAILABILITY_OPTIONS,
@@ -93,10 +98,25 @@ export function ProductEditor({ initial }: ProductEditorProps) {
     return product.image ? [product.image] : [];
   }, [product.image, product.images]);
 
+  const subcategoryOptions = useMemo(
+    () => getSubcategoriesForCategory(product.category),
+    [product.category],
+  );
+
   const previewSrc = gallery[Math.min(activeIndex, Math.max(gallery.length - 1, 0))] || "";
 
   function updateField<K extends keyof Product>(key: K, value: Product[K]) {
     setProduct((p) => ({ ...p, [key]: value }));
+  }
+
+  function updateCategory(nextCategory: string) {
+    setProduct((p) => {
+      const nextSub =
+        p.subcategory && isValidSubcategory(nextCategory, p.subcategory)
+          ? p.subcategory
+          : undefined;
+      return { ...p, category: nextCategory, subcategory: nextSub };
+    });
   }
 
   function updateSpec(key: keyof Product["specs"], value: string) {
@@ -634,19 +654,69 @@ export function ProductEditor({ initial }: ProductEditorProps) {
                       className={inputClass}
                     />
                   </div>
-                  <div>
-                    <label className={labelClass}>Category</label>
-                    <select
-                      value={product.category}
-                      onChange={(e) => updateField("category", e.target.value)}
-                      className={inputClass}
-                    >
-                      {PRODUCT_CATEGORIES.map((cat) => (
-                        <option key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="sm:col-span-2">
+                    <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.14em] text-muted">
+                      Stone classification
+                    </p>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className={labelClass}>Category (level 1)</label>
+                        <select
+                          value={product.category}
+                          onChange={(e) => updateCategory(e.target.value)}
+                          className={inputClass}
+                        >
+                          {PRODUCT_CATEGORIES.map((cat) => (
+                            <option key={cat.value} value={cat.value}>
+                              {cat.label}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="mt-1.5 text-xs text-muted">
+                          Stone type — e.g. Sapphires, Spinel.
+                        </p>
+                      </div>
+                      <div>
+                        <label className={labelClass}>Subcategory (level 2 colour)</label>
+                        {categoryHasSubcategories(product.category) ? (
+                          <select
+                            value={product.subcategory ?? ""}
+                            onChange={(e) =>
+                              updateField(
+                                "subcategory",
+                                e.target.value ? e.target.value : undefined,
+                              )
+                            }
+                            className={inputClass}
+                          >
+                            <option value="">None</option>
+                            {subcategoryOptions.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <select disabled className={inputClass} value="">
+                            <option value="">Not used for this category</option>
+                          </select>
+                        )}
+                        <p className="mt-1.5 text-xs text-muted">
+                          {categoryHasSubcategories(product.category) ? (
+                            <>
+                              Colour / variety — links to{" "}
+                              <code className="text-foreground">
+                                /catalog?category={product.category}&amp;color=
+                                {product.subcategory || "…"}
+                              </code>
+                              . Display name (e.g. Hot Pink) stays in Color below.
+                            </>
+                          ) : (
+                            <>Jewellery and similar categories do not use a colour subcategory.</>
+                          )}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
