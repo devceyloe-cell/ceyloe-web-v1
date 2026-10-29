@@ -8,7 +8,9 @@ import { images } from "@/config/images";
 import { bellMt, poppins } from "@/fonts/cover-fonts";
 import "./globals.css";
 
-const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim();
+/** Public GA4 ID — env overrides for staging; default keeps production tracking if env is unset at build. */
+const gaMeasurementId =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() || "G-F3131D5CT9";
 
 const manrope = Manrope({
   variable: "--font-manrope",
