@@ -16,6 +16,7 @@
     "db:backup": "node --env-file=.env.local scripts/backup-mongodb.mjs"
   },
   "dependencies": {
+    "@next/third-parties": "^16.4.3",
     "@sanity/client": "^7.22.1",
     "@vercel/blob": "^2.8.0",
     "clsx": "^2.1.1",

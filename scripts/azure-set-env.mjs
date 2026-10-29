@@ -38,6 +38,9 @@ const appSettings = {
   NEXT_PUBLIC_SITE_URL: siteUrl,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+  ...(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+    ? { NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID }
+    : {}),
 };
 
 const missing = Object.entries(appSettings)
@@ -61,7 +64,13 @@ const getRes = await fetch(`https://${publishHost}/api/settings`, {
 });
 if (getRes.ok) {
   const current = await getRes.json();
-  const keys = ["MONGODB_URI", "MONGODB_DB_NAME", "STRIPE_SECRET_KEY", "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"];
+  const keys = [
+    "MONGODB_URI",
+    "MONGODB_DB_NAME",
+    "STRIPE_SECRET_KEY",
+    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+    "NEXT_PUBLIC_GA_MEASUREMENT_ID",
+  ];
   for (const key of keys) {
     console.log(key, current[key] ? "set" : "missing");
   }

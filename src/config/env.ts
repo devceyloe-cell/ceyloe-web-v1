@@ -1,6 +1,10 @@
 import { images } from "@/config/images";
 
 export const env = {
+  analytics: {
+    /** Google Analytics 4 Measurement ID (G-XXXXXXXXXX) */
+    gaMeasurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "",
+  },
   shopify: {
     storeDomain: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ?? "",
     storefrontToken: process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ?? "",

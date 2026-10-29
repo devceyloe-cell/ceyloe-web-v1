@@ -22,12 +22,12 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // Next.js requires unsafe-inline for styles and unsafe-eval for development
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://js.afterpay.com https://*.afterpay.com https://cdn.sanity.io",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://js.afterpay.com https://*.afterpay.com https://cdn.sanity.io https://www.googletagmanager.com",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://cdn.shopify.com https://cdn.sanity.io https://static.afterpay.com https://*.afterpay.com https://ceyloe.com https://www.ceyloe.com",
+      "img-src 'self' data: blob: https://cdn.shopify.com https://cdn.sanity.io https://static.afterpay.com https://*.afterpay.com https://ceyloe.com https://www.ceyloe.com https://www.google-analytics.com https://www.googletagmanager.com",
       "font-src 'self' data:",
       // vercel.com/api/blob + *.blob.vercel-storage.com required for admin product video uploads (@vercel/blob client)
-      "connect-src 'self' https://api.stripe.com https://vercel.com https://*.vercel.com https://*.blob.vercel-storage.com https://global-api.afterpay.com https://global-api-sandbox.afterpay.com https://*.afterpay.com https://*.mongodb.net https://cdn.sanity.io",
+      "connect-src 'self' https://api.stripe.com https://vercel.com https://*.vercel.com https://*.blob.vercel-storage.com https://global-api.afterpay.com https://global-api-sandbox.afterpay.com https://*.afterpay.com https://*.mongodb.net https://cdn.sanity.io https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
       "frame-src 'self' https://js.stripe.com https://*.afterpay.com https://portal.afterpay.com https://portal.sandbox.afterpay.com https://www.youtube.com https://www.youtube-nocookie.com",
       "media-src 'self' blob: https://cdn.sanity.io https://ceyloe.com https://www.ceyloe.com https://www.youtube.com https://*.public.blob.vercel-storage.com",
       "object-src 'none'",

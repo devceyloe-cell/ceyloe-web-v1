@@ -93,6 +93,9 @@ const appSettings = {
   NEXT_PUBLIC_SITE_URL: siteUrl,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+  ...(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+    ? { NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID }
+    : {}),
 };
 
 const settingsUrl = `https://${publishHost}/api/settings`;
