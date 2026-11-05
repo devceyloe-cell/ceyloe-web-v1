@@ -59,7 +59,7 @@ export default async function GemstoneTypePage({
 
   const collectionId = `${config.slug}-collection`;
 
-  const sort = (query.sort as Filters["sort"]) ?? "featured";
+  const sort = (query.sort as Filters["sort"]) || undefined;
 
   // Full category set (no price/carat filters) drives filter Min/Max bounds
   const [categoryProducts, heroImages, typeSubcategories] = await Promise.all([

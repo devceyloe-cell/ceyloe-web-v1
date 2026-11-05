@@ -5,6 +5,7 @@ import { ArrowRight, Mail } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { WebCoverHero } from "@/components/layout/web-cover-hero";
 import { ClearCartOnSuccess } from "@/components/cart/clear-cart-on-success";
+import { PaymentStatusBanner } from "@/components/checkout/payment-status-banner";
 import { siteConfig } from "@/config/site";
 import { webCovers } from "@/config/web-covers";
 
@@ -19,7 +20,7 @@ const ctaBase =
 export default async function CheckoutSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ method?: string; order?: string }>;
+  searchParams: Promise<{ method?: string; order?: string; session_id?: string }>;
 }) {
   const params = await searchParams;
   const method = params.method === "afterpay" ? "afterpay" : "stripe";
@@ -31,7 +32,7 @@ export default async function CheckoutSuccessPage({
           "Your gemstone will be prepared with insured, secure shipping.",
         ]
       : [
-          "You will receive a payment confirmation by email from Stripe.",
+          "You will receive a payment confirmation by email once Stripe confirms the charge.",
           "Our team will contact you within 1–2 business days to confirm delivery and certification.",
           "Your gemstone will be prepared with insured, secure shipping.",
         ];
@@ -49,6 +50,10 @@ export default async function CheckoutSuccessPage({
           <h1 className="font-caslon mt-4 text-3xl font-normal leading-tight text-heading md:text-4xl">
             Thank you for your <span className="italic text-rich-gold">order</span>
           </h1>
+
+          <Suspense fallback={null}>
+            <PaymentStatusBanner />
+          </Suspense>
 
           <div className="mt-6 h-px w-14 bg-rich-gold/40" aria-hidden />
 

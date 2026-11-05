@@ -85,16 +85,29 @@ export async function attachStripeSession(
   );
 }
 
+export type MarkPaidResult = {
+  order: Order;
+  /** True only when status transitioned from non-paid → paid (safe for emails). */
+  newlyPaid: boolean;
+};
+
 export async function markOrderPaidByStripeSession(
   stripeSessionId: string,
   extras?: { amountTotal?: number; currency?: string },
-): Promise<Order | null> {
+): Promise<MarkPaidResult | null> {
   const db = await getDb();
   if (!db) return null;
 
   const collection = db.collection<StoredOrder>(COLLECTION);
   const existing = await collection.findOne({ stripeSessionId });
   if (!existing) return null;
+
+  if (existing.paymentStatus === "paid") {
+    return {
+      order: toOrder(existing as StoredOrder & { _id: ObjectId }),
+      newlyPaid: false,
+    };
+  }
 
   const $set: Partial<StoredOrder> = {
     paymentStatus: "paid",
@@ -109,7 +122,20 @@ export async function markOrderPaidByStripeSession(
 
   await collection.updateOne({ _id: existing._id }, { $set });
   const updated = await collection.findOne({ _id: existing._id });
-  return updated ? toOrder(updated as StoredOrder & { _id: ObjectId }) : null;
+  if (!updated) return null;
+  return {
+    order: toOrder(updated as StoredOrder & { _id: ObjectId }),
+    newlyPaid: true,
+  };
+}
+
+export async function getOrderByStripeSession(
+  stripeSessionId: string,
+): Promise<Order | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const doc = await db.collection<StoredOrder>(COLLECTION).findOne({ stripeSessionId });
+  return doc ? toOrder(doc as StoredOrder & { _id: ObjectId }) : null;
 }
 
 export async function markOrderStatusByStripeSession(
@@ -149,6 +175,34 @@ export async function getAllOrders(): Promise<Order[]> {
     return docs.map((doc) => toOrder(doc as StoredOrder & { _id: ObjectId }));
   } catch (err) {
     console.error("[orders] query failed:", err instanceof Error ? err.message : err);
+    return [];
+  }
+}
+
+/** Pending Stripe checkouts that can be reconciled against Stripe Checkout sessions. */
+export async function getPendingOrdersWithStripeSession(
+  limit = 25,
+): Promise<Order[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  try {
+    const docs = await db
+      .collection<StoredOrder>(COLLECTION)
+      .find({
+        paymentStatus: "pending",
+        paymentMethod: "stripe",
+        stripeSessionId: { $exists: true, $type: "string", $ne: "" },
+      })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .toArray();
+    return docs.map((doc) => toOrder(doc as StoredOrder & { _id: ObjectId }));
+  } catch (err) {
+    console.error(
+      "[orders] pending stripe query failed:",
+      err instanceof Error ? err.message : err,
+    );
     return [];
   }
 }

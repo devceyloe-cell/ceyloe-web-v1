@@ -3,7 +3,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Eye, Gem, Pencil, Plus, Search } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Eye, Gem, GripVertical, Pencil, Plus, Search } from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
@@ -20,10 +37,74 @@ interface ProductsDashboardProps {
 }
 
 type StockFilter = "all" | ProductAvailability;
-type SortKey = "newest" | "title" | "price-asc" | "price-desc";
+type SortKey = "catalog" | "updated" | "newest" | "title" | "price-asc" | "price-desc";
 
 function productImage(product: Product) {
   return product.image || product.images?.[0] || "";
+}
+
+function sortByCatalogOrder(list: Product[]) {
+  return [...list].sort((a, b) => {
+    const aOrder = a.catalogSortOrder;
+    const bOrder = b.catalogSortOrder;
+    const aHas = typeof aOrder === "number";
+    const bHas = typeof bOrder === "number";
+    if (aHas && bHas && aOrder !== bOrder) return aOrder - bOrder;
+    if (aHas && !bHas) return -1;
+    if (!aHas && bHas) return 1;
+    const aTime = (a.updatedAt || a.createdAt || "").localeCompare(
+      b.updatedAt || b.createdAt || "",
+    );
+    return -aTime;
+  });
+}
+
+function SortableReorderRow({ product }: { product: Product }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: product.id });
+  const src = productImage(product);
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+      className={`flex items-center gap-3 border border-border bg-background px-3 py-2 ${
+        isDragging ? "z-10 opacity-90 shadow-lg" : ""
+      }`}
+    >
+      <button
+        type="button"
+        className="inline-flex shrink-0 cursor-grab touch-none items-center justify-center p-1 text-muted active:cursor-grabbing"
+        aria-label={`Drag to reorder ${product.title}`}
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="h-4 w-4" />
+      </button>
+      <div className="relative h-12 w-12 shrink-0 overflow-hidden bg-surface">
+        {src ? (
+          <Image src={src} alt="" fill className="object-cover" sizes="48px" />
+        ) : (
+          <span className="flex h-full items-center justify-center">
+            <Gem className="h-4 w-4 text-muted" />
+          </span>
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{product.title}</p>
+        <p className="truncate text-[11px] uppercase tracking-wider text-muted">
+          {product.category}
+          {product.subcategory ? ` · ${product.subcategory}` : null}
+        </p>
+      </div>
+      <p className="shrink-0 text-sm text-gold">
+        <Price amount={product.price} />
+      </p>
+    </li>
+  );
 }
 
 export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboardProps) {
@@ -35,7 +116,15 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
   const [subcategory, setSubcategory] = useState("all");
   const [color, setColor] = useState("all");
   const [stock, setStock] = useState<StockFilter>("all");
-  const [sort, setSort] = useState<SortKey>("newest");
+  const [sort, setSort] = useState<SortKey>("catalog");
+  const [reorderMode, setReorderMode] = useState(false);
+  const [orderedProducts, setOrderedProducts] = useState<Product[]>([]);
+  const [savingOrder, setSavingOrder] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   async function syncVideosFromBlob() {
     setSyncingVideos(true);
@@ -69,6 +158,47 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
       setMessage(data.error || "Import failed");
     }
     setSeeding(false);
+  }
+
+  function enterReorderMode() {
+    setOrderedProducts(sortByCatalogOrder(products));
+    setReorderMode(true);
+    setMessage("");
+  }
+
+  function cancelReorderMode() {
+    setReorderMode(false);
+    setOrderedProducts([]);
+  }
+
+  function onDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setOrderedProducts((items) => {
+      const oldIndex = items.findIndex((p) => p.id === active.id);
+      const newIndex = items.findIndex((p) => p.id === over.id);
+      if (oldIndex < 0 || newIndex < 0) return items;
+      return arrayMove(items, oldIndex, newIndex);
+    });
+  }
+
+  async function saveReorder() {
+    setSavingOrder(true);
+    setMessage("");
+    const res = await fetch("/api/admin/products/reorder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderedIds: orderedProducts.map((p) => p.id) }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) {
+      setMessage("Catalog order saved. Storefront will show this sequence.");
+      setReorderMode(false);
+      window.location.reload();
+    } else {
+      setMessage(data.error || "Could not save order");
+      setSavingOrder(false);
+    }
   }
 
   const categories = useMemo(() => {
@@ -128,9 +258,25 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
           return a.price - b.price;
         case "price-desc":
           return b.price - a.price;
+        case "updated":
+          return (b.updatedAt || b.createdAt || "").localeCompare(
+            a.updatedAt || a.createdAt || "",
+          );
         case "newest":
-        default:
           return (b.createdAt || "").localeCompare(a.createdAt || "");
+        case "catalog":
+        default: {
+          const aOrder = a.catalogSortOrder;
+          const bOrder = b.catalogSortOrder;
+          const aHas = typeof aOrder === "number";
+          const bHas = typeof bOrder === "number";
+          if (aHas && bHas && aOrder !== bOrder) return aOrder - bOrder;
+          if (aHas && !bHas) return -1;
+          if (!aHas && bHas) return 1;
+          return (b.updatedAt || b.createdAt || "").localeCompare(
+            a.updatedAt || a.createdAt || "",
+          );
+        }
       }
     });
 
@@ -154,7 +300,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
             <p className="text-xs uppercase tracking-[0.2em] text-gold">Catalog</p>
             <h1 className="mt-1 font-display text-3xl font-light tracking-tight">Products</h1>
             <p className="mt-1 text-sm text-muted">
-              Click a gem to edit · images from the catalog
+              Click a gem to edit · drag to set storefront order
               {products.length > 0 ? (
                 <span className="ml-2 rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold">
                   {products.length} total · {availableCount} available · {soldOutCount} sold
@@ -176,18 +322,29 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
               </Button>
             ) : null}
             {products.length > 0 && mongoConfigured ? (
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={syncVideosFromBlob}
-                disabled={syncingVideos}
-              >
-                {syncingVideos ? "Syncing videos…" : "Sync videos from Blob"}
-              </Button>
+              <>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={reorderMode ? cancelReorderMode : enterReorderMode}
+                  disabled={savingOrder}
+                >
+                  {reorderMode ? "Cancel reorder" : "Reorder catalog"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={syncVideosFromBlob}
+                  disabled={syncingVideos || reorderMode}
+                >
+                  {syncingVideos ? "Syncing videos…" : "Sync videos from Blob"}
+                </Button>
+              </>
             ) : null}
             <Link href="/admin/products/new">
-              <Button size="sm" className="inline-flex items-center gap-1.5">
+              <Button size="sm" className="inline-flex items-center gap-1.5" disabled={reorderMode}>
                 <Plus className="h-3.5 w-3.5" />
                 New product
               </Button>
@@ -204,7 +361,35 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
 
         {message ? <p className="mb-4 text-sm text-muted">{message}</p> : null}
 
-        {products.length === 0 ? (
+        {reorderMode ? (
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3">
+              <p className="text-sm text-muted">
+                Drag rows to set the All Gemstones order. Top of the list appears first on the
+                storefront.
+              </p>
+              <Button type="button" size="sm" onClick={saveReorder} disabled={savingOrder}>
+                {savingOrder ? "Saving…" : "Save order"}
+              </Button>
+            </div>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={onDragEnd}
+            >
+              <SortableContext
+                items={orderedProducts.map((p) => p.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <ul className="space-y-2">
+                  {orderedProducts.map((product) => (
+                    <SortableReorderRow key={product.id} product={product} />
+                  ))}
+                </ul>
+              </SortableContext>
+            </DndContext>
+          </div>
+        ) : products.length === 0 ? (
           <div className="border border-dashed border-border bg-surface/50 px-6 py-14 text-center">
             <Gem className="mx-auto h-8 w-8 text-muted" />
             <p className="mt-3 text-sm text-muted">No products yet.</p>
@@ -288,6 +473,8 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                   className="rounded-md border border-border bg-background px-3 py-2.5 text-sm outline-none ring-gold/40 focus:ring-2"
                   aria-label="Sort products"
                 >
+                  <option value="catalog">Catalog order</option>
+                  <option value="updated">Recently updated</option>
                   <option value="newest">Newest</option>
                   <option value="title">Title A–Z</option>
                   <option value="price-asc">Price ↑</option>

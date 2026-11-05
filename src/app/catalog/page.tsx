@@ -70,7 +70,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     color: normalizeColorParam(params.color),
     shape: params.shape,
     origin: params.origin,
-    sort: (params.sort as Filters["sort"]) ?? "featured",
+    sort: (params.sort as Filters["sort"]) || undefined,
     search: params.search,
   };
 

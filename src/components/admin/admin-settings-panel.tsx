@@ -146,8 +146,8 @@ export function AdminSettingsPanel() {
         <p className="text-xs uppercase tracking-[0.2em] text-gold">Security</p>
         <h1 className="mt-2 font-display text-3xl font-light">Admin settings</h1>
         <p className="mt-2 text-sm text-muted">
-          Change your password and configure MFA. When MFA is on, the one-time code is
-          sent to every listed email.
+          Change your password and configure MFA. Listed emails also receive new-order
+          alerts when a Stripe payment completes.
         </p>
 
         {loading ? (
@@ -196,9 +196,10 @@ export function AdminSettingsPanel() {
             </section>
 
             <section className="space-y-4 border border-border bg-surface p-6">
-              <h2 className="font-display text-xl font-light">MFA emails</h2>
+              <h2 className="font-display text-xl font-light">Notification emails</h2>
               <p className="text-xs text-muted">
-                OTP codes are delivered to all addresses below (up to {MAX_MFA_EMAILS}).
+                Used for MFA one-time codes and order-success emails with full payment and
+                delivery details (up to {MAX_MFA_EMAILS}).
               </p>
 
               <div className="space-y-3">

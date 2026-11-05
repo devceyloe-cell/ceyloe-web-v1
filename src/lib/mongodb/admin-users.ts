@@ -323,4 +323,27 @@ export async function countAdminUsers(): Promise<number> {
   return db.collection<StoredAdminUser>(COLLECTION).countDocuments();
 }
 
+/**
+ * Unique emails from every admin user’s MFA email list.
+ * Used for order-success notifications (and MFA OTP delivery).
+ */
+export async function getAllAdminNotificationEmails(): Promise<string[]> {
+  try {
+    const collection = await getCollection();
+    const docs = await collection.find({}).toArray();
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const doc of docs) {
+      for (const email of resolveEmails(doc)) {
+        if (seen.has(email)) continue;
+        seen.add(email);
+        out.push(email);
+      }
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
 export { MAX_MFA_EMAILS };

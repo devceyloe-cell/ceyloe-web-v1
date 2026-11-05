@@ -35,7 +35,7 @@ export async function getAllProductsFromDb(): Promise<Product[]> {
     const docs = await db
       .collection<StoredProduct>(COLLECTION)
       .find({})
-      .sort({ createdAt: -1 })
+      .sort({ catalogSortOrder: 1, updatedAt: -1, createdAt: -1 })
       .toArray();
 
     return docs.map((doc) => toProduct(doc as StoredProductDoc));
@@ -97,12 +97,16 @@ export async function saveProductToDb(product: Product): Promise<Product> {
     image: product.image || product.images[0] || "",
     images: product.images.length > 0 ? product.images : product.image ? [product.image] : [],
     createdAt: product.createdAt || now,
+    updatedAt: now,
     availability,
     inStock: availability === "available",
     subcategory,
   };
   if (!subcategory) {
     delete fields.subcategory;
+  }
+  if (typeof product.catalogSortOrder !== "number") {
+    delete fields.catalogSortOrder;
   }
 
   const collection = db.collection<StoredProduct>(COLLECTION);
@@ -141,12 +145,36 @@ export async function seedProductsToDb(products: Product[]): Promise<number> {
   const existing = await collection.countDocuments();
   if (existing > 0) return 0;
 
-  const docs: StoredProduct[] = products.map(({ id: _id, ...product }) => ({
+  const now = new Date().toISOString();
+  const docs: StoredProduct[] = products.map(({ id: _id, ...product }, index) => ({
     ...product,
     handle: slugify(product.handle || product.title),
-    createdAt: product.createdAt || new Date().toISOString(),
+    createdAt: product.createdAt || now,
+    updatedAt: product.updatedAt || product.createdAt || now,
+    catalogSortOrder: product.catalogSortOrder ?? index,
   }));
 
   const result = await collection.insertMany(docs);
   return result.insertedCount;
+}
+
+/** Persist drag-and-drop catalog order. `orderedIds` is first → last on the storefront. */
+export async function reorderProductsInDb(orderedIds: string[]): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("MongoDB is not configured");
+
+  const collection = db.collection<StoredProduct>(COLLECTION);
+  const now = new Date().toISOString();
+  const ops = orderedIds
+    .filter((id) => ObjectId.isValid(id))
+    .map((id, index) =>
+      collection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { catalogSortOrder: index, updatedAt: now } },
+      ),
+    );
+
+  if (ops.length === 0) return 0;
+  const results = await Promise.all(ops);
+  return results.reduce((sum, r) => sum + r.modifiedCount, 0);
 }

@@ -13,8 +13,10 @@ interface CatalogFiltersProps {
 }
 
 const sortOptions = [
+  { value: "", label: "Catalog order" },
+  { value: "updated", label: "Recently updated" },
+  { value: "newest", label: "Recently added" },
   { value: "featured", label: "Featured" },
-  { value: "newest", label: "Recently Added" },
   { value: "price-asc", label: "Price: Low to High" },
   { value: "price-desc", label: "Price: High to Low" },
 ];
@@ -26,7 +28,7 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
   const current = {
     category: searchParams.get("category") ?? "",
     colors: searchParams.getAll("color").filter(Boolean),
-    sort: searchParams.get("sort") ?? "featured",
+    sort: searchParams.get("sort") ?? "",
     minPrice: searchParams.get("minPrice") ?? "",
     maxPrice: searchParams.get("maxPrice") ?? "",
     minCarat: searchParams.get("minCarat") ?? "",
@@ -55,7 +57,7 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
     Boolean(current.maxPrice) ||
     Boolean(current.minCarat) ||
     Boolean(current.maxCarat) ||
-    (Boolean(current.sort) && current.sort !== "featured");
+    Boolean(current.sort);
 
   const inputClass =
     "w-full border border-border bg-surface px-3 py-2 text-sm text-foreground focus:border-foreground/30 focus:outline-none";

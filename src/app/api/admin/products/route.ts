@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { isAuthenticated } from "@/lib/admin/auth";
 import { isMongoConfigured } from "@/config/env";
 import {
@@ -77,5 +78,6 @@ export async function POST(request: NextRequest) {
     inStock: availability === "available",
   });
 
+  revalidateTag("products", "max");
   return NextResponse.json({ product: saved });
 }

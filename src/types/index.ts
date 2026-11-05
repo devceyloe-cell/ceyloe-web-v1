@@ -34,6 +34,13 @@ export interface Product {
   featured?: boolean;
   isNew?: boolean;
   createdAt?: string;
+  /** Bumped on every admin save — used for “Recently updated” catalog sort. */
+  updatedAt?: string;
+  /**
+   * Manual storefront order (0 = first). Set via admin drag-and-drop.
+   * When present, takes priority over date sorts for the default catalog view.
+   */
+  catalogSortOrder?: number;
   specs: GemstoneSpec;
   certificationUrl?: string;
   /** Prefer this over inStock. Legacy products may only have inStock. */
@@ -89,7 +96,7 @@ export interface CatalogFilters {
   maxPrice?: number;
   minCarat?: number;
   maxCarat?: number;
-  sort?: "price-asc" | "price-desc" | "newest" | "featured";
+  sort?: "price-asc" | "price-desc" | "newest" | "updated" | "featured" | "manual";
   search?: string;
 }
 

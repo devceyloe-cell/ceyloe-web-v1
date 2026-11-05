@@ -329,6 +329,10 @@ interface OrderEmailParams {
 
 interface AdminOrderEmailParams extends OrderEmailParams {
   customerEmail: string;
+  customerPhone?: string;
+  shippingAddress?: string;
+  paymentStatus?: string;
+  orderId?: string;
 }
 
 function formatAmount(amountCents: number, currency: string) {
@@ -496,10 +500,27 @@ export function buildOrderConfirmationEmailText(params: OrderEmailParams) {
 // ─── Admin Notification Email ──────────────────────────────────────────────────
 
 export function buildOrderAdminNotificationHtml(params: AdminOrderEmailParams) {
-  const { customerName, customerEmail, sessionId, amountTotal, currency, lineItems } = params;
+  const {
+    customerName,
+    customerEmail,
+    customerPhone,
+    shippingAddress,
+    paymentStatus,
+    orderId,
+    sessionId,
+    amountTotal,
+    currency,
+    lineItems,
+  } = params;
   const amount = formatAmount(amountTotal, currency);
   const refShort = sessionId.slice(-8).toUpperCase();
   const stripeUrl = `https://dashboard.stripe.com/payments/${sessionId}`;
+  const statusLabel =
+    paymentStatus === "paid"
+      ? "Payment completed"
+      : paymentStatus === "pending"
+        ? "Payment pending"
+        : paymentStatus || "Payment completed";
   const now = new Date().toLocaleString("en-AU", {
     timeZone: "Australia/Perth",
     dateStyle: "full",
@@ -510,7 +531,10 @@ export function buildOrderAdminNotificationHtml(params: AdminOrderEmailParams) {
     <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 560px; margin: 0 auto; color: #1a1a1a; background: #faf9f7; padding: 32px 24px;">
       <p style="font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #004B69; margin: 0 0 8px;">Ceyloe Admin</p>
       <h1 style="font-size: 24px; color: #C09A4A; margin: 0 0 8px; font-weight: normal;">New Order Received 🎉</h1>
-      <p style="font-size: 13px; color: #888; margin: 0 0 24px;">${now} (AWST)</p>
+      <p style="font-size: 13px; color: #888; margin: 0 0 8px;">${now} (AWST)</p>
+      <p style="font-size: 13px; margin: 0 0 24px;">
+        <span style="display:inline-block;background:#ecfdf5;color:#065f46;padding:4px 10px;border-radius:2px;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;">${statusLabel}</span>
+      </p>
 
       <!-- Customer -->
       <div style="background: #ffffff; border: 1px solid #e8e4dc; padding: 16px 20px; margin: 0 0 16px; border-radius: 2px;">
@@ -518,8 +542,18 @@ export function buildOrderAdminNotificationHtml(params: AdminOrderEmailParams) {
         <p style="margin: 0; font-size: 14px; line-height: 1.8; color: #1a1a1a;">
           <strong>${customerName}</strong><br/>
           <a href="mailto:${customerEmail}" style="color: #004B69; text-decoration: none;">${customerEmail}</a>
+          ${customerPhone ? `<br/>Phone: <a href="tel:${customerPhone}" style="color: #004B69; text-decoration: none;">${customerPhone}</a>` : ""}
         </p>
       </div>
+
+      ${
+        shippingAddress
+          ? `<div style="background: #ffffff; border: 1px solid #e8e4dc; padding: 16px 20px; margin: 0 0 16px; border-radius: 2px;">
+        <p style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #004B69; margin: 0 0 10px;">Delivery</p>
+        <p style="margin: 0; font-size: 14px; line-height: 1.7; color: #1a1a1a; white-space: pre-line;">${shippingAddress}</p>
+      </div>`
+          : ""
+      }
 
       <!-- Products -->
       <div style="background: #ffffff; border: 1px solid #e8e4dc; padding: 16px 20px; margin: 0 0 16px; border-radius: 2px;">
@@ -540,23 +574,44 @@ export function buildOrderAdminNotificationHtml(params: AdminOrderEmailParams) {
       </p>
 
       <hr style="border: none; border-top: 1px solid #e8e4dc; margin: 24px 0 16px;" />
-      <p style="font-size: 11px; color: #999;">Session ID: ${sessionId}</p>
+      <p style="font-size: 11px; color: #999;">Session ID: ${sessionId}${orderId ? `<br/>Order ID: ${orderId}` : ""}</p>
     </div>
   `.trim();
 }
 
 export function buildOrderAdminNotificationText(params: AdminOrderEmailParams) {
-  const { customerName, customerEmail, sessionId, amountTotal, currency, lineItems } = params;
+  const {
+    customerName,
+    customerEmail,
+    customerPhone,
+    shippingAddress,
+    paymentStatus,
+    orderId,
+    sessionId,
+    amountTotal,
+    currency,
+    lineItems,
+  } = params;
   const amount = formatAmount(amountTotal, currency);
   const refShort = sessionId.slice(-8).toUpperCase();
+  const statusLabel =
+    paymentStatus === "paid"
+      ? "Payment completed"
+      : paymentStatus === "pending"
+        ? "Payment pending"
+        : paymentStatus || "Payment completed";
 
   return [
     "Ceyloe Admin — New Order",
     "",
+    `Payment status: ${statusLabel}`,
+    "",
     "CUSTOMER",
     `Name:  ${customerName}`,
     `Email: ${customerEmail}`,
+    ...(customerPhone ? [`Phone: ${customerPhone}`] : []),
     "",
+    ...(shippingAddress ? ["DELIVERY", shippingAddress, ""] : []),
     `ORDER #${refShort}`,
     ...(lineItems.length ? [buildLineItemsText(lineItems), ""] : []),
     `Total: ${amount}`,
@@ -564,5 +619,6 @@ export function buildOrderAdminNotificationText(params: AdminOrderEmailParams) {
     `Stripe: https://dashboard.stripe.com/payments/${sessionId}`,
     "",
     `Session ID: ${sessionId}`,
+    ...(orderId ? [`Order ID: ${orderId}`] : []),
   ].join("\n");
 }

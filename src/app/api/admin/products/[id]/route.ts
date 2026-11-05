@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { isAuthenticated } from "@/lib/admin/auth";
 import { isMongoConfigured } from "@/config/env";
 import {
@@ -85,6 +86,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     inStock: availability === "available",
   });
 
+  revalidateTag("products", "max");
   return NextResponse.json({ product: saved });
 }
 
@@ -101,5 +103,6 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
+  revalidateTag("products", "max");
   return NextResponse.json({ success: true });
 }

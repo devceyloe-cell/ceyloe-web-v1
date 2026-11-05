@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/admin/auth";
-import { isMongoConfigured } from "@/config/env";
+import { isMongoConfigured, isStripeConfigured } from "@/config/env";
 import { filterOrders, type OrderPaymentStatusFilter } from "@/lib/orders/filter-orders";
 import { getAllOrders } from "@/lib/mongodb/orders";
+import { reconcilePendingOrdersFromStripe } from "@/lib/orders/reconcile-stripe-payments";
 import type { OrderPaymentStatus } from "@/types/order";
 
 const PAYMENT_STATUSES: OrderPaymentStatus[] = [
@@ -34,6 +35,10 @@ export async function GET(request: Request) {
       { error: "MongoDB is not configured" },
       { status: 503 },
     );
+  }
+
+  if (isStripeConfigured()) {
+    await reconcilePendingOrdersFromStripe(25);
   }
 
   const { searchParams } = new URL(request.url);

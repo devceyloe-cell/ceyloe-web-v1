@@ -128,10 +128,44 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
           new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime(),
       );
       break;
+    case "updated":
+      result.sort((a, b) => {
+        const aTime = new Date(a.updatedAt ?? a.createdAt ?? 0).getTime();
+        const bTime = new Date(b.updatedAt ?? b.createdAt ?? 0).getTime();
+        return bTime - aTime;
+      });
+      break;
+    case "manual":
+      result.sort((a, b) => {
+        const aOrder = a.catalogSortOrder;
+        const bOrder = b.catalogSortOrder;
+        const aHas = typeof aOrder === "number";
+        const bHas = typeof bOrder === "number";
+        if (aHas && bHas && aOrder !== bOrder) return aOrder - bOrder;
+        if (aHas && !bHas) return -1;
+        if (!aHas && bHas) return 1;
+        const aTime = new Date(a.updatedAt ?? a.createdAt ?? 0).getTime();
+        const bTime = new Date(b.updatedAt ?? b.createdAt ?? 0).getTime();
+        return bTime - aTime;
+      });
+      break;
     case "featured":
       result.sort((a, b) => Number(b.featured) - Number(a.featured));
       break;
     default:
+      // Default All Gemstones: admin manual order, then most recently updated
+      result.sort((a, b) => {
+        const aOrder = a.catalogSortOrder;
+        const bOrder = b.catalogSortOrder;
+        const aHas = typeof aOrder === "number";
+        const bHas = typeof bOrder === "number";
+        if (aHas && bHas && aOrder !== bOrder) return aOrder - bOrder;
+        if (aHas && !bHas) return -1;
+        if (!aHas && bHas) return 1;
+        const aTime = new Date(a.updatedAt ?? a.createdAt ?? 0).getTime();
+        const bTime = new Date(b.updatedAt ?? b.createdAt ?? 0).getTime();
+        return bTime - aTime;
+      });
       break;
   }
 
