@@ -21,7 +21,9 @@ export interface CartItem {
   origin?: string;
 }
 
-type CartProduct = Pick<Product, "id" | "handle" | "title" | "price" | "image" | "specs">;
+type CartProduct = Pick<Product, "id" | "handle" | "title" | "price" | "image" | "specs"> & {
+  images?: string[];
+};
 
 interface CartContextValue {
   items: CartItem[];
@@ -42,13 +44,21 @@ interface CartContextValue {
 const STORAGE_KEY = "ceyloe-cart-v1";
 const CartContext = createContext<CartContextValue | null>(null);
 
+function resolveProductImage(product: CartProduct): string {
+  if (typeof product.image === "string" && product.image.trim()) {
+    return product.image.trim();
+  }
+  const fromGallery = product.images?.find((url) => typeof url === "string" && url.trim());
+  return fromGallery?.trim() || "";
+}
+
 function toCartItem(product: CartProduct): CartItem {
   return {
     id: product.id,
     handle: product.handle,
     title: product.title,
     price: product.price,
-    image: product.image || "",
+    image: resolveProductImage(product),
     origin: product.specs?.origin,
   };
 }

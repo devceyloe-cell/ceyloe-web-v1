@@ -173,15 +173,19 @@ function CartBody() {
                     <li key={item.handle} className="flex gap-3 px-5 py-4 md:px-6">
                       <Link
                         href={`/products/${item.handle}`}
-                        className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-[#f3f1ee]"
+                        className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#f3f1ee]"
                       >
-                        <Image
-                          src={item.image}
-                          alt={item.title}
-                          fill
-                          className="object-cover"
-                          sizes="64px"
-                        />
+                        {item.image ? (
+                          <Image
+                            src={item.image}
+                            alt={item.title}
+                            fill
+                            className="object-cover"
+                            sizes="64px"
+                          />
+                        ) : (
+                          <ShoppingBag className="h-5 w-5 text-muted" aria-hidden />
+                        )}
                       </Link>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-2">
