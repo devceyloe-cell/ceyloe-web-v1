@@ -89,7 +89,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     baseFilters,
   );
 
-  const filterOptions = getFilterOptions(allProducts);
+  const filterOptions = getFilterOptions(selectionProducts);
   const bounds = getCatalogBounds(selectionProducts);
   const coverKey = getCatalogCoverKey(filters.category, filters.color);
   const cover = mergeCoverWithOverride(getWebCover(coverKey), heroImages[coverKey]);

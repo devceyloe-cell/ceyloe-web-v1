@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { CreditCard, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { checkoutActionIconClass } from "@/components/product/afterpay-mark";
-import { DeliveryDetailsModal } from "@/components/checkout/delivery-details-modal";
-import type { DeliveryDetailsInput } from "@/types/order";
+import { useCart } from "@/contexts/cart-context";
+import type { Product } from "@/types";
+
+type CartProduct = Pick<Product, "id" | "handle" | "title" | "price" | "image" | "specs">;
 
 interface BuyNowButtonProps {
-  handle: string;
-  title?: string;
+  product: CartProduct;
   inStock?: boolean;
   /** Shown when not purchasable (e.g. "Sold out" or "Hold"). */
   unavailableLabel?: string;
@@ -21,37 +23,25 @@ const shell =
   "inline-flex w-full items-center justify-center gap-1.5 font-manrope font-semibold uppercase tracking-[0.12em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rich-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50";
 
 export function BuyNowButton({
-  handle,
-  title,
+  product,
   inStock = true,
   unavailableLabel = "Sold out",
   className,
   size = "sm",
 }: BuyNowButtonProps) {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const { addItem } = useCart();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  async function startCheckout(delivery: DeliveryDetailsInput) {
+  function handleBuyNow(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!inStock || loading) return;
+
     setLoading(true);
-    setError("");
-
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ handle, delivery, source: "product" }),
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        window.location.href = data.url;
-        return;
-      }
-      setError(data.error || "Checkout unavailable");
-    } catch {
-      setError("Checkout unavailable");
-    }
-    setLoading(false);
+    // Always add (or keep if already in cart), then go to cart for delivery
+    addItem(product);
+    router.push("/cart");
   }
 
   const sizeClass = size === "sm" ? "h-10 px-3 text-[10px]" : "h-12 px-5 text-[11px]";
@@ -65,41 +55,23 @@ export function BuyNowButton({
   }
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col items-stretch gap-1">
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setError("");
-          setOpen(true);
-        }}
-        disabled={loading}
-        className={cn(
-          shell,
-          sizeClass,
-          "bg-rich-gold text-black hover:bg-[#c49a4a]",
-          className,
-        )}
-      >
-        {loading ? (
-          <Loader2 className={cn(checkoutActionIconClass, "animate-spin")} />
-        ) : (
-          <CreditCard className={checkoutActionIconClass} strokeWidth={2} />
-        )}
-        <span>{loading ? "Redirecting…" : "Buy Now"}</span>
-      </button>
-      {error && !open ? <span className="text-center text-[10px] text-red-600">{error}</span> : null}
-
-      <DeliveryDetailsModal
-        key={open ? `delivery-${handle}` : "delivery-closed"}
-        open={open}
-        onClose={() => !loading && setOpen(false)}
-        summary={title ? `Buying: ${title}` : undefined}
-        submitting={loading}
-        error={error}
-        onSubmit={startCheckout}
-      />
-    </div>
+    <button
+      type="button"
+      onClick={handleBuyNow}
+      disabled={loading}
+      className={cn(
+        shell,
+        sizeClass,
+        "min-w-0 flex-1 bg-rich-gold text-black hover:bg-[#c49a4a]",
+        className,
+      )}
+    >
+      {loading ? (
+        <Loader2 className={cn(checkoutActionIconClass, "animate-spin")} />
+      ) : (
+        <CreditCard className={checkoutActionIconClass} strokeWidth={2} />
+      )}
+      <span>{loading ? "Going to cart…" : "Buy Now"}</span>
+    </button>
   );
 }

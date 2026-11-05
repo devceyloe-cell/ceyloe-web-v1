@@ -47,6 +47,9 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
 
   if (filters.category) {
     result = result.filter((p) => p.category === filters.category);
+  } else {
+    // "All gemstones" (/catalog with no category) — never mix Fine Jewellery
+    result = result.filter((p) => p.category !== "jewellery");
   }
 
   if (filters.color) {
@@ -177,7 +180,15 @@ export function deriveCatalogView(
 ) {
   const products = applyFilters(allProducts, filters);
   const selectionProducts = applyFilters(allProducts, baseFilters);
-  const categories = [...new Set(allProducts.map((p) => p.category))];
+  const categories = [
+    ...new Set(
+      allProducts
+        .map((p) => p.category)
+        .filter((c) =>
+          filters.category === "jewellery" ? c === "jewellery" : c !== "jewellery",
+        ),
+    ),
+  ];
   return { products, selectionProducts, categories, allProducts };
 }
 

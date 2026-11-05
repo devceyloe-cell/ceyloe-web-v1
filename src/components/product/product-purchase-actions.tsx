@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CreditCard, Gem, Loader2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/cart-context";
 import { AfterpayPlacement } from "@/components/product/afterpay-placement";
@@ -16,8 +17,6 @@ import {
   getProductAvailability,
   isProductPurchasable,
 } from "@/lib/product-availability";
-import { DeliveryDetailsModal } from "@/components/checkout/delivery-details-modal";
-import type { DeliveryDetailsInput } from "@/types/order";
 
 interface ProductPurchaseActionsProps {
   product: Product;
@@ -25,12 +24,12 @@ interface ProductPurchaseActionsProps {
 }
 
 export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseActionsProps) {
+  const router = useRouter();
   const { addItem, hasItem } = useCart();
   const [cartStatus, setCartStatus] = useState<"idle" | "adding" | "success" | "duplicate" | "error">(
     "idle",
   );
   const [buyLoading, setBuyLoading] = useState(false);
-  const [deliveryOpen, setDeliveryOpen] = useState(false);
   const [afterpayLoading, setAfterpayLoading] = useState(false);
   const [buyError, setBuyError] = useState("");
   const [showAfterpayForm, setShowAfterpayForm] = useState(false);
@@ -52,8 +51,6 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
     if (result.ok) {
       setCartStatus("success");
       window.setTimeout(() => setCartStatus("idle"), 2500);
-    } else if (result.reason === "auth") {
-      window.location.href = `/login?next=${encodeURIComponent(`/products/${product.handle}`)}`;
     } else if (result.reason === "duplicate") {
       setCartStatus("duplicate");
       window.setTimeout(() => setCartStatus("idle"), 2500);
@@ -66,34 +63,9 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
   function handleBuyNow() {
     if (!purchasable || buyLoading) return;
     setBuyError("");
-    setDeliveryOpen(true);
-  }
-
-  async function startStripeCheckout(delivery: DeliveryDetailsInput) {
-    if (!purchasable || buyLoading) return;
     setBuyLoading(true);
-    setBuyError("");
-
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          handle: product.handle,
-          delivery,
-          source: "product",
-        }),
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        window.location.href = data.url;
-        return;
-      }
-      setBuyError(data.error || "Unable to start checkout");
-    } catch {
-      setBuyError("Unable to start checkout. Please try again.");
-    }
-    setBuyLoading(false);
+    addItem(product);
+    router.push("/cart");
   }
 
   async function handleAfterpay() {
@@ -276,18 +248,9 @@ export function ProductPurchaseActions({ product, actionsRef }: ProductPurchaseA
           </Link>
         </p>
       )}
-      {buyError && !deliveryOpen && (
+      {buyError ? (
         <p className="font-manrope text-center text-[12px] text-red-600">{buyError}</p>
-      )}
-
-      <DeliveryDetailsModal
-        open={deliveryOpen}
-        onClose={() => !buyLoading && setDeliveryOpen(false)}
-        summary={`Buying: ${product.title}`}
-        submitting={buyLoading}
-        error={buyError}
-        onSubmit={startStripeCheckout}
-      />
+      ) : null}
     </div>
   );
 }

@@ -4,22 +4,47 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { Loader2, Trash2 } from "lucide-react";
+import { Lock, Loader2, ShoppingBag, Trash2 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Price } from "@/components/ui/price";
 import { useCart } from "@/contexts/cart-context";
 import { useUserAuth } from "@/contexts/user-auth-context";
-import { DeliveryDetailsModal } from "@/components/checkout/delivery-details-modal";
+import {
+  DELIVERY_FORM_ID,
+  DeliveryDetailsForm,
+} from "@/components/checkout/delivery-details-form";
 import type { DeliveryDetailsInput } from "@/types/order";
+
+function PayButton({
+  checkingOut,
+  className,
+}: {
+  checkingOut: boolean;
+  className?: string;
+}) {
+  return (
+    <button
+      type="submit"
+      form={DELIVERY_FORM_ID}
+      disabled={checkingOut}
+      className={
+        className ??
+        "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-rich-gold px-5 font-manrope text-[12px] font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#c49a4a] disabled:cursor-not-allowed disabled:opacity-50"
+      }
+    >
+      {checkingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-3.5 w-3.5" />}
+      {checkingOut ? "Redirecting to Stripe…" : "Continue to payment"}
+    </button>
+  );
+}
 
 function CartBody() {
   const searchParams = useSearchParams();
   const confirmed = searchParams.get("confirmed") === "1";
   const cancelled = searchParams.get("checkout") === "cancelled";
   const { items, removeItem, clearCart, itemCount, itemsTotal } = useCart();
-  const { user, loading: authLoading } = useUserAuth();
+  const { user } = useUserAuth();
   const [checkingOut, setCheckingOut] = useState(false);
-  const [deliveryOpen, setDeliveryOpen] = useState(false);
   const [error, setError] = useState("");
 
   async function checkoutCart(delivery: DeliveryDetailsInput) {
@@ -48,154 +73,187 @@ function CartBody() {
     setCheckingOut(false);
   }
 
-  if (!authLoading && !user) {
-    return (
-      <Container className="py-12 md:py-16">
-        <div className="text-center">
-          <p className="font-poppins text-muted">
-            Sign in to view your cart. Items you add are saved to your account.
-          </p>
-          <Link
-            href="/login"
-            className="font-poppins mt-6 inline-flex min-h-12 items-center justify-center bg-[#C09A4A] px-8 text-[11px] font-bold uppercase tracking-[0.14em] text-white hover:bg-[#d0ab5c]"
-          >
-            Login / Create account
-          </Link>
-        </div>
-      </Container>
-    );
-  }
-
   return (
-    <Container className="py-12 md:py-16">
-      {confirmed ? (
-        <p className="mb-6 border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm text-emerald-800">
-          Email confirmed. Your account is active.
-        </p>
-      ) : null}
-      {cancelled ? (
-        <p className="mb-6 border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-900">
-          Checkout was cancelled. Your cart is unchanged.
-        </p>
-      ) : null}
-      {itemCount === 0 ? (
-        <div className="text-center">
-          <p className="font-poppins text-muted">Your cart is empty.</p>
-          <Link
-            href="/gemstones"
-            className="font-poppins mt-6 inline-flex min-h-12 items-center justify-center bg-[#C09A4A] px-8 text-[11px] font-bold uppercase tracking-[0.14em] text-white hover:bg-[#d0ab5c]"
-          >
-            Explore Gemstones
-          </Link>
-        </div>
-      ) : (
-        <div className="grid gap-10 lg:grid-cols-[1fr_320px]">
-          <div className="space-y-4">
-            {items.map((item) => (
-              <div
-                key={item.handle}
-                className="flex flex-col gap-4 border border-border bg-white p-4 sm:flex-row sm:items-center"
-              >
-                <Link
-                  href={`/products/${item.handle}`}
-                  className="relative h-24 w-24 shrink-0 overflow-hidden bg-black"
-                >
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover"
-                    sizes="96px"
-                  />
-                </Link>
-                <div className="min-w-0 flex-1">
-                  <Link
-                    href={`/products/${item.handle}`}
-                    className="font-caslon text-lg hover:text-rich-gold"
-                  >
-                    {item.title}
-                  </Link>
-                  {item.origin && (
-                    <p className="font-manrope mt-1 text-sm text-muted">{item.origin}</p>
-                  )}
-                  <p className="font-manrope mt-1 font-semibold text-rich-gold">
-                    <Price amount={item.price} />
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeItem(item.handle)}
-                  className="inline-flex h-11 w-11 items-center justify-center border border-border text-muted hover:text-red-600"
-                  aria-label={`Remove ${item.title}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
+    <div className="min-h-[60vh] bg-[#f7f5f2]">
+      <Container className="pb-12 pt-6 md:pb-16 md:pt-8">
+        {confirmed ? (
+          <p className="mb-6 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm text-emerald-800">
+            Email confirmed. Your account is active.
+          </p>
+        ) : null}
+        {cancelled ? (
+          <p className="mb-6 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-900">
+            Checkout was cancelled. Your cart is unchanged.
+          </p>
+        ) : null}
 
-            <button
-              type="button"
-              onClick={clearCart}
-              className="font-manrope text-sm text-muted underline-offset-2 hover:text-foreground hover:underline"
-            >
-              Clear cart
-            </button>
-          </div>
-
-          <aside className="h-fit border border-border bg-white p-6 lg:sticky lg:top-28">
-            <p className="text-xs uppercase tracking-[0.2em] text-rich-gold">Order summary</p>
-            <h2 className="font-caslon mt-2 text-2xl">Total</h2>
-
-            <dl className="mt-6 space-y-3 border-t border-border pt-6 font-manrope text-sm">
-              <div className="flex items-center justify-between gap-4">
-                <dt className="text-muted">
-                  Items ({itemCount})
-                </dt>
-                <dd className="font-semibold">
-                  <Price amount={itemsTotal} />
-                </dd>
-              </div>
-              <div className="flex items-center justify-between gap-4 border-t border-border pt-3 text-base">
-                <dt className="font-semibold uppercase tracking-[0.08em]">Total</dt>
-                <dd className="font-semibold text-rich-gold">
-                  <Price amount={itemsTotal} />
-                </dd>
-              </div>
-            </dl>
-
-            <p className="mt-4 text-xs leading-relaxed text-muted">
-              Enter delivery details next, then pay securely via Stripe for all items in your cart.
+        {itemCount === 0 ? (
+          <div className="mx-auto max-w-md rounded-lg border border-[#ece9e6] bg-white px-8 py-16 text-center shadow-sm">
+            <ShoppingBag className="mx-auto h-10 w-10 text-muted" />
+            <h1 className="font-caslon mt-4 text-2xl">Your cart is empty</h1>
+            <p className="mt-2 text-sm text-muted">
+              Browse the collection and add a gemstone to get started.
             </p>
-
-            {error && !deliveryOpen ? (
-              <p className="mt-4 font-manrope text-sm text-red-500">{error}</p>
-            ) : null}
-
-            <button
-              type="button"
-              onClick={() => {
-                setError("");
-                setDeliveryOpen(true);
-              }}
-              disabled={checkingOut || items.length === 0}
-              className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-rich-gold px-4 font-manrope text-[11px] font-bold tracking-[0.14em] text-black uppercase disabled:opacity-50"
+            <Link
+              href="/gemstones"
+              className="mt-8 inline-flex min-h-12 items-center justify-center rounded-md bg-rich-gold px-8 text-[11px] font-bold uppercase tracking-[0.14em] text-black hover:bg-[#c49a4a]"
             >
-              {checkingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              {checkingOut ? "Redirecting…" : "Proceed to payment"}
-            </button>
-          </aside>
+              Continue shopping
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            <header className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-rich-gold">
+                  Checkout
+                </p>
+                <h1 className="font-caslon mt-1 text-3xl text-foreground md:text-[2.5rem]">
+                  Delivery & cart
+                </h1>
+                <p className="mt-1.5 text-sm text-muted">
+                  {!user
+                    ? "Guest checkout — no account required"
+                    : "Signed in · cart saved to your account"}
+                </p>
+              </div>
+              <Link
+                href="/gemstones"
+                className="text-sm text-muted underline-offset-4 hover:text-foreground hover:underline"
+              >
+                Continue shopping
+              </Link>
+            </header>
 
-          <DeliveryDetailsModal
-            open={deliveryOpen}
-            onClose={() => !checkingOut && setDeliveryOpen(false)}
-            summary={`${itemCount} item${itemCount === 1 ? "" : "s"} · checkout`}
-            submitting={checkingOut}
-            error={error}
-            onSubmit={checkoutCart}
-          />
-        </div>
-      )}
-    </Container>
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)] lg:items-start lg:gap-8">
+              {/* Left — delivery */}
+              <section className="rounded-lg border border-[#ece9e6] bg-white p-5 shadow-sm md:p-8">
+                <div className="mb-6 flex items-center gap-3 border-b border-[#ece9e6] pb-5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-rich-gold text-[12px] font-bold text-black">
+                    1
+                  </span>
+                  <div>
+                    <h2 className="font-manrope text-base font-semibold text-foreground">
+                      Delivery details
+                    </h2>
+                    <p className="text-xs text-muted">Where should we send your order?</p>
+                  </div>
+                </div>
+
+                <DeliveryDetailsForm
+                  submitting={checkingOut}
+                  error={error}
+                  onSubmit={checkoutCart}
+                  footer={
+                    <div className="border-t border-[#ece9e6] pt-6 lg:hidden">
+                      <PayButton checkingOut={checkingOut} />
+                    </div>
+                  }
+                />
+              </section>
+
+              {/* Right — cart summary */}
+              <aside className="rounded-lg border border-[#ece9e6] bg-white shadow-sm lg:sticky lg:top-28">
+                <div className="flex items-center gap-3 border-b border-[#ece9e6] px-5 py-5 md:px-6">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a1a1a] text-[12px] font-bold text-white">
+                    2
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="font-manrope text-base font-semibold text-foreground">
+                      Your cart
+                    </h2>
+                    <p className="text-xs text-muted">
+                      {itemCount} item{itemCount === 1 ? "" : "s"}
+                    </p>
+                  </div>
+                </div>
+
+                <ul className="max-h-[min(420px,50vh)] divide-y divide-[#ece9e6] overflow-y-auto">
+                  {items.map((item) => (
+                    <li key={item.handle} className="flex gap-3 px-5 py-4 md:px-6">
+                      <Link
+                        href={`/products/${item.handle}`}
+                        className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-[#f3f1ee]"
+                      >
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </Link>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <Link
+                            href={`/products/${item.handle}`}
+                            className="font-manrope line-clamp-2 text-sm font-medium leading-snug text-foreground hover:text-rich-gold"
+                          >
+                            {item.title}
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => removeItem(item.handle)}
+                            className="shrink-0 rounded p-1 text-muted transition hover:bg-red-50 hover:text-red-600"
+                            aria-label={`Remove ${item.title}`}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                        {item.origin ? (
+                          <p className="mt-0.5 truncate text-xs text-muted">{item.origin}</p>
+                        ) : null}
+                        <p className="mt-1.5 text-sm font-semibold text-rich-gold">
+                          <Price amount={item.price} />
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="space-y-3 border-t border-[#ece9e6] px-5 py-5 md:px-6">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted">Subtotal</span>
+                    <span className="font-medium">
+                      <Price amount={itemsTotal} />
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted">Shipping</span>
+                    <span className="text-muted">Calculated at payment</span>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-[#ece9e6] pt-3">
+                    <span className="font-manrope text-sm font-semibold uppercase tracking-[0.08em]">
+                      Total
+                    </span>
+                    <span className="font-caslon text-xl text-rich-gold">
+                      <Price amount={itemsTotal} />
+                    </span>
+                  </div>
+
+                  <div className="hidden pt-2 lg:block">
+                    <PayButton checkingOut={checkingOut} />
+                  </div>
+
+                  <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-[11px] text-muted">
+                    <Lock className="h-3 w-3" />
+                    Secure checkout powered by Stripe
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={clearCart}
+                    className="w-full text-center text-xs text-muted underline-offset-2 hover:text-foreground hover:underline"
+                  >
+                    Clear cart
+                  </button>
+                </div>
+              </aside>
+            </div>
+          </div>
+        )}
+      </Container>
+    </div>
   );
 }
 
@@ -203,9 +261,9 @@ export function CartContent() {
   return (
     <Suspense
       fallback={
-        <Container className="py-12 md:py-16">
-          <p className="text-center text-sm text-muted">Loading cart...</p>
-        </Container>
+        <div className="bg-[#f7f5f2] py-16 text-center text-sm text-muted">
+          Loading cart…
+        </div>
       }
     >
       <CartBody />

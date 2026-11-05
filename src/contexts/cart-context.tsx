@@ -21,14 +21,18 @@ export interface CartItem {
   origin?: string;
 }
 
+type CartProduct = Pick<Product, "id" | "handle" | "title" | "price" | "image" | "specs">;
+
 interface CartContextValue {
   items: CartItem[];
   itemCount: number;
   /** Sum of item prices (AUD/catalog currency as stored) */
   itemsTotal: number;
-  addItem: (product: Pick<Product, "id" | "handle" | "title" | "price" | "image" | "specs">) => {
+  /** False until guest/server cart has finished loading */
+  ready: boolean;
+  addItem: (product: CartProduct) => {
     ok: boolean;
-    reason?: "duplicate" | "unavailable" | "auth";
+    reason?: "duplicate" | "unavailable";
   };
   removeItem: (handle: string) => void;
   clearCart: () => void;
@@ -37,6 +41,17 @@ interface CartContextValue {
 
 const STORAGE_KEY = "ceyloe-cart-v1";
 const CartContext = createContext<CartContextValue | null>(null);
+
+function toCartItem(product: CartProduct): CartItem {
+  return {
+    id: product.id,
+    handle: product.handle,
+    title: product.title,
+    price: product.price,
+    image: product.image || "",
+    origin: product.specs?.origin,
+  };
+}
 
 function readStoredItems(): CartItem[] {
   if (typeof window === "undefined") return [];
@@ -52,7 +67,11 @@ function readStoredItems(): CartItem[] {
 
 function writeStoredItems(items: CartItem[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  } catch {
+    /* ignore quota / private mode */
+  }
 }
 
 async function persistServerCart(items: CartItem[]) {
@@ -67,8 +86,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useUserAuth();
   const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const itemsRef = useRef<CartItem[]>([]);
   const skipNextPersist = useRef(false);
   const wasLoggedIn = useRef(false);
+
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -82,16 +106,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const data = await res.json().catch(() => ({}));
         const serverCart = Array.isArray(data.cart) ? (data.cart as CartItem[]) : [];
 
-        // Merge guest local cart into server on first login hydrate
         const byHandle = new Map<string, CartItem>();
         for (const item of serverCart) byHandle.set(item.handle, item);
         for (const item of guest) {
+          if (!byHandle.has(item.handle)) byHandle.set(item.handle, item);
+        }
+        // Keep anything added while auth was still loading
+        for (const item of itemsRef.current) {
           if (!byHandle.has(item.handle)) byHandle.set(item.handle, item);
         }
         const merged = Array.from(byHandle.values());
 
         if (!cancelled) {
           skipNextPersist.current = true;
+          itemsRef.current = merged;
           setItems(merged);
           setHydrated(true);
           writeStoredItems([]);
@@ -102,9 +130,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         wasLoggedIn.current = true;
       } else {
         if (!cancelled) {
+          const stored = wasLoggedIn.current ? [] : readStoredItems();
+          const byHandle = new Map<string, CartItem>();
+          for (const item of stored) byHandle.set(item.handle, item);
+          for (const item of itemsRef.current) {
+            if (!byHandle.has(item.handle)) byHandle.set(item.handle, item);
+          }
+          const merged = Array.from(byHandle.values());
           skipNextPersist.current = true;
-          setItems(wasLoggedIn.current ? [] : readStoredItems());
+          itemsRef.current = merged;
+          setItems(merged);
           setHydrated(true);
+          if (!user) writeStoredItems(merged);
         }
         wasLoggedIn.current = false;
       }
@@ -129,43 +166,42 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, hydrated, user]);
 
-  const addItem = useCallback(
-    (product: Pick<Product, "id" | "handle" | "title" | "price" | "image" | "specs">) => {
-      if (!user) {
-        return { ok: false as const, reason: "auth" as const };
-      }
+  const addItem = useCallback((product: CartProduct) => {
+    if (!product?.handle) {
+      return { ok: false as const, reason: "unavailable" as const };
+    }
 
-      let result: { ok: boolean; reason?: "duplicate" | "unavailable" | "auth" } = { ok: true };
-      setItems((prev) => {
-        if (prev.some((item) => item.handle === product.handle)) {
-          result = { ok: false, reason: "duplicate" };
-          return prev;
-        }
-        return [
-          ...prev,
-          {
-            id: product.id,
-            handle: product.handle,
-            title: product.title,
-            price: product.price,
-            image: product.image,
-            origin: product.specs.origin,
-          },
-        ];
-      });
-      return result;
-    },
-    [user],
-  );
+    const prev = itemsRef.current;
+    if (prev.some((item) => item.handle === product.handle)) {
+      return { ok: false as const, reason: "duplicate" as const };
+    }
+
+    const next = [...prev, toCartItem(product)];
+    itemsRef.current = next;
+    setItems(next);
+
+    // Persist guest cart immediately so /cart sees it even if navigation is fast
+    if (!user) {
+      writeStoredItems(next);
+    }
+
+    return { ok: true as const };
+  }, [user]);
 
   const removeItem = useCallback((handle: string) => {
-    setItems((prev) => prev.filter((item) => item.handle !== handle));
+    const next = itemsRef.current.filter((item) => item.handle !== handle);
+    itemsRef.current = next;
+    setItems(next);
   }, []);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => {
+    itemsRef.current = [];
+    setItems([]);
+  }, []);
 
   const hasItem = useCallback(
-    (handle: string) => items.some((item) => item.handle === handle),
+    (handle: string) => itemsRef.current.some((item) => item.handle === handle) ||
+      items.some((item) => item.handle === handle),
     [items],
   );
 
@@ -174,12 +210,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       items,
       itemCount: items.length,
       itemsTotal: items.reduce((sum, item) => sum + (Number(item.price) || 0), 0),
+      ready: hydrated,
       addItem,
       removeItem,
       clearCart,
       hasItem,
     }),
-    [items, addItem, removeItem, clearCart, hasItem],
+    [items, hydrated, addItem, removeItem, clearCart, hasItem],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
