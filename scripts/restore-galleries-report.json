@@ -1,12 +1,12 @@
 {
+  "force": true,
   "wcProducts": 94,
   "uniqueFiles": 809,
-  "downloaded": 486,
-  "skippedExisting": 321,
+  "downloaded": 807,
+  "skippedExisting": 0,
   "failed": 2,
   "productsUpdated": 92,
   "productsWithoutWcMatch": 43,
-  "extraSlotsRestored": 727,
   "gallerySizeHistogram": {
     "0": 19,
     "1": 19,
@@ -14,6 +14,38 @@
     "3": 2,
     "4+": 92
   },
+  "unheatedBlueSapphires": [
+    {
+      "handle": "1-00-ct-unheated-blue-sapphire",
+      "title": "1.00 ct Unheated Blue Sapphire",
+      "image": "/product-images/21-1._web.jpg",
+      "imageCount": 1
+    },
+    {
+      "handle": "1-01-ct-unheated-blue-sapphire",
+      "title": "1.01 ct Unheated Blue Sapphire",
+      "image": "/product-images/07-3.jpg_web.jpg",
+      "imageCount": 0
+    },
+    {
+      "handle": "1-08-ct-unheated-blue-sapphire",
+      "title": "1.08 ct Unheated Blue Sapphire",
+      "image": "/product-images/2025/03/1112023001-1.jpg",
+      "imageCount": 11
+    },
+    {
+      "handle": "1-09-ct-unheated-blue-sapphire",
+      "title": "1.09 ct Unheated Blue Sapphire",
+      "image": "/api/uploads/6adcac489ca8e0187bf3548f",
+      "imageCount": 1
+    },
+    {
+      "handle": "1-16-ct-unheated-blue-sapphire",
+      "title": "1.16 Ct Unheated Blue Sapphire",
+      "image": "/product-images/5-5.jpg",
+      "imageCount": 0
+    }
+  ],
   "failures": [
     {
       "url": "https://ceyloe.com/wp-content/uploads/2025/03/20250324_203811-scaled.jpg",

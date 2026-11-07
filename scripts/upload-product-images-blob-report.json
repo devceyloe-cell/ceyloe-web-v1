@@ -1,0 +1,16 @@
+{
+  "uploaded": 829,
+  "failed": 0,
+  "productsUpdated": 126,
+  "sampleUnheated108": {
+    "handle": "1-08-ct-unheated-blue-sapphire",
+    "image": "https://xh1ejxayjj3e2ngb.public.blob.vercel-storage.com/product-images/2025/03/1112023001-1.jpg",
+    "imageCount": 11,
+    "first3": [
+      "https://xh1ejxayjj3e2ngb.public.blob.vercel-storage.com/product-images/2025/03/1112023001-1.jpg",
+      "https://xh1ejxayjj3e2ngb.public.blob.vercel-storage.com/product-images/2025/03/1112023025.jpg",
+      "https://xh1ejxayjj3e2ngb.public.blob.vercel-storage.com/product-images/2025/03/1112023049.jpg"
+    ]
+  },
+  "failures": []
+}
