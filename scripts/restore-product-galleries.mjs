@@ -1,11 +1,20 @@
 /**
  * Restore full product image galleries from the live WooCommerce site.
- * Downloads every gallery photo into public/product-images and updates MongoDB.
+ * Saves files under public/product-images/{year}/{month}/{filename}
+ * so shared camera filenames from different uploads do not collide.
  *
- * Usage: node --env-file=.env.local scripts/restore-product-galleries.mjs
+ * Usage:
+ *   node --env-file=.env.local scripts/restore-product-galleries.mjs
+ *   node --env-file=.env.local scripts/restore-product-galleries.mjs --force
  */
-import { createWriteStream, existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { basename, join } from "node:path";
+import {
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  writeFileSync,
+  unlinkSync,
+} from "node:fs";
+import { dirname, join } from "node:path";
 import { pipeline } from "node:stream/promises";
 import { Readable } from "node:stream";
 import { MongoClient } from "mongodb";
@@ -13,6 +22,7 @@ import { MongoClient } from "mongodb";
 const ROOT = join(process.cwd(), "public", "product-images");
 const WC_BASE = "https://ceyloe.com/wp-json/wc/store/v1/products";
 const CONCURRENCY = 6;
+const FORCE = process.argv.includes("--force");
 
 mkdirSync(ROOT, { recursive: true });
 
@@ -22,12 +32,24 @@ function cleanUrl(src) {
     .replace("https://www.ceyloe.com", "https://ceyloe.com");
 }
 
-function filenameFromUrl(url) {
+/** Keep year/month from wp-content/uploads so filenames stay unique per upload. */
+function relativeProductImagePath(url) {
+  const cleaned = cleanUrl(url);
   try {
-    return decodeURIComponent(new URL(cleanUrl(url)).pathname.split("/").pop() || "");
+    const pathname = new URL(cleaned).pathname.replace(/^\/+/, "");
+    const marker = "wp-content/uploads/";
+    const idx = pathname.toLowerCase().indexOf(marker);
+    if (idx >= 0) {
+      return pathname.slice(idx + marker.length);
+    }
+    return pathname.split("/").pop() || "";
   } catch {
-    return basename(cleanUrl(url));
+    return "";
   }
+}
+
+function publicUrlFor(relPath) {
+  return `/product-images/${relPath.replace(/\\/g, "/")}`;
 }
 
 async function fetchPage(page) {
@@ -50,7 +72,15 @@ async function fetchAllWcProducts() {
 }
 
 async function download(url, dest) {
-  if (existsSync(dest)) return { ok: true, skipped: true };
+  if (existsSync(dest) && !FORCE) return { ok: true, skipped: true };
+  if (existsSync(dest) && FORCE) {
+    try {
+      unlinkSync(dest);
+    } catch {
+      /* ignore */
+    }
+  }
+  mkdirSync(dirname(dest), { recursive: true });
   const res = await fetch(url, {
     redirect: "follow",
     headers: { "User-Agent": "CeyloeGalleryRestore/1.0" },
@@ -65,6 +95,7 @@ async function download(url, dest) {
 async function main() {
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error("MONGODB_URI missing");
+  console.log(`Force overwrite: ${FORCE}`);
 
   const wcProducts = await fetchAllWcProducts();
   const byHandle = new Map();
@@ -83,8 +114,8 @@ async function main() {
   const needed = new Map();
   for (const entry of byHandle.values()) {
     for (const url of entry.images) {
-      const name = filenameFromUrl(url);
-      if (name) needed.set(url, name);
+      const rel = relativeProductImagePath(url);
+      if (rel) needed.set(url, rel);
     }
   }
   console.log(`Unique gallery files to ensure locally: ${needed.size}`);
@@ -99,14 +130,14 @@ async function main() {
     while (queue.length) {
       const item = queue.shift();
       if (!item) return;
-      const [url, name] = item;
-      const dest = join(ROOT, name);
+      const [url, rel] = item;
+      const dest = join(ROOT, rel);
       try {
         const result = await download(url, dest);
         if (!result.ok) {
           failed += 1;
           failures.push({ url, status: result.status, type: result.type });
-          console.log(`MISS ${name}`);
+          console.log(`MISS ${rel}`);
         } else if (result.skipped) {
           skipped += 1;
         } else {
@@ -116,7 +147,7 @@ async function main() {
       } catch (error) {
         failed += 1;
         failures.push({ url, error: error instanceof Error ? error.message : String(error) });
-        console.log(`ERR ${name}`);
+        console.log(`ERR ${rel}`);
       }
     }
   }
@@ -131,7 +162,6 @@ async function main() {
 
   let updated = 0;
   let unmatched = 0;
-  let restoredExtra = 0;
 
   for (const doc of docs) {
     const wc = byHandle.get(String(doc.handle || "").toLowerCase());
@@ -142,15 +172,12 @@ async function main() {
 
     const localImages = [];
     for (const url of wc.images) {
-      const name = filenameFromUrl(url);
-      if (!name) continue;
-      if (!existsSync(join(ROOT, name))) continue;
-      localImages.push(`/product-images/${name}`);
+      const rel = relativeProductImagePath(url);
+      if (!rel) continue;
+      if (!existsSync(join(ROOT, rel))) continue;
+      localImages.push(publicUrlFor(rel));
     }
     if (localImages.length === 0) continue;
-
-    const prevCount = Array.isArray(doc.images) ? doc.images.length : 0;
-    if (localImages.length > prevCount) restoredExtra += localImages.length - prevCount;
 
     const image = localImages[0];
     const changed =
@@ -181,7 +208,16 @@ async function main() {
     else sizes["4+"] += 1;
   }
 
+  // Sample unheated blue sapphires for confirmation
+  const unheated = await products
+    .find(
+      { handle: /unheated-blue-sapphire/i },
+      { projection: { handle: 1, title: 1, image: 1, images: 1 } },
+    )
+    .toArray();
+
   const report = {
+    force: FORCE,
     wcProducts: byHandle.size,
     uniqueFiles: needed.size,
     downloaded,
@@ -189,8 +225,13 @@ async function main() {
     failed,
     productsUpdated: updated,
     productsWithoutWcMatch: unmatched,
-    extraSlotsRestored: restoredExtra,
     gallerySizeHistogram: sizes,
+    unheatedBlueSapphires: unheated.map((d) => ({
+      handle: d.handle,
+      title: d.title,
+      image: d.image,
+      imageCount: (d.images || []).length,
+    })),
     failures: failures.slice(0, 30),
   };
   writeFileSync(join(process.cwd(), "scripts", "restore-galleries-report.json"), JSON.stringify(report, null, 2));
