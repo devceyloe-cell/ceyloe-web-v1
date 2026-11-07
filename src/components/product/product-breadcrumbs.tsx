@@ -16,8 +16,8 @@ export function ProductBreadcrumbs({
   const subcategoryLabel = getSubcategoryLabel(category, subcategory);
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-6 md:mb-8">
-      <ol className="font-manrope flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] tracking-[0.04em] text-muted">
+    <nav aria-label="Breadcrumb" className="mb-5 min-w-0 md:mb-8">
+      <ol className="font-manrope flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[10px] tracking-[0.04em] text-muted sm:gap-x-2 sm:text-[11px]">
         <li>
           <Link href="/" className="transition-colors hover:text-rich-gold">
             Home
@@ -60,7 +60,9 @@ export function ProductBreadcrumbs({
         <li aria-hidden className="text-border">
           /
         </li>
-        <li className="text-rich-gold">{title}</li>
+        <li className="min-w-0 max-w-full truncate text-rich-gold" title={title}>
+          {title}
+        </li>
       </ol>
     </nav>
   );

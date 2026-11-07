@@ -27,23 +27,23 @@ export function ProductInformation({
   const showStatusPrice = shouldShowAvailabilityInsteadOfPrice(product);
 
   return (
-    <div className="flex flex-col lg:pt-1">
+    <div className="flex w-full min-w-0 max-w-full flex-col overflow-x-clip lg:pt-1">
       <p className="font-manrope text-[11px] font-semibold tracking-[0.2em] text-rich-gold uppercase">
         {typeLabel}
       </p>
-      <h1 className="font-caslon mt-2 text-[28px] leading-tight text-heading md:text-[34px] lg:text-[36px]">
+      <h1 className="font-caslon mt-2 break-words text-[24px] leading-tight text-heading sm:text-[28px] md:text-[34px] lg:text-[36px]">
         {product.title}
       </h1>
       {product.specs.origin && (
-        <p className="font-manrope mt-1.5 text-[14px] text-muted">{product.specs.origin}</p>
+        <p className="font-manrope mt-1.5 text-[13px] text-muted sm:text-[14px]">{product.specs.origin}</p>
       )}
 
-      <p className="font-caslon mt-4 text-[26px] text-rich-gold md:text-[30px]">
+      <p className="font-caslon mt-4 text-[24px] text-rich-gold sm:text-[26px] md:text-[30px]">
         {showStatusPrice ? (status === "hold" ? "Hold" : "Sold Out") : <Price amount={product.price} />}
       </p>
 
       {product.description && (
-        <p className="font-manrope mt-3 max-w-lg text-[14px] leading-[1.55] text-muted">
+        <p className="font-manrope mt-3 max-w-lg text-[13px] leading-[1.55] text-muted sm:text-[14px]">
           {product.description}
         </p>
       )}

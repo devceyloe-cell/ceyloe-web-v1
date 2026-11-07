@@ -75,10 +75,13 @@ html.dark {
 html {
   scroll-behavior: smooth;
   background-color: var(--background);
+  overflow-x: clip;
 }
 
 body {
   min-height: 100vh;
+  max-width: 100%;
+  overflow-x: clip;
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-manrope), system-ui, sans-serif;
@@ -86,6 +89,60 @@ body {
   font-weight: 400;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Afterpay web component expands to a huge intrinsic width after JS loads — clamp it. */
+.afterpay-placement-host,
+.afterpay-placement-host afterpay-placement,
+afterpay-placement {
+  display: block !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.afterpay-placement-host afterpay-placement *,
+.afterpay-placement-host iframe,
+afterpay-placement * {
+  max-width: 100% !important;
+}
+
+/*
+ * Product gallery: keep photos inside the frame from first paint.
+ * Without this, Next/Image can briefly paint at intrinsic (full) size on mobile
+ * before absolute/fill styles settle, stretching the page.
+ */
+.product-gallery-frame {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background-color: var(--surface-elevated);
+}
+
+@media (min-width: 640px) {
+  .product-gallery-frame {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+.product-gallery-frame > img,
+.product-gallery-frame img,
+.product-gallery-frame span > img,
+.product-gallery-thumb img,
+.product-gallery-thumb span > img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
 }
 
 h1,

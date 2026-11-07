@@ -17,7 +17,7 @@ async function blobVideoReachable(url: string): Promise<boolean> {
   }
 }
 
-export async function GET(request: NextRequest) {
+async function resolveProductVideo(request: NextRequest) {
   const handle = request.nextUrl.searchParams.get("handle")?.trim().toLowerCase();
   if (!handle) {
     return NextResponse.json({ error: "Missing handle" }, { status: 400 });
@@ -34,4 +34,14 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.json({ error: "Video not found" }, { status: 404 });
+}
+
+export async function GET(request: NextRequest) {
+  return resolveProductVideo(request);
+}
+
+/** Lets the product page check availability without downloading the file. */
+export async function HEAD(request: NextRequest) {
+  const result = await resolveProductVideo(request);
+  return new NextResponse(null, { status: result.status, headers: result.headers });
 }

@@ -69,7 +69,7 @@ export function StickyProductActionBar({
       )}
       aria-hidden={!visible}
     >
-      <div className="mx-auto flex max-w-[1280px] items-center gap-3 px-[var(--margin-mobile)] py-3 md:gap-5 md:px-[var(--margin-desktop)]">
+      <div className="mx-auto flex w-full min-w-0 max-w-[1280px] items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-[var(--margin-mobile)] sm:py-3 md:gap-5 md:px-[var(--margin-desktop)]">
         <div className="relative hidden h-12 w-12 shrink-0 overflow-hidden bg-[#111] sm:block">
           <Image
             src={product.image}
@@ -81,14 +81,14 @@ export function StickyProductActionBar({
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="font-caslon truncate text-[14px] !text-white md:text-[16px]">
+          <p className="font-caslon truncate text-[13px] !text-white sm:text-[14px] md:text-[16px]">
             {product.title}
           </p>
-          <div className="font-manrope flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12px]">
+          <div className="font-manrope flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] sm:gap-x-3 sm:text-[12px]">
             {product.specs.origin && (
               <span className="truncate text-white/55">{product.specs.origin}</span>
             )}
-            <span className="font-semibold text-rich-gold">
+            <span className="shrink-0 font-semibold text-rich-gold">
               {showStatusPrice ? (
                 status === "hold" ? "Hold" : "Sold Out"
               ) : (
@@ -98,21 +98,26 @@ export function StickyProductActionBar({
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {purchasable && (
             <button
               type="button"
               onClick={handleAdd}
               disabled={adding || inCart}
-              className="hidden min-h-11 items-center gap-1.5 border border-rich-gold px-3 font-manrope text-[10px] font-bold tracking-[0.12em] text-rich-gold uppercase transition-colors hover:bg-rich-gold hover:text-black disabled:opacity-50 sm:inline-flex"
+              className="inline-flex min-h-10 items-center gap-1 border border-rich-gold px-2.5 font-manrope text-[9px] font-bold tracking-[0.1em] text-rich-gold uppercase transition-colors hover:bg-rich-gold hover:text-black disabled:opacity-50 sm:min-h-11 sm:gap-1.5 sm:px-3 sm:text-[10px] sm:tracking-[0.12em]"
             >
-              {adding ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ShoppingBag className="h-3.5 w-3.5" />}
-              {inCart ? "In Cart" : "Add to Cart"}
+              {adding ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <ShoppingBag className="h-3.5 w-3.5" />
+              )}
+              <span className="hidden sm:inline">{inCart ? "In Cart" : "Add to Cart"}</span>
+              <span className="sm:hidden">{inCart ? "Cart" : "Add"}</span>
             </button>
           )}
           <Link
             href="/book"
-            className="inline-flex min-h-11 items-center bg-rich-gold px-3 font-manrope text-[10px] font-bold tracking-[0.12em] text-black uppercase transition-colors hover:bg-[#c49a4a]"
+            className="inline-flex min-h-10 items-center bg-rich-gold px-2.5 font-manrope text-[9px] font-bold tracking-[0.1em] text-black uppercase transition-colors hover:bg-[#c49a4a] sm:min-h-11 sm:px-3 sm:text-[10px] sm:tracking-[0.12em]"
           >
             Book
           </Link>
@@ -120,7 +125,7 @@ export function StickyProductActionBar({
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white sm:h-11 sm:w-11"
             aria-label="Chat on WhatsApp"
           >
             <MessageCircle className="h-5 w-5" />

@@ -34,10 +34,10 @@ export function ProductHighlights({ product }: ProductHighlightsProps) {
   });
 
   return (
-    <section className="bg-[#FAF8F5] px-[var(--margin-mobile)] py-12 md:px-[var(--margin-desktop)] md:py-14">
-      <div className="mx-auto grid max-w-[1280px] gap-6 md:grid-cols-2 lg:gap-8">
-        <div className="border border-[#E8E2D8] bg-white p-6 md:p-8">
-          <h2 className="font-caslon text-[24px] text-[#1a1a1a] md:text-[26px]">
+    <section className="overflow-x-hidden bg-[#FAF8F5] px-4 py-10 sm:px-[var(--margin-mobile)] sm:py-12 md:px-[var(--margin-desktop)] md:py-14">
+      <div className="mx-auto grid w-full min-w-0 max-w-[1280px] gap-4 sm:gap-6 md:grid-cols-2 lg:gap-8">
+        <div className="min-w-0 border border-[#E8E2D8] bg-white p-5 sm:p-6 md:p-8">
+          <h2 className="font-caslon text-[22px] text-[#1a1a1a] sm:text-[24px] md:text-[26px]">
             Why This Gemstone?
           </h2>
           <ul className="mt-6 space-y-5">
@@ -60,8 +60,8 @@ export function ProductHighlights({ product }: ProductHighlightsProps) {
           </ul>
         </div>
 
-        <div className="border border-[#E8E2D8] bg-white p-6 md:p-8">
-          <h2 className="font-caslon text-[24px] text-[#1a1a1a] md:text-[26px]">
+        <div className="min-w-0 border border-[#E8E2D8] bg-white p-5 sm:p-6 md:p-8">
+          <h2 className="font-caslon text-[22px] text-[#1a1a1a] sm:text-[24px] md:text-[26px]">
             Shipping & Delivery
           </h2>
           <ul className="mt-6 space-y-4">

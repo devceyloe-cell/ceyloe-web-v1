@@ -158,6 +158,33 @@ export async function seedProductsToDb(products: Product[]): Promise<number> {
   return result.insertedCount;
 }
 
+/** Point one product at a blob video and remove that URL from any other product. */
+export async function assignProductVideoInDb(
+  productId: string,
+  videoUrl: string,
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db || !ObjectId.isValid(productId)) return false;
+
+  const url = videoUrl.trim();
+  if (!url) return false;
+
+  const collection = db.collection<StoredProduct>(COLLECTION);
+  const now = new Date().toISOString();
+
+  await collection.updateMany(
+    { videoUrl: url, _id: { $ne: new ObjectId(productId) } },
+    { $unset: { videoUrl: "" }, $set: { updatedAt: now } },
+  );
+
+  const result = await collection.updateOne(
+    { _id: new ObjectId(productId) },
+    { $set: { videoUrl: url, updatedAt: now } },
+  );
+
+  return result.matchedCount === 1;
+}
+
 /** Persist drag-and-drop catalog order. `orderedIds` is first → last on the storefront. */
 export async function reorderProductsInDb(orderedIds: string[]): Promise<number> {
   const db = await getDb();

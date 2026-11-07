@@ -27,14 +27,14 @@ export function LiveChatWidget() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-24 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-transform hover:scale-105 hover:bg-gold hover:text-brand-navy"
+        className="fixed bottom-24 right-[4.25rem] z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-transform hover:scale-105 hover:bg-gold hover:text-brand-navy sm:bottom-6 sm:right-24 sm:h-14 sm:w-14"
         aria-label="Live chat"
       >
         {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 border border-border bg-surface shadow-xl">
+        <div className="fixed bottom-40 right-4 z-50 w-[min(20rem,calc(100vw-2rem))] border border-border bg-surface shadow-xl sm:bottom-24 sm:right-6">
           <div className="border-b border-border bg-surface-elevated px-4 py-3">
             <p className="text-sm font-medium">Chat with Ceyloe</p>
             <p className="text-xs text-muted">We typically reply within a few hours</p>

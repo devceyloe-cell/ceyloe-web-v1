@@ -10,7 +10,7 @@ export function WhatsAppFab() {
       href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${message}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105"
+      className="fixed bottom-24 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 sm:bottom-6 sm:right-6 sm:h-14 sm:w-14"
       aria-label="Chat on WhatsApp"
     >
       <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current" aria-hidden>

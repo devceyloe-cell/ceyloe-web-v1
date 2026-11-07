@@ -43,14 +43,16 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <CurrencyProvider>
         <UserAuthProvider>
           <CartProvider>
-            <div className="relative flex min-h-screen flex-col">
+            <div className="relative flex min-h-screen min-w-0 max-w-[100vw] flex-col overflow-x-clip">
               {!hideSketchBackground ? (
                 <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
                   <SiteBackground />
                 </div>
               ) : null}
               <Header />
-              <main className="relative flex-1 pt-[var(--site-header-height)]">{children}</main>
+              <main className="relative min-w-0 max-w-full flex-1 overflow-x-clip pt-[var(--site-header-height)]">
+                {children}
+              </main>
               <Footer />
             </div>
             <WhatsAppFab />

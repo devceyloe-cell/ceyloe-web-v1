@@ -12,6 +12,7 @@ import {
   Gem,
   Images,
   LayoutDashboard,
+  Video,
   LogOut,
   Package,
   Settings,
@@ -28,6 +29,7 @@ type AdminUser = {
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/products", label: "Products", icon: Gem },
+  { href: "/admin/videos", label: "Videos", icon: Video },
   { href: "/admin/collection", label: "Collection", icon: Images },
   { href: "/admin/team", label: "Our Team", icon: Contact },
   { href: "/admin/orders", label: "Orders", icon: Package },
