@@ -1,0 +1,27 @@
+{
+  "wcProducts": 94,
+  "uniqueFiles": 809,
+  "downloaded": 486,
+  "skippedExisting": 321,
+  "failed": 2,
+  "productsUpdated": 92,
+  "productsWithoutWcMatch": 43,
+  "extraSlotsRestored": 727,
+  "gallerySizeHistogram": {
+    "0": 19,
+    "1": 19,
+    "2": 3,
+    "3": 2,
+    "4+": 92
+  },
+  "failures": [
+    {
+      "url": "https://ceyloe.com/wp-content/uploads/2025/03/20250324_203811-scaled.jpg",
+      "status": 404
+    },
+    {
+      "url": "https://ceyloe.com/wp-content/uploads/2025/03/20250324_174329-scaled.jpg",
+      "status": 404
+    }
+  ]
+}

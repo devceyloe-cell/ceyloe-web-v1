@@ -24,7 +24,7 @@ const securityHeaders = [
       // Next.js requires unsafe-inline for styles and unsafe-eval for development
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://js.afterpay.com https://*.afterpay.com https://cdn.sanity.io https://www.googletagmanager.com",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://cdn.shopify.com https://cdn.sanity.io https://static.afterpay.com https://*.afterpay.com https://ceyloe.com https://www.ceyloe.com https://www.google-analytics.com https://www.googletagmanager.com",
+      "img-src 'self' data: blob: https://cdn.shopify.com https://cdn.sanity.io https://static.afterpay.com https://*.afterpay.com https://ceyloe.com https://www.ceyloe.com https://*.public.blob.vercel-storage.com https://www.google-analytics.com https://www.googletagmanager.com",
       "font-src 'self' data:",
       // vercel.com/api/blob + *.blob.vercel-storage.com required for admin product video uploads (@vercel/blob client)
       "connect-src 'self' https://api.stripe.com https://vercel.com https://*.vercel.com https://*.blob.vercel-storage.com https://global-api.afterpay.com https://global-api-sandbox.afterpay.com https://*.afterpay.com https://*.mongodb.net https://cdn.sanity.io https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
@@ -66,6 +66,15 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 80, 95],
+    // Keep domains for broad blob-host matching; remotePatterns alone can miss store hosts.
+    domains: [
+      "cdn.shopify.com",
+      "cdn.sanity.io",
+      "ceyloe.com",
+      "www.ceyloe.com",
+      "xh1ejxayjj3e2ngb.public.blob.vercel-storage.com",
+      "p3pmh1n6wu63k9yi.public.blob.vercel-storage.com",
+    ],
     remotePatterns: [
       {
         protocol: "https",
@@ -84,6 +93,16 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.ceyloe.com",
         pathname: "/wp-content/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "xh1ejxayjj3e2ngb.public.blob.vercel-storage.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "p3pmh1n6wu63k9yi.public.blob.vercel-storage.com",
+        pathname: "/**",
       },
     ],
   },
