@@ -6,7 +6,18 @@ export const siteConfig = {
   tagline: "Ceylon Gemstones for Perth & Western Australia",
   description:
     "Buy certified Ceylon gemstones in Perth and WA — ethically sourced sapphires, spinel and more from Sri Lanka, curated in Australia with private appointments and Australia-wide delivery.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://ceyloe.com",
+  /** Canonical public URL — never use *.vercel.app for SEO (sitemap/robots/JSON-LD). */
+  url: (() => {
+    const fallback = "https://www.ceyloe.com";
+    const raw = (process.env.NEXT_PUBLIC_SITE_URL ?? fallback).trim().replace(/\/$/, "");
+    try {
+      const host = new URL(raw.includes("://") ? raw : `https://${raw}`).hostname;
+      if (!host || /\.vercel\.app$/i.test(host)) return fallback;
+      return raw.includes("://") ? raw : `https://${raw}`;
+    } catch {
+      return fallback;
+    }
+  })(),
   locale: "en_AU",
   seo: {
     keywords: [
