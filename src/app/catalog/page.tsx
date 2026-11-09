@@ -19,8 +19,10 @@ import { mergeCoverWithOverride } from "@/lib/hero/content";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
-  title: "Gemstone Catalog",
-  description: "Browse our collection of certified, ethically sourced gemstones from Sri Lanka.",
+  title: "Gemstone Catalog | Ceylon Stones for Perth & WA",
+  description:
+    "Browse certified, ethically sourced Ceylon gemstones available to buyers in Perth and Western Australia — sapphires, spinel, garnet and more.",
+  alternates: { canonical: "/catalog" },
 };
 
 interface CatalogPageProps {

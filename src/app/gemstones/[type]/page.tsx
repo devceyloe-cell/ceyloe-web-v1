@@ -44,7 +44,8 @@ export async function generateMetadata({
   if (!config) return {};
   return {
     title: config.title,
-    description: config.description,
+    description: `${config.description} Available to clients in Perth and Western Australia.`,
+    alternates: { canonical: `/gemstones/${type}` },
   };
 }
 

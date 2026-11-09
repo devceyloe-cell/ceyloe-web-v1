@@ -5,8 +5,10 @@ import { BookLandingHero } from "@/components/book/book-landing-hero";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
-  title: "Book an Appointment",
-  description: "Schedule a consultation with Ceyloe for gemstone selection or custom jewelry design.",
+  title: "Book a Gemstone Appointment | Perth & WA",
+  description:
+    "Book a private Ceyloe consultation to view gemstones or plan bespoke jewellery — serving Perth and Western Australia clients by appointment.",
+  alternates: { canonical: "/book" },
 };
 
 export default async function BookPage() {

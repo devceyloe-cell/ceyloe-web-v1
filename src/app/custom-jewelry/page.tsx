@@ -10,9 +10,10 @@ import { Price } from "@/components/ui/price";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
-  title: "Bespoke Jewellery",
+  title: "Bespoke Jewellery Perth | Custom Gemstone Design",
   description:
-    "Create a one-of-a-kind jewellery piece with a natural gemstone from our collection — engagement rings, pendants, earrings and more.",
+    "Create bespoke jewellery in Perth and WA with a natural Ceylon gemstone from Ceyloe — engagement rings, pendants, earrings and more.",
+  alternates: { canonical: "/custom-jewelry" },
 };
 
 interface CustomJewelryPageProps {

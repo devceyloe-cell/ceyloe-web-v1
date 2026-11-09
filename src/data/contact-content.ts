@@ -61,7 +61,7 @@ export const contactOptions: ContactOption[] = [
     title: "Visit Ceyloe",
     heading: "Visit by Appointment",
     description:
-      "Private gemstone viewings are available in Kalgoorlie, Western Australia.",
+      "Private gemstone viewings are available in Kalgoorlie, WA. We also serve Perth clients by appointment and secure delivery.",
     buttonLabel: "Book Your Visit",
     href: "/book",
   },
@@ -75,7 +75,7 @@ export const contactEnquiry = {
 export const contactLocation = {
   title: "Our Locations",
   description:
-    "Private appointments are available by booking in Kalgoorlie, Western Australia. Mining and production are based in Minuwangoda, Sri Lanka. We also offer secure Australia-wide shipping for our natural gemstones and bespoke jewellery.",
+    "Head office in Kalgoorlie, WA — serving Perth and Western Australia with private appointments and insured shipping. Mining and production are based in Minuwangoda, Sri Lanka.",
 };
 
 export const contactCta = {

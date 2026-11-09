@@ -8,9 +8,10 @@ import { getAboutTeam } from "@/lib/mongodb/about-team";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
-  title: "Our Story",
+  title: "Our Story | Ceylon Gemstones for Perth & Australia",
   description:
-    "Ceyloe was founded with a passion for sharing the beauty of natural Sri Lankan gemstones with Australia — quality, honesty, transparency and personalised service.",
+    "Ceyloe connects Sri Lanka’s finest gemstones with Perth and Western Australia — quality, honesty, transparency and personalised service from Kalgoorlie, WA.",
+  alternates: { canonical: "/about" },
 };
 
 export const revalidate = 60;

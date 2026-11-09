@@ -3,22 +3,43 @@ import { mainNavigation } from "@/config/navigation";
 
 export const siteConfig = {
   name: "Ceyloe",
-  tagline: "Precious Gemstones & Custom Jewellery",
+  tagline: "Ceylon Gemstones for Perth & Western Australia",
   description:
-    "Bringing you some of Earth's finest precious gemstones — ethically sourced, certified, and curated for collectors and bespoke jewellery lovers worldwide.",
+    "Buy certified Ceylon gemstones in Perth and WA — ethically sourced sapphires, spinel and more from Sri Lanka, curated in Australia with private appointments and Australia-wide delivery.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://ceyloe.com",
+  locale: "en_AU",
+  seo: {
+    keywords: [
+      "gemstones Perth",
+      "Ceylon sapphire Perth",
+      "buy sapphire Perth",
+      "gemstone dealer Perth WA",
+      "unheated blue sapphire Australia",
+      "bespoke jewellery Perth",
+      "natural gemstones Western Australia",
+      "Ceyloe gemstones",
+    ],
+  },
   contact: {
     phone: "0449 938 172",
     phoneInternational: "+61 449 938 172",
+    email: "info@ceyloe.com",
     whatsapp: "61449938172",
     headOffice: {
       label: "Head Office",
       lines: ["273 Hannan Street", "Kalgoorlie, WA"],
+      streetAddress: "273 Hannan Street",
+      addressLocality: "Kalgoorlie",
+      addressRegion: "WA",
+      postalCode: "6430",
+      addressCountry: "AU",
     },
     miningOffice: {
       label: "Mining and Production",
       lines: ["2/200, Peellawatta, Big City", "Minuwangoda", "Sri Lanka"],
     },
+    /** Primary market for local SEO — no invented Perth street address. */
+    serviceAreas: ["Perth", "Western Australia", "Australia"] as const,
   },
   social: {
     instagram: "https://www.instagram.com/ceyloegemstones/",
@@ -30,12 +51,14 @@ export const siteConfig = {
     shipping: "/transparency",
     returns: "/returns",
     shopifyAuth: "https://shopify.com/authentication",
+    perth: "/perth",
   },
   nav: mainNavigation.map(({ label, href }) => ({ label, href })),
   footerNav: {
     company: [
       { label: "Gemstones", href: "/gemstones" },
       { label: "Jewellery", href: "/catalog?category=jewellery" },
+      { label: "Gemstones in Perth", href: "/perth" },
       { label: "Our Process", href: "/heritage" },
       { label: "Contact", href: "/contact" },
       { label: "Education", href: "/journal" },

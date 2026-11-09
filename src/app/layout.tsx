@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { siteConfig } from "@/config/site";
 import { images } from "@/config/images";
 import { bellMt, poppins } from "@/fonts/cover-fonts";
+import { buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/seo/json-ld";
 import "./globals.css";
 
 /** Public GA4 ID — env overrides for staging; default keeps production tracking if env is unset at build. */
@@ -47,13 +48,33 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  keywords: [...siteConfig.seo.keywords],
   metadataBase: new URL(siteConfig.url),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: siteConfig.name,
+    title: `${siteConfig.name} — ${siteConfig.tagline}`,
     description: siteConfig.description,
     url: siteConfig.url,
     siteName: siteConfig.name,
+    locale: siteConfig.locale,
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.name} — ${siteConfig.tagline}`,
+    description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   icons: {
     icon: images.favicon,
@@ -69,11 +90,23 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="en-AU"
       className={`light scroll-smooth ${manrope.variable} ${caslon.variable} ${bellMt.variable} ${poppins.variable} ${playfair.variable} ${montserrat.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-surface font-manrope text-foreground antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(buildOrganizationJsonLd()),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(buildWebSiteJsonLd()),
+          }}
+        />
         <ThemeProvider>
           <SiteShell>{children}</SiteShell>
         </ThemeProvider>

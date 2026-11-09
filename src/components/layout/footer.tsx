@@ -26,6 +26,7 @@ const socialBtn =
   "flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-rich-gold hover:text-rich-gold";
 
 const customerCare = [
+  { label: "Gemstones in Perth", href: "/perth" },
   { label: "FAQ", href: "/faq" },
   { label: "Shipping & Delivery", href: "/transparency" },
   { label: "Returns", href: "/returns" },
@@ -59,8 +60,8 @@ export function Footer() {
           <div>
             <Logo size="lg" variant="white" className="mb-6" />
             <p className="font-manrope max-w-xs text-sm leading-relaxed text-white/60">
-              Fine Ceylon gemstones and bespoke jewellery — ethically sourced, certified, and
-              curated for collectors worldwide.
+              Fine Ceylon gemstones and bespoke jewellery for Perth and Western Australia —
+              ethically sourced, certified, and curated in WA.
             </p>
             <div className="mt-6 flex gap-3">
               <a

@@ -19,13 +19,21 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const { handle } = await params;
   const product = await getProductByHandle(handle);
   if (!product) return { title: "Product Not Found" };
+  const description =
+    product.description?.trim() ||
+    `${product.title} — certified natural gemstone available to buyers in Perth and Western Australia from Ceyloe.`;
   return {
     title: product.title,
-    description: product.description,
+    description,
+    alternates: {
+      canonical: `/products/${product.handle}`,
+    },
     openGraph: {
       title: product.title,
-      description: product.description,
-      images: [{ url: product.image }],
+      description,
+      images: product.image ? [{ url: product.image }] : undefined,
+      locale: siteConfig.locale,
+      type: "website",
     },
   };
 }
@@ -52,11 +60,15 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
     offers: {
       "@type": "Offer",
       url: productUrl,
-      priceCurrency: product.currency || "USD",
+      priceCurrency: product.currency || "AUD",
       price: product.price,
       availability: product.inStock
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
+      areaServed: siteConfig.contact.serviceAreas.map((name) => ({
+        "@type": "AdministrativeArea",
+        name,
+      })),
     },
     ...(product.specs.origin
       ? { countryOfOrigin: product.specs.origin }
