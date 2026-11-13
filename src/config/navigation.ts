@@ -25,7 +25,8 @@ export const mainNavigation: NavItem[] = [
         href: "/gemstones",
         children: [
           { label: "Natural Gemstones", href: "/gemstones" },
-          { label: "Gemstones in Perth", href: "/perth" },
+          { label: "Kalgoorlie Gems", href: "/kalgoorlie" },
+          { label: "Perth Gems", href: "/perth" },
           { label: "View All Gemstones", href: "/catalog" },
         ],
       },

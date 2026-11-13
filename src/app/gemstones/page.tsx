@@ -7,9 +7,15 @@ import { getNaturalGemstones } from "@/lib/mongodb/natural-gemstones";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
-  title: "Natural Gemstones | Buy Ceylon Sapphires in Perth & WA",
+  title: "Natural Gemstones | Kalgoorlie Gems & Perth Gems",
   description:
-    "Explore certified natural Ceylon gemstones for Perth and Western Australia — sapphires, spinel, garnet and more, ethically sourced in Sri Lanka and curated by Ceyloe.",
+    "Explore Kalgoorlie gems and Perth gems from Ceyloe — certified Ceylon sapphires, spinel, garnet and more, ethically sourced in Sri Lanka and curated in WA.",
+  keywords: [
+    "Kalgoorlie gems",
+    "Perth gems",
+    "natural gemstones WA",
+    "Ceylon sapphire Australia",
+  ],
   alternates: { canonical: "/gemstones" },
 };
 

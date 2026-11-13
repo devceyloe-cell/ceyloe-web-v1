@@ -132,7 +132,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
         <div
           className={
-            isJewellery ? undefined : "grid gap-10 lg:grid-cols-[280px_1fr]"
+            isJewellery ? undefined : "grid gap-6 lg:grid-cols-[280px_1fr] lg:gap-10"
           }
         >
           {!isJewellery ? (

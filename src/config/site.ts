@@ -3,9 +3,9 @@ import { mainNavigation } from "@/config/navigation";
 
 export const siteConfig = {
   name: "Ceyloe",
-  tagline: "Ceylon Gemstones for Perth & Western Australia",
+  tagline: "Kalgoorlie Gems, Perth Gemstones & WA Jewellery",
   description:
-    "Buy certified Ceylon gemstones in Perth and WA — ethically sourced sapphires, spinel and more from Sri Lanka, curated in Australia with private appointments and Australia-wide delivery.",
+    "Kalgoorlie gems and jewellery from Ceyloe’s Hannan Street office, plus Perth gems and Ceylon sapphires across WA — ethically sourced, certified, with private appointments and Australia-wide delivery.",
   /** Canonical public URL — never use *.vercel.app for SEO (sitemap/robots/JSON-LD). */
   url: (() => {
     const fallback = "https://www.ceyloe.com";
@@ -21,11 +21,16 @@ export const siteConfig = {
   locale: "en_AU",
   seo: {
     keywords: [
+      "Kalgoorlie gems",
+      "Kalgoorlie jewellery",
+      "Kalgoorlie jewelry",
+      "Perth gems",
       "gemstones Perth",
+      "Perth jewellery",
       "Ceylon sapphire Perth",
+      "gemstones Kalgoorlie",
+      "jewellery Kalgoorlie WA",
       "buy sapphire Perth",
-      "gemstone dealer Perth WA",
-      "unheated blue sapphire Australia",
       "bespoke jewellery Perth",
       "natural gemstones Western Australia",
       "Ceyloe gemstones",
@@ -49,8 +54,8 @@ export const siteConfig = {
       label: "Mining and Production",
       lines: ["2/200, Peellawatta, Big City", "Minuwangoda", "Sri Lanka"],
     },
-    /** Primary market for local SEO — no invented Perth street address. */
-    serviceAreas: ["Perth", "Western Australia", "Australia"] as const,
+    /** Local SEO markets — Kalgoorlie is HQ; Perth is a primary service area. */
+    serviceAreas: ["Kalgoorlie", "Perth", "Western Australia", "Australia"] as const,
   },
   social: {
     instagram: "https://www.instagram.com/ceyloegemstones/",
@@ -63,13 +68,15 @@ export const siteConfig = {
     returns: "/returns",
     shopifyAuth: "https://shopify.com/authentication",
     perth: "/perth",
+    kalgoorlie: "/kalgoorlie",
   },
   nav: mainNavigation.map(({ label, href }) => ({ label, href })),
   footerNav: {
     company: [
       { label: "Gemstones", href: "/gemstones" },
       { label: "Jewellery", href: "/catalog?category=jewellery" },
-      { label: "Gemstones in Perth", href: "/perth" },
+      { label: "Kalgoorlie Gems", href: "/kalgoorlie" },
+      { label: "Perth Gems", href: "/perth" },
       { label: "Our Process", href: "/heritage" },
       { label: "Contact", href: "/contact" },
       { label: "Education", href: "/journal" },

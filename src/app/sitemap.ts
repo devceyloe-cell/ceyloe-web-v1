@@ -4,6 +4,7 @@ import { getAllProductsFromDb } from "@/lib/mongodb/products";
 
 const STATIC_PATHS: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }[] = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
+  { path: "/kalgoorlie", changeFrequency: "weekly", priority: 0.95 },
   { path: "/perth", changeFrequency: "weekly", priority: 0.95 },
   { path: "/gemstones", changeFrequency: "weekly", priority: 0.9 },
   { path: "/catalog", changeFrequency: "daily", priority: 0.9 },

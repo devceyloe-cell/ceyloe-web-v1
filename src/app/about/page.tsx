@@ -8,9 +8,9 @@ import { getAboutTeam } from "@/lib/mongodb/about-team";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
-  title: "Our Story | Ceylon Gemstones for Perth & Australia",
+  title: "Our Story | Kalgoorlie Gems & Perth Gemstones",
   description:
-    "Ceyloe connects Sri Lanka’s finest gemstones with Perth and Western Australia — quality, honesty, transparency and personalised service from Kalgoorlie, WA.",
+    "Ceyloe connects Sri Lanka’s finest gemstones with Kalgoorlie and Perth — Kalgoorlie gems, jewellery and WA service built on quality, honesty and transparency.",
   alternates: { canonical: "/about" },
 };
 

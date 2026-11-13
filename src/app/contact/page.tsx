@@ -7,9 +7,9 @@ import { ContactOptions } from "@/components/contact/contact-options";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
-  title: "Contact Ceyloe | Gemstones Perth & WA",
+  title: "Contact Ceyloe | Kalgoorlie Gems & Perth Jewellery",
   description:
-    "Contact Ceyloe for Ceylon gemstones in Perth and WA — private appointments, bespoke jewellery enquiries, WhatsApp and phone support from our Kalgoorlie head office.",
+    "Contact Ceyloe for Kalgoorlie gems, Kalgoorlie jewellery and Perth gems — private appointments on Hannan Street, WhatsApp and phone support across WA.",
   alternates: { canonical: "/contact" },
 };
 

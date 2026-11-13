@@ -10,9 +10,16 @@ import { Price } from "@/components/ui/price";
 import { getHeroImages } from "@/lib/mongodb/hero-images";
 
 export const metadata: Metadata = {
-  title: "Bespoke Jewellery Perth | Custom Gemstone Design",
+  title: "Kalgoorlie Jewellery & Perth Bespoke Design | Ceyloe",
   description:
-    "Create bespoke jewellery in Perth and WA with a natural Ceylon gemstone from Ceyloe — engagement rings, pendants, earrings and more.",
+    "Kalgoorlie jewellery and Perth bespoke design with natural Ceylon gemstones from Ceyloe — engagement rings, pendants, earrings and custom pieces across WA.",
+  keywords: [
+    "Kalgoorlie jewellery",
+    "Kalgoorlie jewelry",
+    "bespoke jewellery Perth",
+    "custom jewellery Kalgoorlie",
+    "Perth engagement ring gemstone",
+  ],
   alternates: { canonical: "/custom-jewelry" },
 };
 

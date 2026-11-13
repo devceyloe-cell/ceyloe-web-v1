@@ -5,11 +5,13 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Gemstones in Perth | Ceylon Sapphires & Bespoke Jewellery",
+  title: "Perth Gems | Ceylon Gemstones & Jewellery Perth WA",
   description:
-    "Ceyloe supplies certified Ceylon gemstones to Perth and Western Australia — sapphires, spinel and bespoke jewellery, with private appointments and secure Australia-wide delivery.",
+    "Perth gems from Ceyloe — certified Ceylon sapphires, spinel and bespoke jewellery for Perth and WA, with private appointments and secure delivery from our Kalgoorlie head office.",
   keywords: [
+    "Perth gems",
     "gemstones Perth",
+    "Perth jewellery",
     "sapphire dealer Perth",
     "Ceylon sapphire Perth",
     "buy gemstones Perth WA",
@@ -20,9 +22,9 @@ export const metadata: Metadata = {
     canonical: `${siteConfig.url.replace(/\/$/, "")}/perth`,
   },
   openGraph: {
-    title: "Gemstones in Perth | Ceyloe",
+    title: "Perth Gems | Ceyloe",
     description:
-      "Certified Ceylon gemstones for Perth & WA — private appointments, curated sapphires, and bespoke jewellery.",
+      "Buy Perth gems and jewellery from Ceyloe — certified Ceylon stones, private appointments, and WA delivery.",
     url: `${siteConfig.url.replace(/\/$/, "")}/perth`,
     type: "website",
     locale: siteConfig.locale,
@@ -45,8 +47,9 @@ const faqs = [
 ] as const;
 
 const links = [
-  { href: "/gemstones", label: "Browse natural gemstones", desc: "Sapphires, spinel, garnet and more" },
+  { href: "/gemstones", label: "Browse Perth gems", desc: "Sapphires, spinel, garnet and more" },
   { href: "/custom-jewelry", label: "Bespoke jewellery", desc: "Design a piece around your stone" },
+  { href: "/kalgoorlie", label: "Kalgoorlie gems & jewellery", desc: "Visit our Hannan Street office" },
   { href: "/book", label: "Book an appointment", desc: "Private consultation for Perth & WA" },
   { href: "/contact", label: "Contact Ceyloe", desc: "Phone, WhatsApp or email" },
 ] as const;
@@ -86,12 +89,12 @@ export default function PerthGemstonesPage() {
         <Container>
           <p className="subheading-caps mb-4 tracking-[0.2em] text-rich-gold">Perth & Western Australia</p>
           <h1 className="font-caslon max-w-3xl text-4xl font-light text-foreground sm:text-5xl">
-            Ceylon gemstones for Perth
+            Perth gems &amp; Ceylon gemstones
           </h1>
           <p className="font-manrope mt-5 max-w-2xl text-base leading-relaxed text-muted md:text-lg">
-            Ceyloe sources fine natural gemstones from Sri Lanka and curates them for collectors and
-            jewellery lovers in Perth and across WA — certified stones, transparent origin, and
-            personal service from our Kalgoorlie head office.
+            Searching for Perth gems? Ceyloe sources fine natural gemstones from Sri Lanka and
+            curates them for collectors and jewellery lovers in Perth and across WA — certified
+            stones, transparent origin, and personal service from our Kalgoorlie head office.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
