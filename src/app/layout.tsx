@@ -13,32 +13,32 @@ import "./globals.css";
 const gaMeasurementId =
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() || "G-F3131D5CT9";
 
+/** Turbopack rejects next/font/google when weight/style arrays expand to multiple query entries.
+ *  Prefer variable fonts (no weight) or a single weight+style string. */
 const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
   display: "swap",
 });
 
 const caslon = Libre_Caslon_Text({
   variable: "--font-caslon",
   subsets: ["latin"],
+  // Single style only — weight×style arrays break Turbopack's font import map.
   weight: ["400", "700"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  // Variable font: omit weight so Turbopack emits one query entry.
   display: "swap",
 });
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
   display: "swap",
 });
 
