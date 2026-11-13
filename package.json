@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "build:azure": "node scripts/clean-azure-artifacts.mjs && next build && node scripts/package-azure.mjs",
     "deploy:azure": "node scripts/deploy-azure.mjs",
