@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Images, Maximize2, Play, X } from "lucide-react";
 import { ProductVideo } from "@/components/product/product-video";
 import { ProductStatusBanner } from "@/components/product/product-status-banner";
+import { SaleBadge } from "@/components/product/sale-badge";
+import { isProductPurchasable } from "@/lib/product-availability";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -12,7 +14,7 @@ interface ProductMediaGalleryProps {
   title: string;
   videoUrl?: string;
   poster?: string;
-  product?: Pick<Product, "availability" | "inStock">;
+  product?: Product;
 }
 
 type MediaTab = "photos" | "video";
@@ -115,6 +117,9 @@ export function ProductMediaGallery({
           }}
         >
           {product ? <ProductStatusBanner product={product} /> : null}
+          {product && isProductPurchasable(product) && tab === "photos" ? (
+            <SaleBadge product={product} />
+          ) : null}
           {tab === "video" ? (
             <ProductVideo
               variant="gallery"

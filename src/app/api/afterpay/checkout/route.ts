@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { env, isAfterpayConfigured } from "@/config/env";
+import { env, isAfterpayConfigured, isMongoConfigured } from "@/config/env";
 import { createAfterpayCheckout } from "@/lib/afterpay/server";
+import { validateCouponCode } from "@/lib/mongodb/coupons";
+import { getSellPrice, roundMoney } from "@/lib/pricing";
 import { getRequestBaseUrl } from "@/lib/request-base-url";
 import { getProductByHandle } from "@/services/product-service";
 
@@ -29,6 +31,7 @@ export async function POST(request: NextRequest) {
     const email = typeof body.email === "string" ? body.email.trim() : "";
     const givenNames = typeof body.givenNames === "string" ? body.givenNames.trim() : "";
     const surname = typeof body.surname === "string" ? body.surname.trim() : "";
+    const couponCodeRaw = typeof body.couponCode === "string" ? body.couponCode.trim() : "";
 
     if (!handle) {
       return NextResponse.json({ error: "Product handle is required" }, { status: 400 });
@@ -51,12 +54,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Afterpay currency is not supported" }, { status: 500 });
     }
 
+    const sellPrice = getSellPrice(product);
+    let chargeAmount = sellPrice;
+    if (couponCodeRaw) {
+      if (!isMongoConfigured()) {
+        return NextResponse.json({ error: "Coupons are unavailable right now." }, { status: 503 });
+      }
+      const validated = await validateCouponCode(couponCodeRaw, sellPrice);
+      if (!validated.ok) {
+        return NextResponse.json({ error: validated.error }, { status: 400 });
+      }
+      chargeAmount = validated.total;
+    }
+    chargeAmount = roundMoney(chargeAmount);
+
     const baseUrl = getRequestBaseUrl(request);
     const productUrl = `${baseUrl}/products/${encodeURIComponent(product.handle)}`;
     const merchantReference = `ceyloe-${product.handle}-${Date.now()}`;
 
     const checkout = await createAfterpayCheckout({
-      amount: product.price,
+      amount: chargeAmount,
       currency,
       email,
       givenNames: givenNames || undefined,
@@ -73,7 +90,7 @@ export async function POST(request: NextRequest) {
           return core ? `CEY-${core}` : product.handle;
         })(),
         quantity: 1,
-        price: product.price,
+        price: chargeAmount,
         pageUrl: productUrl,
         imageUrl: absoluteImageUrl(product.image, baseUrl),
       },

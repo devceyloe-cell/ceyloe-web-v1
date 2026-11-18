@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Lock, Loader2, ShoppingBag, Trash2 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Price } from "@/components/ui/price";
@@ -42,10 +42,88 @@ function CartBody() {
   const searchParams = useSearchParams();
   const confirmed = searchParams.get("confirmed") === "1";
   const cancelled = searchParams.get("checkout") === "cancelled";
-  const { items, removeItem, clearCart, itemCount, itemsTotal } = useCart();
+  const { items, removeItem, clearCart, itemCount, itemsTotal, coupon, setCoupon } = useCart();
   const { user } = useUserAuth();
   const [checkingOut, setCheckingOut] = useState(false);
   const [error, setError] = useState("");
+  const [couponInput, setCouponInput] = useState("");
+  const [couponBusy, setCouponBusy] = useState(false);
+  const [couponError, setCouponError] = useState("");
+
+  const discountAmount = coupon?.discountAmount ?? 0;
+  const payableTotal = Math.max(0, itemsTotal - discountAmount);
+
+  useEffect(() => {
+    if (!coupon) return;
+    let cancelled = false;
+    async function refresh() {
+      try {
+        const res = await fetch("/api/coupons/validate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code: coupon!.code,
+            handles: items.map((item) => item.handle),
+          }),
+        });
+        const data = await res.json();
+        if (cancelled) return;
+        if (!res.ok) {
+          setCoupon(null);
+          setCouponError(data.error || "Coupon no longer applies");
+          return;
+        }
+        setCoupon({
+          code: data.code,
+          label: data.label || data.code,
+          discountAmount: Number(data.discountAmount) || 0,
+        });
+      } catch {
+        if (!cancelled) {
+          setCoupon(null);
+          setCouponError("Coupon could not be refreshed");
+        }
+      }
+    }
+    void refresh();
+    return () => {
+      cancelled = true;
+    };
+    // Re-check when cart composition or subtotal changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- coupon.code only
+  }, [items, itemsTotal, coupon?.code, setCoupon]);
+
+  async function applyCoupon() {
+    const code = couponInput.trim();
+    if (!code || couponBusy) return;
+    setCouponBusy(true);
+    setCouponError("");
+    try {
+      const res = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code,
+          handles: items.map((item) => item.handle),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setCouponError(data.error || "Invalid coupon");
+        setCouponBusy(false);
+        return;
+      }
+      setCoupon({
+        code: data.code,
+        label: data.label || data.code,
+        discountAmount: Number(data.discountAmount) || 0,
+      });
+      setCouponInput("");
+    } catch {
+      setCouponError("Could not validate coupon");
+    }
+    setCouponBusy(false);
+  }
 
   async function checkoutCart(delivery: DeliveryDetailsInput) {
     if (items.length === 0 || checkingOut) return;
@@ -59,6 +137,7 @@ function CartBody() {
           handles: items.map((item) => item.handle),
           source: "cart",
           delivery,
+          couponCode: coupon?.code || undefined,
         }),
       });
       const data = await res.json();
@@ -208,7 +287,7 @@ function CartBody() {
                           <p className="mt-0.5 truncate text-xs text-muted">{item.origin}</p>
                         ) : null}
                         <p className="mt-1.5 text-sm font-semibold text-rich-gold">
-                          <Price amount={item.price} />
+                          <Price amount={item.price} compareAt={item.compareAtPrice} />
                         </p>
                       </div>
                     </li>
@@ -216,12 +295,69 @@ function CartBody() {
                 </ul>
 
                 <div className="space-y-3 border-t border-[#ece9e6] px-5 py-5 md:px-6">
+                  <div className="space-y-2">
+                    <label className="block text-xs font-medium text-muted">Coupon code</label>
+                    {coupon ? (
+                      <div className="flex items-center justify-between gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+                        <span>
+                          {coupon.label} ({coupon.code})
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCoupon(null);
+                            setCouponError("");
+                          }}
+                          className="text-xs underline-offset-2 hover:underline"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={couponInput}
+                          onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              void applyCoupon();
+                            }
+                          }}
+                          placeholder="Enter code"
+                          className="min-w-0 flex-1 rounded-md border border-[#ece9e6] bg-[#faf9f7] px-3 py-2 text-sm uppercase outline-none focus:border-foreground/30"
+                          autoComplete="off"
+                        />
+                        <button
+                          type="button"
+                          disabled={couponBusy || !couponInput.trim()}
+                          onClick={() => void applyCoupon()}
+                          className="rounded-md border border-[#ece9e6] px-3 py-2 text-xs font-semibold uppercase tracking-wider disabled:opacity-50"
+                        >
+                          {couponBusy ? "…" : "Apply"}
+                        </button>
+                      </div>
+                    )}
+                    {couponError ? (
+                      <p className="text-xs text-red-700">{couponError}</p>
+                    ) : null}
+                  </div>
+
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted">Subtotal</span>
                     <span className="font-medium">
                       <Price amount={itemsTotal} />
                     </span>
                   </div>
+                  {discountAmount > 0 ? (
+                    <div className="flex items-center justify-between text-sm text-emerald-800">
+                      <span>Discount</span>
+                      <span>
+                        −<Price amount={discountAmount} />
+                      </span>
+                    </div>
+                  ) : null}
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted">Shipping</span>
                     <span className="text-muted">Calculated at payment</span>
@@ -231,7 +367,7 @@ function CartBody() {
                       Total
                     </span>
                     <span className="font-caslon text-xl text-rich-gold">
-                      <Price amount={itemsTotal} />
+                      <Price amount={payableTotal} />
                     </span>
                   </div>
 

@@ -92,7 +92,7 @@ export function StickyProductActionBar({
               {showStatusPrice ? (
                 status === "hold" ? "Hold" : "Sold Out"
               ) : (
-                <Price amount={product.price} />
+                <Price amount={product.price} compareAt={product.compareAtPrice} />
               )}
             </span>
           </div>

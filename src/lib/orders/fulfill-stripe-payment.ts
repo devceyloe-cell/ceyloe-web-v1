@@ -2,6 +2,7 @@ import {
   getOrderByStripeSession,
   markOrderPaidByStripeSession,
 } from "@/lib/mongodb/orders";
+import { incrementCouponUsedCount } from "@/lib/mongodb/coupons";
 import { getAllAdminNotificationEmails } from "@/lib/mongodb/admin-users";
 import {
   sendEmail,
@@ -112,6 +113,17 @@ export async function fulfillPaidCheckoutSession(
 
   if (!newlyPaid) {
     return { order: paidOrder, newlyPaid: false, paymentCompleted: true };
+  }
+
+  if (paidOrder?.couponCode) {
+    try {
+      await incrementCouponUsedCount(paidOrder.couponCode);
+    } catch (err) {
+      console.warn(
+        "[fulfill-stripe] Could not increment coupon usage:",
+        err instanceof Error ? err.message : err,
+      );
+    }
   }
 
   const lineItems = await expandLineItems(sessionId);

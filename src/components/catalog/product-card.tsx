@@ -6,6 +6,7 @@ import { Price } from "@/components/ui/price";
 import { BuyNowButton } from "@/components/product/buy-now-button";
 import { AfterpayButton } from "@/components/product/afterpay-button";
 import { ProductStatusBanner } from "@/components/product/product-status-banner";
+import { SaleBadge } from "@/components/product/sale-badge";
 import {
   availabilityLabel,
   getProductAvailability,
@@ -41,8 +42,9 @@ export function ProductCard({ product }: ProductCardProps) {
             sizes="(max-width: 640px) 100vw, 33vw"
           />
           <ProductStatusBanner product={product} />
+          {purchasable ? <SaleBadge product={product} /> : null}
           {product.isNew && purchasable ? (
-            <span className="label-caps absolute left-3 top-3 z-10 bg-deep-navy px-2 py-1 text-white">
+            <span className="label-caps absolute top-3 right-3 z-10 bg-deep-navy px-2 py-1 text-white">
               New
             </span>
           ) : null}
@@ -56,7 +58,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {shouldShowAvailabilityInsteadOfPrice(product) ? (
               status === "hold" ? "Hold" : "Sold Out"
             ) : (
-              <Price amount={product.price} />
+              <Price amount={product.price} compareAt={product.compareAtPrice} />
             )}
           </p>
         </div>

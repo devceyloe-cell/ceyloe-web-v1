@@ -22,7 +22,10 @@ export interface Product {
   sku?: string;
   title: string;
   description: string;
+  /** Current sell / charge amount (AUD catalog). */
   price: number;
+  /** List price for strikethrough when greater than `price`. */
+  compareAtPrice?: number;
   currency: string;
   category: string;
   /**

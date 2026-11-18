@@ -13,6 +13,7 @@ import {
   Images,
   Package,
   Pencil,
+  Percent,
   Users,
 } from "lucide-react";
 import type { CmsPage } from "@/lib/cms/types";
@@ -45,14 +46,6 @@ const modules = [
     accent: "bg-sky-500/10 text-sky-700",
   },
   {
-    href: "/admin/collection",
-    label: "Collection",
-    description: "Homepage circular gems — images, captions, and links",
-    icon: Images,
-    statKey: "collectionItems" as const,
-    accent: "bg-rose-500/10 text-rose-700",
-  },
-  {
     href: "/admin/orders",
     label: "Orders",
     description: "Guest and account purchases with delivery and payment status",
@@ -62,13 +55,29 @@ const modules = [
     badgeKey: "paidOrders" as const,
   },
   {
+    href: "/admin/discounts",
+    label: "Discounts",
+    description: "Product sales and coupon codes for the storefront",
+    icon: Percent,
+    statKey: null as unknown as keyof DashboardStats,
+    accent: "bg-fuchsia-500/10 text-fuchsia-700",
+  },
+  {
     href: "/admin/appointments",
-    label: "Appointments",
+    label: "Bookings",
     description: "Review booking requests from the appointment form",
     icon: Calendar,
     statKey: "appointments" as const,
     accent: "bg-violet-500/10 text-violet-700",
     badgeKey: "newAppointments" as const,
+  },
+  {
+    href: "/admin/collection",
+    label: "Collection",
+    description: "Homepage circular gems — images, captions, and links",
+    icon: Images,
+    statKey: "collectionItems" as const,
+    accent: "bg-rose-500/10 text-rose-700",
   },
   {
     href: "/admin/users",
@@ -142,16 +151,16 @@ export function AdminDashboard({
                 Add product
               </Button>
             </Link>
-            <Link href="/admin/collection">
+            <Link href="/admin/discounts">
               <Button size="sm" variant="secondary" className="inline-flex items-center gap-1.5">
-                <Images className="h-3.5 w-3.5" />
-                Edit collection
+                <Percent className="h-3.5 w-3.5" />
+                Discounts
               </Button>
             </Link>
-            <Link href="/admin/pages/new">
+            <Link href="/admin/orders">
               <Button size="sm" variant="secondary" className="inline-flex items-center gap-1.5">
-                <FilePlus2 className="h-3.5 w-3.5" />
-                New page
+                <Package className="h-3.5 w-3.5" />
+                Orders
               </Button>
             </Link>
           </div>

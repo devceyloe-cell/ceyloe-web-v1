@@ -406,7 +406,7 @@ export function ProductEditor({ initial }: ProductEditorProps) {
 
                 {product.price > 0 ? (
                   <div className="absolute bottom-3 right-3 rounded-md bg-black/70 px-3 py-1.5 text-sm text-white backdrop-blur">
-                    <Price amount={product.price} />
+                    <Price amount={product.price} compareAt={product.compareAtPrice} />
                   </div>
                 ) : null}
               </div>
@@ -696,6 +696,29 @@ export function ProductEditor({ initial }: ProductEditorProps) {
                       onChange={(e) => updateField("price", Number(e.target.value))}
                       className={inputClass}
                     />
+                    <p className="mt-1.5 text-xs text-muted">Current sell / charge amount.</p>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Compare-at price (AUD)</label>
+                    <input
+                      type="number"
+                      min={0}
+                      step={1}
+                      value={product.compareAtPrice || ""}
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        if (!raw) {
+                          updateField("compareAtPrice", undefined);
+                          return;
+                        }
+                        updateField("compareAtPrice", Number(raw));
+                      }}
+                      className={inputClass}
+                      placeholder="Optional list price"
+                    />
+                    <p className="mt-1.5 text-xs text-muted">
+                      Shown struck through when higher than price.
+                    </p>
                   </div>
                   <div className="sm:col-span-2">
                     <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.14em] text-muted">
@@ -875,7 +898,7 @@ export function ProductEditor({ initial }: ProductEditorProps) {
               <>
                 {" · "}
                 <span className="text-gold">
-                  <Price amount={product.price} />
+                  <Price amount={product.price} compareAt={product.compareAtPrice} />
                 </span>
               </>
             ) : null}

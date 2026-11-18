@@ -24,16 +24,28 @@ export async function createPendingOrder(input: {
   source: OrderSource;
   paymentMethod?: OrderPaymentMethod;
   userId?: string | null;
+  couponCode?: string;
+  discountAmount?: number;
+  amountTotal?: number;
 }): Promise<Order | null> {
   const db = await getDb();
   if (!db) return null;
 
   const now = new Date().toISOString();
-  const amountTotal = input.items.reduce(
+  const itemsSubtotal = input.items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
+  const discountAmount =
+    typeof input.discountAmount === "number" && input.discountAmount > 0
+      ? input.discountAmount
+      : undefined;
+  const amountTotal =
+    typeof input.amountTotal === "number"
+      ? input.amountTotal
+      : Math.max(0, itemsSubtotal - (discountAmount ?? 0));
   const currency = (input.items[0]?.currency || "AUD").toUpperCase();
+  const couponCode = input.couponCode?.trim().toUpperCase() || undefined;
 
   const doc: StoredOrder = {
     createdAt: now,
@@ -58,6 +70,8 @@ export async function createPendingOrder(input: {
     items: input.items,
     amountTotal,
     currency,
+    ...(couponCode ? { couponCode } : {}),
+    ...(discountAmount ? { discountAmount } : {}),
   };
 
   const result = await db.collection<StoredOrder>(COLLECTION).insertOne(doc);

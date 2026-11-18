@@ -73,6 +73,11 @@ export async function PUT(request: NextRequest, context: RouteContext) {
   }
 
   const availability = normalizeAvailability(body.availability, body.inStock ?? true);
+  const rawCompare = (body as Product & { compareAtPrice?: number | null }).compareAtPrice;
+  const compareAtPrice =
+    rawCompare == null || rawCompare === ("" as never)
+      ? undefined
+      : Number(rawCompare);
 
   const saved = await saveProductToDb({
     ...body,
@@ -84,6 +89,10 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     specs: body.specs || {},
     availability,
     inStock: availability === "available",
+    compareAtPrice:
+      typeof compareAtPrice === "number" && Number.isFinite(compareAtPrice) && compareAtPrice > 0
+        ? compareAtPrice
+        : undefined,
   });
 
   revalidateTag("products", "max");

@@ -17,11 +17,21 @@ export interface CartItem {
   handle: string;
   title: string;
   price: number;
+  compareAtPrice?: number;
   image: string;
   origin?: string;
 }
 
-type CartProduct = Pick<Product, "id" | "handle" | "title" | "price" | "image" | "specs"> & {
+export type AppliedCoupon = {
+  code: string;
+  label: string;
+  discountAmount: number;
+};
+
+type CartProduct = Pick<
+  Product,
+  "id" | "handle" | "title" | "price" | "compareAtPrice" | "image" | "specs"
+> & {
   images?: string[];
 };
 
@@ -30,6 +40,8 @@ interface CartContextValue {
   itemCount: number;
   /** Sum of item prices (AUD/catalog currency as stored) */
   itemsTotal: number;
+  coupon: AppliedCoupon | null;
+  setCoupon: (coupon: AppliedCoupon | null) => void;
   /** False until guest/server cart has finished loading */
   ready: boolean;
   addItem: (product: CartProduct) => {
@@ -42,6 +54,7 @@ interface CartContextValue {
 }
 
 const STORAGE_KEY = "ceyloe-cart-v1";
+const COUPON_STORAGE_KEY = "ceyloe-cart-coupon-v1";
 const CartContext = createContext<CartContextValue | null>(null);
 
 function resolveProductImage(product: CartProduct): string {
@@ -58,9 +71,40 @@ function toCartItem(product: CartProduct): CartItem {
     handle: product.handle,
     title: product.title,
     price: product.price,
+    compareAtPrice:
+      typeof product.compareAtPrice === "number" && product.compareAtPrice > product.price
+        ? product.compareAtPrice
+        : undefined,
     image: resolveProductImage(product),
     origin: product.specs?.origin,
   };
+}
+
+function readStoredCoupon(): AppliedCoupon | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(COUPON_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as AppliedCoupon;
+    if (!parsed?.code || typeof parsed.discountAmount !== "number") return null;
+    return {
+      code: String(parsed.code).toUpperCase(),
+      label: String(parsed.label || parsed.code),
+      discountAmount: parsed.discountAmount,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredCoupon(coupon: AppliedCoupon | null) {
+  if (typeof window === "undefined") return;
+  try {
+    if (!coupon) localStorage.removeItem(COUPON_STORAGE_KEY);
+    else localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(coupon));
+  } catch {
+    /* ignore */
+  }
 }
 
 function readStoredItems(): CartItem[] {
@@ -95,10 +139,16 @@ async function persistServerCart(items: CartItem[]) {
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useUserAuth();
   const [items, setItems] = useState<CartItem[]>([]);
+  const [coupon, setCouponState] = useState<AppliedCoupon | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const itemsRef = useRef<CartItem[]>([]);
   const skipNextPersist = useRef(false);
   const wasLoggedIn = useRef(false);
+
+  const setCoupon = useCallback((next: AppliedCoupon | null) => {
+    setCouponState(next);
+    writeStoredCoupon(next);
+  }, []);
 
   useEffect(() => {
     itemsRef.current = items;
@@ -131,6 +181,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           skipNextPersist.current = true;
           itemsRef.current = merged;
           setItems(merged);
+          setCouponState(readStoredCoupon());
           setHydrated(true);
           writeStoredItems([]);
           if (guest.length > 0 || merged.length !== serverCart.length) {
@@ -150,6 +201,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           skipNextPersist.current = true;
           itemsRef.current = merged;
           setItems(merged);
+          setCouponState(wasLoggedIn.current ? null : readStoredCoupon());
+          if (wasLoggedIn.current) writeStoredCoupon(null);
           setHydrated(true);
           if (!user) writeStoredItems(merged);
         }
@@ -207,7 +260,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = useCallback(() => {
     itemsRef.current = [];
     setItems([]);
-  }, []);
+    setCoupon(null);
+  }, [setCoupon]);
 
   const hasItem = useCallback(
     (handle: string) => itemsRef.current.some((item) => item.handle === handle) ||
@@ -220,13 +274,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       items,
       itemCount: items.length,
       itemsTotal: items.reduce((sum, item) => sum + (Number(item.price) || 0), 0),
+      coupon,
+      setCoupon,
       ready: hydrated,
       addItem,
       removeItem,
       clearCart,
       hasItem,
     }),
-    [items, hydrated, addItem, removeItem, clearCart, hasItem],
+    [items, coupon, setCoupon, hydrated, addItem, removeItem, clearCart, hasItem],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

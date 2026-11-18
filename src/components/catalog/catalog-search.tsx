@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { formatProductSku } from "@/lib/product-sku";
+import { getDiscountPercent, isOnSale } from "@/lib/pricing";
 import { cn, formatPrice } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -14,7 +15,16 @@ const SUGGESTION_LIMIT = 8;
 
 type Suggestion = Pick<
   Product,
-  "id" | "handle" | "title" | "image" | "price" | "currency" | "sku" | "category" | "specs"
+  | "id"
+  | "handle"
+  | "title"
+  | "image"
+  | "price"
+  | "compareAtPrice"
+  | "currency"
+  | "sku"
+  | "category"
+  | "specs"
 >;
 
 interface CatalogSearchProps {
@@ -242,8 +252,27 @@ export function CatalogSearch({ initialQuery = "", className }: CatalogSearchPro
                     <span className="mt-0.5 block truncate text-xs text-muted">{meta}</span>
                   ) : null}
                 </span>
-                <span className="shrink-0 text-sm text-foreground">
-                  {formatPrice(product.price, product.currency)}
+                <span className="shrink-0 text-right text-sm text-foreground">
+                  {isOnSale(product) ? (
+                    <span className="inline-flex flex-col items-end gap-0.5">
+                      {(() => {
+                        const pct = getDiscountPercent(product);
+                        return pct ? (
+                          <span className="rounded-sm bg-[#004B69] px-1 py-0.5 text-[9px] font-bold tracking-wide text-white uppercase">
+                            −{pct}%
+                          </span>
+                        ) : null;
+                      })()}
+                      <span className="text-xs text-muted line-through">
+                        {formatPrice(product.compareAtPrice!, product.currency)}
+                      </span>
+                      <span className="text-rich-gold">
+                        {formatPrice(product.price, product.currency)}
+                      </span>
+                    </span>
+                  ) : (
+                    formatPrice(product.price, product.currency)
+                  )}
                 </span>
               </button>
             );

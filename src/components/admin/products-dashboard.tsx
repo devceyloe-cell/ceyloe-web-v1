@@ -101,7 +101,7 @@ function SortableReorderRow({ product }: { product: Product }) {
         </p>
       </div>
       <p className="shrink-0 text-sm text-gold">
-        <Price amount={product.price} />
+        <Price amount={product.price} compareAt={product.compareAtPrice} />
       </p>
     </li>
   );
@@ -587,7 +587,7 @@ export function ProductsDashboard({ products, mongoConfigured }: ProductsDashboa
                           {product.specs?.carat ? ` · ${product.specs.carat}` : null}
                         </p>
                         <p className="mt-auto pt-1.5 text-sm font-medium text-gold">
-                          <Price amount={product.price} />
+                          <Price amount={product.price} compareAt={product.compareAtPrice} />
                         </p>
                       </Link>
                     </li>

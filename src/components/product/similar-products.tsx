@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Price } from "@/components/ui/price";
+import { SaleBadge } from "@/components/product/sale-badge";
 import { getCategoryHref, getSimilarSectionTitle } from "@/lib/product-detail";
 import type { Product } from "@/types";
 
@@ -67,6 +68,7 @@ export function SimilarProducts({
                     objectFit: "cover",
                   }}
                 />
+                <SaleBadge product={product} className="scale-90 origin-top-left" />
               </div>
               <h3 className="font-caslon mt-3 text-[16px] leading-snug text-[#1a1a1a] transition-colors group-hover:text-rich-gold">
                 {product.title}
@@ -77,7 +79,7 @@ export function SimilarProducts({
                 </p>
               )}
               <p className="font-manrope mt-1.5 text-[13px] font-semibold text-rich-gold">
-                <Price amount={product.price} />
+                <Price amount={product.price} compareAt={product.compareAtPrice} />
               </p>
             </Link>
           ))}

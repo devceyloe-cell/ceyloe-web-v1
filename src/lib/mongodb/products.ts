@@ -110,6 +110,13 @@ export async function saveProductToDb(product: Product): Promise<Product> {
     sku = buildSkuCore(product.category, next);
   }
 
+  const compareAt =
+    typeof product.compareAtPrice === "number" &&
+    Number.isFinite(product.compareAtPrice) &&
+    product.compareAtPrice > 0
+      ? product.compareAtPrice
+      : undefined;
+
   const fields: StoredProduct = {
     ...product,
     handle,
@@ -121,6 +128,7 @@ export async function saveProductToDb(product: Product): Promise<Product> {
     inStock: availability === "available",
     subcategory,
     sku,
+    compareAtPrice: compareAt,
   };
   if (!subcategory) {
     delete fields.subcategory;
@@ -128,10 +136,14 @@ export async function saveProductToDb(product: Product): Promise<Product> {
   if (typeof product.catalogSortOrder !== "number") {
     delete fields.catalogSortOrder;
   }
+  if (compareAt === undefined) {
+    delete fields.compareAtPrice;
+  }
 
   if (product.id && ObjectId.isValid(product.id)) {
     const unsetFields: Record<string, ""> = {};
     if (!subcategory) unsetFields.subcategory = "";
+    if (compareAt === undefined) unsetFields.compareAtPrice = "";
     await collection.updateOne(
       { _id: new ObjectId(product.id) },
       Object.keys(unsetFields).length > 0

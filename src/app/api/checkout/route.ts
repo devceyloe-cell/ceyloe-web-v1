@@ -6,6 +6,8 @@ import {
   attachStripeSession,
   createPendingOrder,
 } from "@/lib/mongodb/orders";
+import { validateCouponCode } from "@/lib/mongodb/coupons";
+import { allocateDiscountAcrossCents, getSellPrice, roundMoney } from "@/lib/pricing";
 import { getUserSession } from "@/lib/user/auth";
 import { getProductByHandle } from "@/services/product-service";
 import type { Product } from "@/types";
@@ -81,6 +83,10 @@ export async function POST(request: NextRequest) {
     const delivery = normalizeDeliveryDetails(
       body && typeof body === "object" ? (body as { delivery?: unknown }).delivery as never : null,
     );
+    const couponCodeRaw =
+      body && typeof body === "object" && typeof (body as { couponCode?: unknown }).couponCode === "string"
+        ? String((body as { couponCode: string }).couponCode).trim()
+        : "";
 
     if (handles.length === 0) {
       return NextResponse.json(
@@ -113,11 +119,31 @@ export async function POST(request: NextRequest) {
 
     const sessionUser = await getUserSession();
 
+    const itemsSubtotal = roundMoney(
+      products.reduce((sum, product) => sum + getSellPrice(product), 0),
+    );
+
+    let discountAmount = 0;
+    let couponCode: string | undefined;
+    if (couponCodeRaw) {
+      const validated = await validateCouponCode(couponCodeRaw, itemsSubtotal);
+      if (!validated.ok) {
+        return NextResponse.json({ error: validated.error }, { status: 400 });
+      }
+      discountAmount = validated.discountAmount;
+      couponCode = validated.coupon.code;
+    }
+
+    const amountTotal = roundMoney(Math.max(0, itemsSubtotal - discountAmount));
+
+    const unitCents = products.map((product) => Math.round(getSellPrice(product) * 100));
+    const discountedCents = allocateDiscountAcrossCents(unitCents, discountAmount);
+
     const orderItems: OrderItem[] = products.map((product) => ({
       handle: product.handle,
       productId: product.id,
       title: product.title,
-      price: product.price,
+      price: getSellPrice(product),
       currency: (product.currency || currency).toUpperCase(),
       quantity: 1,
       image: product.image,
@@ -129,6 +155,9 @@ export async function POST(request: NextRequest) {
       source,
       paymentMethod: "stripe",
       userId: sessionUser?.id ?? null,
+      couponCode,
+      discountAmount: discountAmount > 0 ? discountAmount : undefined,
+      amountTotal,
     });
 
     if (!order) {
@@ -139,11 +168,11 @@ export async function POST(request: NextRequest) {
     }
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = products.map(
-      (product) => ({
+      (product, index) => ({
         quantity: 1,
         price_data: {
           currency: (product.currency || currency).toLowerCase(),
-          unit_amount: Math.round(product.price * 100),
+          unit_amount: discountedCents[index],
           product_data: {
             name: product.title,
             description: product.description.slice(0, 500) || undefined,
@@ -157,7 +186,6 @@ export async function POST(request: NextRequest) {
       }),
     );
 
-    const itemsTotal = products.reduce((sum, p) => sum + p.price, 0);
     const shippingSummary = [
       delivery.line1,
       delivery.line2,
@@ -177,7 +205,9 @@ export async function POST(request: NextRequest) {
         handles: products.map((p) => p.handle).join(","),
         productIds: products.map((p) => p.id).join(","),
         itemCount: String(products.length),
-        itemsTotal: itemsTotal.toFixed(2),
+        itemsTotal: itemsSubtotal.toFixed(2),
+        discountAmount: discountAmount.toFixed(2),
+        couponCode: couponCode || "",
         source,
         customerName: delivery.name.slice(0, 500),
         customerPhone: delivery.phone.slice(0, 100),
@@ -196,8 +226,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       url: session.url,
       orderId: order.id,
-      itemsTotal,
+      itemsTotal: amountTotal,
       itemCount: products.length,
+      discountAmount,
+      couponCode,
     });
   } catch (err) {
     console.error("[checkout]", err instanceof Error ? err.message : err);

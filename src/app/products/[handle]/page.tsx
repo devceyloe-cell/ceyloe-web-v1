@@ -8,6 +8,7 @@ import {
 import { getProductByHandle, getSimilarProducts } from "@/services/product-service";
 import { siteConfig } from "@/config/site";
 import { formatProductSku } from "@/lib/product-sku";
+import { getDiscountPercent, getListPrice, isOnSale } from "@/lib/pricing";
 
 interface ProductPageProps {
   params: Promise<{ handle: string }>;
@@ -63,6 +64,13 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
       url: productUrl,
       priceCurrency: product.currency || "AUD",
       price: product.price,
+      ...(isOnSale(product)
+        ? {
+            priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+              .toISOString()
+              .slice(0, 10),
+          }
+        : {}),
       availability: product.inStock
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
@@ -71,6 +79,22 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
         name,
       })),
     },
+    ...(isOnSale(product)
+      ? {
+          additionalProperty: [
+            {
+              "@type": "PropertyValue",
+              name: "Discount",
+              value: `${getDiscountPercent(product)}% off`,
+            },
+            {
+              "@type": "PropertyValue",
+              name: "List price",
+              value: getListPrice(product),
+            },
+          ],
+        }
+      : {}),
     ...(product.specs.origin
       ? { countryOfOrigin: product.specs.origin }
       : {}),

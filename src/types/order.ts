@@ -42,6 +42,10 @@ export interface Order {
   items: OrderItem[];
   amountTotal: number;
   currency: string;
+  /** Applied store coupon code (uppercase). */
+  couponCode?: string;
+  /** Discount amount in order currency (AUD). */
+  discountAmount?: number;
 }
 
 export interface DeliveryDetailsInput {
