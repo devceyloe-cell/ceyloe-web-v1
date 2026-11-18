@@ -2,23 +2,40 @@ import type { GemstoneSpec, Product } from "@/types";
 import type { ProductSpecification } from "@/data/product-detail-content";
 import { getCatalogHrefForCategorySubcategory } from "@/config/product-subcategories";
 import { getProductShape } from "@/lib/product-utils";
+import { formatProductSku } from "@/lib/product-sku";
+
+function nonEmpty(value: string | undefined | null): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
+}
 
 export function buildProductSpecifications(product: Product): ProductSpecification[] {
   const { specs } = product;
   const shape = getProductShape(product);
-  const rows: Array<[string, string | undefined]> = [
-    ["Weight", specs.carat],
-    ["Shape", shape],
-    ["Dimensions", specs.dimensions],
-    ["Colour", specs.color],
-    ["Clarity", specs.clarity],
-    ["Treatment", specs.treatment],
-    ["Origin", specs.origin],
+  const sku = formatProductSku(product.sku, product.category);
+  const certification = nonEmpty(specs.certification);
+  const certificateNumber = nonEmpty(specs.certificateNumber);
+  const certificationUrl = nonEmpty(product.certificationUrl);
+
+  const rows: ProductSpecification[] = [
+    { label: "SKU", value: sku ?? "" },
+    { label: "Weight", value: nonEmpty(specs.carat) ?? "" },
+    { label: "Shape", value: nonEmpty(shape) ?? "" },
+    { label: "Dimensions", value: nonEmpty(specs.dimensions) ?? "" },
+    { label: "Colour", value: nonEmpty(specs.color) ?? "" },
+    { label: "Clarity", value: nonEmpty(specs.clarity) ?? "" },
+    { label: "Treatment", value: nonEmpty(specs.treatment) ?? "" },
+    { label: "Origin", value: nonEmpty(specs.origin) ?? "" },
+    { label: "Certification", value: certification ?? "" },
+    { label: "Certificate number", value: certificateNumber ?? "" },
+    {
+      label: "Certification URL",
+      value: certificationUrl ? "View certificate" : "",
+      href: certificationUrl,
+    },
   ];
 
-  return rows
-    .filter(([, value]) => Boolean(value))
-    .map(([label, value]) => ({ label, value: value as string }));
+  return rows.filter((row) => Boolean(row.value));
 }
 
 export function getProductTypeLabel(product: Product): string {

@@ -18,6 +18,8 @@ export type ProductAvailability = "available" | "sold_out" | "hold";
 export interface Product {
   id: string;
   handle: string;
+  /** Store number only (without CEY-); customers see CEY-{sku}. */
+  sku?: string;
   title: string;
   description: string;
   price: number;

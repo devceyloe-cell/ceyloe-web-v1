@@ -103,16 +103,24 @@ function applyFilters(products: Product[], filters: CatalogFilters): Product[] {
   }
 
   if (filters.search) {
-    const q = filters.search.toLowerCase();
-    result = result.filter(
-      (p) =>
+    const q = filters.search.toLowerCase().trim();
+    result = result.filter((p) => {
+      const skuCore = (p.sku || "").toLowerCase();
+      const skuDisplay = skuCore ? `cey-${skuCore}` : "";
+      return (
         p.title.toLowerCase().includes(q) ||
         p.description.toLowerCase().includes(q) ||
+        p.handle.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q) ||
         p.subcategory?.toLowerCase().includes(q) ||
         p.specs.color?.toLowerCase().includes(q) ||
-        getProductShape(p)?.toLowerCase().includes(q),
-    );
+        p.specs.certification?.toLowerCase().includes(q) ||
+        p.specs.certificateNumber?.toLowerCase().includes(q) ||
+        getProductShape(p)?.toLowerCase().includes(q) ||
+        skuCore.includes(q) ||
+        skuDisplay.includes(q.replace(/\s+/g, ""))
+      );
+    });
   }
 
   switch (filters.sort) {

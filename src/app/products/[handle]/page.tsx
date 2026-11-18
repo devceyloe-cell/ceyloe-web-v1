@@ -7,6 +7,7 @@ import {
 } from "@/lib/product-detail";
 import { getProductByHandle, getSimilarProducts } from "@/services/product-service";
 import { siteConfig } from "@/config/site";
+import { formatProductSku } from "@/lib/product-sku";
 
 interface ProductPageProps {
   params: Promise<{ handle: string }>;
@@ -55,7 +56,7 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
     name: product.title,
     description: product.description,
     image: product.images,
-    sku: product.handle,
+    sku: formatProductSku(product.sku, product.category) || product.handle,
     brand: { "@type": "Brand", name: siteConfig.name },
     offers: {
       "@type": "Offer",

@@ -8,8 +8,11 @@ interface CertificationDisplayProps {
 
 export function CertificationDisplay({ product }: CertificationDisplayProps) {
   const { specs, certificationUrl } = product;
+  const certification = specs.certification?.trim();
+  const certificateNumber = specs.certificateNumber?.trim();
+  const url = certificationUrl?.trim();
 
-  if (!specs.certification) return null;
+  if (!certification && !certificateNumber && !url) return null;
 
   return (
     <div className="mt-10 border border-border bg-surface-elevated p-6">
@@ -18,28 +21,31 @@ export function CertificationDisplay({ product }: CertificationDisplayProps) {
           <Shield className="h-6 w-6" />
         </div>
         <div className="flex-1">
-          <h3 className="font-display text-lg font-light">{specs.certification} Certified</h3>
+          <h3 className="font-display text-lg font-light">
+            {certification ? `${certification} Certified` : "Gemstone Certificate"}
+          </h3>
           <p className="mt-1 text-sm text-muted">
             This gemstone has been independently graded and certified for authenticity, quality, and treatment
             disclosure.
           </p>
-          {specs.certificateNumber && (
+          {certificateNumber ? (
             <p className="mt-2 flex items-center gap-1.5 text-xs text-muted">
               <FileCheck className="h-3.5 w-3.5" />
-              Certificate No. {specs.certificateNumber}
+              Certificate No. {certificateNumber}
             </p>
-          )}
+          ) : null}
           <div className="mt-4 flex flex-wrap gap-3">
-            {certificationUrl && (
+            {url ? (
               <Link
-                href={certificationUrl}
+                href={url}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 border border-primary px-4 py-2 text-xs uppercase tracking-widest text-primary transition-colors hover:bg-primary hover:text-white"
               >
                 <Download className="h-3.5 w-3.5" />
-                Download Certificate
+                View Certificate
               </Link>
-            )}
+            ) : null}
             <Link
               href="/certifications"
               className="inline-flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-widest text-muted underline-offset-4 hover:underline"

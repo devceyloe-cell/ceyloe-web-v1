@@ -66,7 +66,12 @@ export async function POST(request: NextRequest) {
       redirectCancelUrl: `${productUrl}?checkout=cancelled`,
       item: {
         name: product.title,
-        sku: product.handle,
+        sku: (() => {
+          const raw = product.sku?.trim();
+          if (!raw) return product.handle;
+          const core = raw.replace(/^CEY-+/i, "");
+          return core ? `CEY-${core}` : product.handle;
+        })(),
         quantity: 1,
         price: product.price,
         pageUrl: productUrl,

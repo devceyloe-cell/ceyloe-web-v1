@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import type { CatalogBounds } from "@/lib/product-utils";
 import { cn } from "@/lib/utils";
+import { CatalogSearch } from "@/components/catalog/catalog-search";
 
 interface CatalogFiltersProps {
   categories?: string[];
@@ -37,6 +38,7 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
     maxPrice: searchParams.get("maxPrice") ?? "",
     minCarat: searchParams.get("minCarat") ?? "",
     maxCarat: searchParams.get("maxCarat") ?? "",
+    search: searchParams.get("search") ?? "",
   };
 
   function updateParams(key: string, value: string) {
@@ -62,6 +64,7 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
     current.minCarat,
     current.maxCarat,
     current.sort,
+    current.search,
   ].filter(Boolean).length;
 
   const hasFilters = activeCount > 0;
@@ -76,6 +79,8 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
 
   return (
     <div className="space-y-4">
+      <CatalogSearch initialQuery={current.search} />
+
       <div className="flex items-center gap-3 lg:hidden">
         <button
           type="button"
@@ -106,7 +111,7 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
           <button
             type="button"
             onClick={clearAll}
-            className="shrink-0 inline-flex items-center gap-1 px-2 py-3 text-xs uppercase tracking-widest text-muted hover:text-gold"
+            className="inline-flex shrink-0 items-center gap-1 px-2 py-3 text-xs tracking-widest text-muted uppercase hover:text-gold"
             aria-label="Clear filters"
           >
             <X className="h-3.5 w-3.5" />
@@ -126,7 +131,7 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
           <button
             type="button"
             onClick={clearAll}
-            className="hidden items-center gap-1 text-xs uppercase tracking-widest text-muted hover:text-gold lg:inline-flex"
+            className="hidden items-center gap-1 text-xs tracking-widest text-muted uppercase hover:text-gold lg:inline-flex"
           >
             <X className="h-3 w-3" /> Clear filters
           </button>
@@ -215,7 +220,7 @@ export function CatalogFilters({ bounds }: CatalogFiltersProps) {
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="mb-3 text-xs font-medium uppercase tracking-[0.15em] text-muted">{title}</h3>
+      <h3 className="mb-3 text-xs font-medium tracking-[0.15em] text-muted uppercase">{title}</h3>
       {children}
     </div>
   );

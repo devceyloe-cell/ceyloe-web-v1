@@ -33,6 +33,13 @@ import {
   withSyncedAvailability,
 } from "@/lib/product-availability";
 import { ProductStatusBanner } from "@/components/product/product-status-banner";
+import {
+  PRODUCT_SKU_PREFIX,
+  buildSkuCore,
+  formatProductSku,
+  skuCategoryCode,
+  skuNumberOnly,
+} from "@/lib/product-sku";
 import { cn } from "@/lib/utils";
 
 function slugify(text: string) {
@@ -115,7 +122,9 @@ export function ProductEditor({ initial }: ProductEditorProps) {
         p.subcategory && isValidSubcategory(nextCategory, p.subcategory)
           ? p.subcategory
           : undefined;
-      return { ...p, category: nextCategory, subcategory: nextSub };
+      const num = skuNumberOnly(p.sku);
+      const nextSku = num ? buildSkuCore(nextCategory, Number(num)) : p.sku;
+      return { ...p, category: nextCategory, subcategory: nextSub, sku: nextSku };
     });
   }
 
@@ -630,6 +639,40 @@ export function ProductEditor({ initial }: ProductEditorProps) {
                       placeholder="natural-blue-sapphire-1-16ct"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className={labelClass}>SKU number</label>
+                  <div className="flex overflow-hidden rounded-md border border-border focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/30">
+                    <span className="shrink-0 bg-background px-3 py-2.5 text-xs font-medium text-muted">
+                      {PRODUCT_SKU_PREFIX}
+                      {skuCategoryCode(product.category)}-
+                    </span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={skuNumberOnly(product.sku)}
+                      onChange={(e) => {
+                        const digits = e.target.value.replace(/\D/g, "");
+                        updateField(
+                          "sku",
+                          digits ? buildSkuCore(product.category, Number(digits)) : undefined,
+                        );
+                      }}
+                      className="min-w-0 flex-1 border-0 bg-background px-3 py-2.5 text-sm outline-none"
+                      placeholder="10001"
+                      aria-label="SKU number without brand/category prefix"
+                    />
+                  </div>
+                  <p className="mt-1.5 text-xs text-muted">
+                    Shown as{" "}
+                    <code className="text-foreground">
+                      {formatProductSku(product.sku, product.category) ||
+                        `${PRODUCT_SKU_PREFIX}${skuCategoryCode(product.category)}-…`}
+                    </code>
+                    . Category code updates with the product category. Leave blank to auto-assign on
+                    save.
+                  </p>
                 </div>
 
                 <div>

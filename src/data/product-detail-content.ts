@@ -1,6 +1,8 @@
 export type ProductSpecification = {
   label: string;
   value: string;
+  /** When set, value is rendered as an external link (e.g. certification URL). */
+  href?: string;
 };
 
 export const productTrustBenefits = [

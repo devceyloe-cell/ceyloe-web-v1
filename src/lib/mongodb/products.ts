@@ -1,6 +1,11 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/mongodb/client";
 import { normalizeAvailability } from "@/lib/product-availability";
+import {
+  buildSkuCore,
+  nextSkuNumberForCategory,
+  normalizeProductSku,
+} from "@/lib/product-sku";
 import type { Product } from "@/types";
 
 const COLLECTION = "products";
@@ -91,6 +96,20 @@ export async function saveProductToDb(product: Product): Promise<Product> {
   const now = new Date().toISOString();
   const availability = normalizeAvailability(product.availability, product.inStock);
   const subcategory = product.subcategory?.trim().toLowerCase() || undefined;
+  let sku = normalizeProductSku(product.sku, product.category);
+  const collection = db.collection<StoredProduct>(COLLECTION);
+
+  if (!sku) {
+    const existing = await collection
+      .find({ sku: { $exists: true, $nin: [null, ""] } }, { projection: { sku: 1, category: 1 } })
+      .toArray();
+    const next = nextSkuNumberForCategory(
+      product.category,
+      existing.map((doc) => doc.sku),
+    );
+    sku = buildSkuCore(product.category, next);
+  }
+
   const fields: StoredProduct = {
     ...product,
     handle,
@@ -101,6 +120,7 @@ export async function saveProductToDb(product: Product): Promise<Product> {
     availability,
     inStock: availability === "available",
     subcategory,
+    sku,
   };
   if (!subcategory) {
     delete fields.subcategory;
@@ -109,14 +129,14 @@ export async function saveProductToDb(product: Product): Promise<Product> {
     delete fields.catalogSortOrder;
   }
 
-  const collection = db.collection<StoredProduct>(COLLECTION);
-
   if (product.id && ObjectId.isValid(product.id)) {
+    const unsetFields: Record<string, ""> = {};
+    if (!subcategory) unsetFields.subcategory = "";
     await collection.updateOne(
       { _id: new ObjectId(product.id) },
-      subcategory
-        ? { $set: fields }
-        : { $set: fields, $unset: { subcategory: "" } },
+      Object.keys(unsetFields).length > 0
+        ? { $set: fields, $unset: unsetFields }
+        : { $set: fields },
     );
     const updated = await collection.findOne({ _id: new ObjectId(product.id) });
     if (!updated) throw new Error("Product not found after update");
