@@ -101,7 +101,7 @@ export async function saveProductToDb(product: Product): Promise<Product> {
 
   if (!sku) {
     const existing = await collection
-      .find({ sku: { $exists: true, $nin: [null, ""] } }, { projection: { sku: 1, category: 1 } })
+      .find({ sku: { $type: "string", $ne: "" } }, { projection: { sku: 1, category: 1 } })
       .toArray();
     const next = nextSkuNumberForCategory(
       product.category,
