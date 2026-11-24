@@ -128,7 +128,11 @@ export default function AdminLoginPage() {
       return;
     }
 
-    setInfo(data.message || "If that account exists, a reset code was sent.");
+    setInfo(
+      data.emailHint
+        ? `${data.message || "Reset code sent."} Check ${data.emailHint}.`
+        : data.message || "If that account exists, a reset code was sent.",
+    );
     if (data.devOtp) setDevOtp(data.devOtp);
     setStep("reset");
     setOtp("");
@@ -192,9 +196,10 @@ export default function AdminLoginPage() {
   };
 
   const subtitles: Record<Step, string> = {
-    password: "Admin username must be an email address.",
+            password: "Sign in with your admin username and password.",
     otp: `We sent a 6-digit code${emailHint ? ` to ${emailHint}` : ""}.`,
-    forgot: "Enter your admin username email. We’ll send a reset code there.",
+    forgot:
+      "Enter your admin username or the account email. We’ll send a one-time reset code there.",
     reset: "Enter the code from your email and choose a new password (min 12 characters).",
   };
 
@@ -214,11 +219,11 @@ export default function AdminLoginPage() {
                 htmlFor="username"
                 className="mb-2 block text-xs tracking-widest text-muted uppercase"
               >
-                Username (email)
+                Username
               </label>
               <input
                 id="username"
-                type="email"
+                type="text"
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -336,15 +341,16 @@ export default function AdminLoginPage() {
                 htmlFor="forgot-username"
                 className="mb-2 block text-xs tracking-widest text-muted uppercase"
               >
-                Username (email)
+                Username or account email
               </label>
               <input
                 id="forgot-username"
-                type="email"
+                type="text"
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full border border-border bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+                placeholder="ceyloe-prod-admin or you@example.com"
                 required
               />
             </div>

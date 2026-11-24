@@ -352,20 +352,60 @@ export async function verifyAdminLoginOtp(
   return result.ok ? result.user : null;
 }
 
-export async function issueAdminPasswordResetOtp(username: string): Promise<{
+/**
+ * Find admin for password reset by username OR by a matching MFA/legacy email.
+ * Delivery address preference:
+ * 1) username if it is an email
+ * 2) the identifier they typed if it is an email on the account
+ * 3) primary MFA/legacy email
+ */
+export async function findAdminForPasswordReset(identifier: string): Promise<{
   user: AdminUser;
-  otp: string;
+  sendTo: string;
 } | null> {
-  const normalized = normalizeUsername(username);
-  if (!isValidAdminEmail(normalized)) return null;
+  const normalized = normalizeUsername(identifier);
+  if (!normalized) return null;
 
   const collection = await getCollection();
-  const doc = await collection.findOne({ username: normalized });
+  let doc = await collection.findOne({ username: normalized });
+
+  if (!doc && isValidAdminEmail(normalized)) {
+    const candidates = await collection.find({}).toArray();
+    doc =
+      candidates.find((row) => {
+        const emails = resolveEmails(row);
+        return emails.includes(normalized);
+      }) ?? null;
+  }
+
   if (!doc) return null;
 
+  const user = toAdminUser(doc as StoredAdminUser & { _id: ObjectId });
+  let sendTo: string | null = null;
+  if (isValidAdminEmail(user.username)) {
+    sendTo = user.username;
+  } else if (isValidAdminEmail(normalized) && user.emails.includes(normalized)) {
+    sendTo = normalized;
+  } else if (user.email && isValidAdminEmail(user.email)) {
+    sendTo = user.email;
+  }
+
+  if (!sendTo) return null;
+  return { user, sendTo };
+}
+
+export async function issueAdminPasswordResetOtp(identifier: string): Promise<{
+  user: AdminUser;
+  otp: string;
+  sendTo: string;
+} | null> {
+  const found = await findAdminForPasswordReset(identifier);
+  if (!found) return null;
+
+  const collection = await getCollection();
   const otp = generateOtpCode();
   await collection.updateOne(
-    { _id: doc._id },
+    { _id: new ObjectId(found.user.id) },
     {
       $set: {
         resetOtpHash: hashToken(otp),
@@ -377,18 +417,19 @@ export async function issueAdminPasswordResetOtp(username: string): Promise<{
   );
 
   return {
-    user: toAdminUser(doc as StoredAdminUser & { _id: ObjectId }),
+    user: found.user,
     otp,
+    sendTo: found.sendTo,
   };
 }
 
 export async function resetAdminPasswordWithOtp(
-  username: string,
+  identifier: string,
   otp: string,
   newPassword: string,
 ): Promise<{ ok: true } | { ok: false; reason: "invalid" | "expired" | "exhausted"; attemptsRemaining: number }> {
-  const normalized = normalizeUsername(username);
-  if (!isValidAdminEmail(normalized)) {
+  const found = await findAdminForPasswordReset(identifier);
+  if (!found) {
     return { ok: false, reason: "invalid", attemptsRemaining: 0 };
   }
 
@@ -400,7 +441,7 @@ export async function resetAdminPasswordWithOtp(
   }
 
   const collection = await getCollection();
-  const doc = await collection.findOne({ username: normalized });
+  const doc = await collection.findOne({ _id: new ObjectId(found.user.id) });
   if (!doc?.resetOtpHash) {
     return { ok: false, reason: "expired", attemptsRemaining: 0 };
   }

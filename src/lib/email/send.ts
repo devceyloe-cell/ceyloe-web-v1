@@ -63,7 +63,8 @@ async function sendViaResend(options: {
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`Resend failed (${res.status}): ${body || res.statusText}`);
+    console.warn(`[email] Resend failed (${res.status}): ${body || res.statusText}`);
+    return false;
   }
 
   return true;
