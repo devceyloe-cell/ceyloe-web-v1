@@ -156,7 +156,7 @@ export function AdminSettingsPanel() {
           <form onSubmit={handleSave} className="mt-8 space-y-8">
             <section className="space-y-4 border border-border bg-surface p-6">
               <div>
-                <p className="text-xs uppercase tracking-widest text-muted">Signed in as</p>
+                <p className="text-xs uppercase tracking-widest text-muted">Signed in email</p>
                 <p className="mt-1 text-sm font-medium">{username}</p>
               </div>
 

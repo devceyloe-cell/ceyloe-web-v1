@@ -196,10 +196,9 @@ export default function AdminLoginPage() {
   };
 
   const subtitles: Record<Step, string> = {
-            password: "Sign in with your admin username and password.",
+            password: "Sign in with your admin email and password.",
     otp: `We sent a 6-digit code${emailHint ? ` to ${emailHint}` : ""}.`,
-    forgot:
-      "Enter your admin username or the account email. We’ll send a one-time reset code there.",
+    forgot: "Enter your admin email. We’ll send a one-time reset code there.",
     reset: "Enter the code from your email and choose a new password (min 12 characters).",
   };
 
@@ -219,15 +218,16 @@ export default function AdminLoginPage() {
                 htmlFor="username"
                 className="mb-2 block text-xs tracking-widest text-muted uppercase"
               >
-                Username
+                Email
               </label>
               <input
                 id="username"
-                type="text"
+                type="email"
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full border border-border bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
+                placeholder="you@example.com"
                 required
               />
             </div>
@@ -341,16 +341,16 @@ export default function AdminLoginPage() {
                 htmlFor="forgot-username"
                 className="mb-2 block text-xs tracking-widest text-muted uppercase"
               >
-                Username or account email
+                Email
               </label>
               <input
                 id="forgot-username"
-                type="text"
+                type="email"
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full border border-border bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
-                placeholder="ceyloe-prod-admin or you@example.com"
+                placeholder="you@example.com"
                 required
               />
             </div>

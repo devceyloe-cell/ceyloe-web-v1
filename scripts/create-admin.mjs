@@ -2,12 +2,12 @@
  * Create an admin user in MongoDB (password stored as scrypt hash).
  *
  * Usage:
- *   node --env-file=.env.local scripts/create-admin.mjs <username> <password> [email]
+ *   node --env-file=.env.local scripts/create-admin.mjs <email> <password>
  *
  * Example:
- *   node --env-file=.env.local scripts/create-admin.mjs admin 'StrongPass1!' admin@ceyloe.com
+ *   node --env-file=.env.local scripts/create-admin.mjs admin@ceyloe.com 'StrongPass1!'
  *
- * Email is required for MFA (OTP) in production.
+ * Username must be an email address (used for sign-in and password reset).
  */
 import { randomBytes, scrypt } from "node:crypto";
 import { promisify } from "node:util";
@@ -26,12 +26,18 @@ async function hashPassword(password) {
 async function main() {
   const username = process.argv[2]?.trim().toLowerCase();
   const password = process.argv[3];
-  const email = process.argv[4]?.trim().toLowerCase() || null;
+  const emailArg = process.argv[4]?.trim().toLowerCase() || null;
+  const email = emailArg || (username && EMAIL_RE.test(username) ? username : null);
 
   if (!username || !password) {
     console.error(
-      "Usage: node --env-file=.env.local scripts/create-admin.mjs <username> <password> [email]",
+      "Usage: node --env-file=.env.local scripts/create-admin.mjs <email> <password>",
     );
+    process.exit(1);
+  }
+
+  if (!EMAIL_RE.test(username)) {
+    console.error("Admin username must be a valid email address.");
     process.exit(1);
   }
 
@@ -40,15 +46,9 @@ async function main() {
     process.exit(1);
   }
 
-  if (email && !EMAIL_RE.test(email)) {
+  if (emailArg && !EMAIL_RE.test(emailArg)) {
     console.error("Invalid email address.");
     process.exit(1);
-  }
-
-  if (!email) {
-    console.warn(
-      "Warning: no email set. MFA (OTP) cannot work until email is added in Admin → Settings.",
-    );
   }
 
   const uri = process.env.MONGODB_URI;
@@ -78,12 +78,12 @@ async function main() {
   await collection.insertOne({
     username,
     passwordHash,
-    email,
-    emails: email ? [email] : [],
+    email: email || username,
+    emails: [email || username],
     createdAt: now,
   });
 
-  console.log(`Admin user created: ${username}${email ? ` <${email}>` : ""}`);
+  console.log(`Admin user created: ${username}`);
   await client.close();
 }
 

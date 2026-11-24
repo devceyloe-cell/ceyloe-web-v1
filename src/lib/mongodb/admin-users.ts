@@ -173,21 +173,21 @@ export async function createAdminUser(
 
   validatePasswordStrength(password);
 
-  const emails = email?.trim() ? normalizeMfaEmails([email]) : [];
-  if (email?.trim() && emails.length === 0) {
+  const emails = normalizeMfaEmails([email?.trim() || normalized]);
+  if (emails.length === 0) {
     throw new Error("Enter a valid email address");
   }
 
   const collection = await getCollection();
   const existing = await collection.findOne({ username: normalized });
-  if (existing) throw new Error("Username already exists");
+  if (existing) throw new Error("Email already registered");
 
   const now = new Date().toISOString();
   const passwordHash = await hashPassword(password);
   const result = await collection.insertOne({
     username: normalized,
     passwordHash,
-    email: emails[0] ?? null,
+    email: emails[0],
     emails,
     createdAt: now,
   });
@@ -195,7 +195,7 @@ export async function createAdminUser(
   return {
     id: result.insertedId.toString(),
     username: normalized,
-    email: emails[0] ?? null,
+    email: emails[0],
     emails,
     createdAt: now,
   };

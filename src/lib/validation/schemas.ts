@@ -60,7 +60,12 @@ export const VerifyOtpSchema = z.object({
 });
 
 export const AdminLoginSchema = z.object({
-  username: z.string().trim().min(1, "Username is required").max(100, "Username too long"),
+  username: z
+    .string()
+    .trim()
+    .min(1, "Email is required")
+    .max(100, "Email too long")
+    .email("Enter a valid email address"),
   password: z.string().min(1, "Password is required").max(200, "Password too long"),
 });
 

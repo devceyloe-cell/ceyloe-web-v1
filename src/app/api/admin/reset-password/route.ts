@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
   if (!username || !isValidAdminEmail(username)) {
     return NextResponse.json(
-      { error: "Enter a valid admin username email." },
+      { error: "Enter a valid admin email." },
       { status: 400 },
     );
   }
