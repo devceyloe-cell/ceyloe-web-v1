@@ -309,6 +309,38 @@ export async function sendAdminLoginOtpEmail(email: string, otp: string) {
   });
 }
 
+function buildAdminPasswordResetEmailHtml(otp: string) {
+  return `
+    <div style="font-family:Georgia,serif;max-width:480px;margin:0 auto;padding:24px;color:#1a1a1a">
+      <p style="letter-spacing:0.2em;text-transform:uppercase;font-size:12px;color:#b8860b">Ceyloe Admin</p>
+      <h1 style="font-weight:400;font-size:28px;margin:8px 0 16px">Password reset code</h1>
+      <p style="font-size:15px;line-height:1.5">Use this code to set a new admin password. It expires in 10 minutes.</p>
+      <p style="font-size:32px;letter-spacing:0.35em;font-weight:700;margin:24px 0">${otp}</p>
+      <p style="font-size:13px;color:#666">If you did not request this, you can ignore this email.</p>
+    </div>
+  `;
+}
+
+function buildAdminPasswordResetEmailText(otp: string) {
+  return [
+    "Ceyloe Admin password reset",
+    "",
+    `Your reset code is: ${otp}`,
+    "It expires in 10 minutes.",
+    "",
+    "If you did not request this, ignore this email.",
+  ].join("\n");
+}
+
+export async function sendAdminPasswordResetEmail(email: string, otp: string) {
+  return sendEmail({
+    to: email,
+    subject: "Your Ceyloe admin password reset code",
+    html: buildAdminPasswordResetEmailHtml(otp),
+    text: buildAdminPasswordResetEmailText(otp),
+  });
+}
+
 // ─── Order Emails ─────────────────────────────────────────────────────────────
 
 export interface OrderLineItem {

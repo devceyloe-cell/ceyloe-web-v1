@@ -6,9 +6,9 @@ import { LandingQuality } from "@/components/landing/landing-quality";
 import { LandingBespoke } from "@/components/landing/landing-bespoke";
 import { LandingStory } from "@/components/landing/landing-story";
 import { LandingAppointmentCta } from "@/components/landing/landing-appointment-cta";
-import { googleReviews, googleReviewStats } from "@/data/google-reviews";
 import { getHomepageCollection } from "@/lib/mongodb/homepage-collection";
 import { getHomepageBannerSlides } from "@/lib/mongodb/homepage-banner-slides";
+import { getStorefrontGoogleReviews } from "@/lib/mongodb/google-reviews";
 
 const LandingTestimonials = dynamic(() =>
   import("@/components/landing/landing-testimonials").then((m) => m.LandingTestimonials),
@@ -17,9 +17,10 @@ const LandingTestimonials = dynamic(() =>
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [collection, banner] = await Promise.all([
+  const [collection, banner, google] = await Promise.all([
     getHomepageCollection(),
     getHomepageBannerSlides(),
+    getStorefrontGoogleReviews(),
   ]);
 
   return (
@@ -30,7 +31,7 @@ export default async function HomePage() {
       <LandingQuality />
       <LandingBespoke />
       <LandingStory />
-      <LandingTestimonials testimonials={googleReviews} stats={googleReviewStats} />
+      <LandingTestimonials testimonials={google.testimonials} stats={google.stats} />
       <LandingAppointmentCta />
     </>
   );

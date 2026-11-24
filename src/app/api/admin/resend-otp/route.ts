@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   createMfaPendingToken,
   getAdminMfaPending,
@@ -7,6 +7,7 @@ import {
 } from "@/lib/admin/auth";
 import { sendAdminLoginOtpEmail } from "@/lib/email/send";
 import { issueAdminLoginOtp } from "@/lib/mongodb/admin-users";
+import { ADMIN_RATE_LIMITS, consumeRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 function maskEmail(email: string) {
   const [local, domain] = email.split("@");
@@ -31,9 +32,24 @@ async function sendOtpToAll(emails: string[], otp: string) {
   return { sent };
 }
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   if (!isAdminConfigured()) {
     return NextResponse.json({ error: "Admin is not configured" }, { status: 503 });
+  }
+
+  const ip = getRequestIp(request);
+  const limited = await consumeRateLimit(
+    `admin-resend-otp:${ip}`,
+    ADMIN_RATE_LIMITS.resendOtp.limit,
+    ADMIN_RATE_LIMITS.resendOtp.windowMs,
+  );
+  if (!limited.allowed) {
+    return NextResponse.json(
+      {
+        error: `Too many resend requests. Try again in ${limited.retryAfterSeconds} seconds.`,
+      },
+      { status: 429 },
+    );
   }
 
   const pending = await getAdminMfaPending();

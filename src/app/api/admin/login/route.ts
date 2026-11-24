@@ -10,6 +10,7 @@ import {
 import { sendAdminLoginOtpEmail } from "@/lib/email/send";
 import { getAdminSecuritySettings } from "@/lib/mongodb/admin-security";
 import { authenticateAdminUser, issueAdminLoginOtp } from "@/lib/mongodb/admin-users";
+import { ADMIN_RATE_LIMITS, consumeRateLimit, getRequestIp } from "@/lib/rate-limit";
 import { AdminLoginSchema } from "@/lib/validation/schemas";
 
 function maskEmail(email: string) {
@@ -44,6 +45,21 @@ export async function POST(request: NextRequest) {
           "Admin is not configured. Set MONGODB_URI and ADMIN_JWT_SECRET, then create an admin user.",
       },
       { status: 503 },
+    );
+  }
+
+  const ip = getRequestIp(request);
+  const limited = await consumeRateLimit(
+    `admin-login:${ip}`,
+    ADMIN_RATE_LIMITS.login.limit,
+    ADMIN_RATE_LIMITS.login.windowMs,
+  );
+  if (!limited.allowed) {
+    return NextResponse.json(
+      {
+        error: `Too many sign-in attempts. Try again in ${limited.retryAfterSeconds} seconds.`,
+      },
+      { status: 429 },
     );
   }
 

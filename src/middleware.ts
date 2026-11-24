@@ -13,6 +13,8 @@ const PUBLIC_API_PATHS = new Set([
   "/api/admin/login",
   "/api/admin/verify-otp",
   "/api/admin/resend-otp",
+  "/api/admin/forgot-password",
+  "/api/admin/reset-password",
 ]);
 
 async function verifyToken(token: string): Promise<boolean> {

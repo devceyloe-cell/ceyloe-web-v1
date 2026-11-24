@@ -13,6 +13,7 @@ import {
   Images,
   Package,
   Pencil,
+  MessageSquareQuote,
   Percent,
   Users,
 } from "lucide-react";
@@ -61,6 +62,14 @@ const modules = [
     icon: Percent,
     statKey: null as unknown as keyof DashboardStats,
     accent: "bg-fuchsia-500/10 text-fuchsia-700",
+  },
+  {
+    href: "/admin/reviews",
+    label: "Google Reviews",
+    description: "Manually curate homepage Google review testimonials",
+    icon: MessageSquareQuote,
+    statKey: null as unknown as keyof DashboardStats,
+    accent: "bg-yellow-500/10 text-yellow-800",
   },
   {
     href: "/admin/appointments",

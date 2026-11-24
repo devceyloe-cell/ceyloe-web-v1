@@ -18,9 +18,16 @@ type StoredAdminUser = {
   loginOtpHash?: string | null;
   loginOtpExpiresAt?: string | null;
   loginOtpAttempts?: number;
+  resetOtpHash?: string | null;
+  resetOtpExpiresAt?: string | null;
+  resetOtpAttempts?: number;
   createdAt: string;
   updatedAt?: string;
 };
+
+export type VerifyOtpResult =
+  | { ok: true; user: AdminUser }
+  | { ok: false; reason: "invalid" | "expired" | "exhausted"; attemptsRemaining: number };
 
 export type AdminUser = {
   id: string;
@@ -160,6 +167,9 @@ export async function createAdminUser(
 ): Promise<AdminUser> {
   const normalized = normalizeUsername(username);
   if (!normalized) throw new Error("Username is required");
+  if (!isValidAdminEmail(normalized)) {
+    throw new Error("Admin username must be a valid email address");
+  }
 
   validatePasswordStrength(password);
 
@@ -276,23 +286,27 @@ export async function issueAdminLoginOtp(username: string): Promise<{
   return { user, otp };
 }
 
-export async function verifyAdminLoginOtp(
+export async function verifyAdminLoginOtpDetailed(
   username: string,
   otp: string,
-): Promise<AdminUser | null> {
+): Promise<VerifyOtpResult> {
   const code = otp.trim().replace(/\s+/g, "");
-  if (!/^\d{6}$/.test(code)) return null;
+  if (!/^\d{6}$/.test(code)) {
+    return { ok: false, reason: "invalid", attemptsRemaining: MAX_OTP_ATTEMPTS };
+  }
 
   const collection = await getCollection();
   const doc = await collection.findOne({ username: normalizeUsername(username) });
-  if (!doc?.loginOtpHash) return null;
+  if (!doc?.loginOtpHash) {
+    return { ok: false, reason: "expired", attemptsRemaining: 0 };
+  }
 
   if (doc.loginOtpExpiresAt && new Date(doc.loginOtpExpiresAt).getTime() < Date.now()) {
     await collection.updateOne(
       { _id: doc._id },
       { $set: { loginOtpHash: null, loginOtpExpiresAt: null, loginOtpAttempts: 0 } },
     );
-    return null;
+    return { ok: false, reason: "expired", attemptsRemaining: 0 };
   }
 
   const attempts = doc.loginOtpAttempts || 0;
@@ -301,12 +315,21 @@ export async function verifyAdminLoginOtp(
       { _id: doc._id },
       { $set: { loginOtpHash: null, loginOtpExpiresAt: null, loginOtpAttempts: 0 } },
     );
-    return null;
+    return { ok: false, reason: "exhausted", attemptsRemaining: 0 };
   }
 
   if (hashToken(code) !== doc.loginOtpHash) {
+    const nextAttempts = attempts + 1;
     await collection.updateOne({ _id: doc._id }, { $inc: { loginOtpAttempts: 1 } });
-    return null;
+    const remaining = Math.max(0, MAX_OTP_ATTEMPTS - nextAttempts);
+    if (remaining === 0) {
+      await collection.updateOne(
+        { _id: doc._id },
+        { $set: { loginOtpHash: null, loginOtpExpiresAt: null, loginOtpAttempts: 0 } },
+      );
+      return { ok: false, reason: "exhausted", attemptsRemaining: 0 };
+    }
+    return { ok: false, reason: "invalid", attemptsRemaining: remaining };
   }
 
   await collection.updateOne(
@@ -314,8 +337,129 @@ export async function verifyAdminLoginOtp(
     { $set: { loginOtpHash: null, loginOtpExpiresAt: null, loginOtpAttempts: 0 } },
   );
 
-  return toAdminUser(doc as StoredAdminUser & { _id: ObjectId });
+  return {
+    ok: true,
+    user: toAdminUser(doc as StoredAdminUser & { _id: ObjectId }),
+  };
 }
+
+/** @deprecated prefer verifyAdminLoginOtpDetailed */
+export async function verifyAdminLoginOtp(
+  username: string,
+  otp: string,
+): Promise<AdminUser | null> {
+  const result = await verifyAdminLoginOtpDetailed(username, otp);
+  return result.ok ? result.user : null;
+}
+
+export async function issueAdminPasswordResetOtp(username: string): Promise<{
+  user: AdminUser;
+  otp: string;
+} | null> {
+  const normalized = normalizeUsername(username);
+  if (!isValidAdminEmail(normalized)) return null;
+
+  const collection = await getCollection();
+  const doc = await collection.findOne({ username: normalized });
+  if (!doc) return null;
+
+  const otp = generateOtpCode();
+  await collection.updateOne(
+    { _id: doc._id },
+    {
+      $set: {
+        resetOtpHash: hashToken(otp),
+        resetOtpExpiresAt: new Date(Date.now() + OTP_TTL_MS).toISOString(),
+        resetOtpAttempts: 0,
+        updatedAt: new Date().toISOString(),
+      },
+    },
+  );
+
+  return {
+    user: toAdminUser(doc as StoredAdminUser & { _id: ObjectId }),
+    otp,
+  };
+}
+
+export async function resetAdminPasswordWithOtp(
+  username: string,
+  otp: string,
+  newPassword: string,
+): Promise<{ ok: true } | { ok: false; reason: "invalid" | "expired" | "exhausted"; attemptsRemaining: number }> {
+  const normalized = normalizeUsername(username);
+  if (!isValidAdminEmail(normalized)) {
+    return { ok: false, reason: "invalid", attemptsRemaining: 0 };
+  }
+
+  validatePasswordStrength(newPassword);
+
+  const code = otp.trim().replace(/\s+/g, "");
+  if (!/^\d{6}$/.test(code)) {
+    return { ok: false, reason: "invalid", attemptsRemaining: MAX_OTP_ATTEMPTS };
+  }
+
+  const collection = await getCollection();
+  const doc = await collection.findOne({ username: normalized });
+  if (!doc?.resetOtpHash) {
+    return { ok: false, reason: "expired", attemptsRemaining: 0 };
+  }
+
+  if (doc.resetOtpExpiresAt && new Date(doc.resetOtpExpiresAt).getTime() < Date.now()) {
+    await collection.updateOne(
+      { _id: doc._id },
+      { $set: { resetOtpHash: null, resetOtpExpiresAt: null, resetOtpAttempts: 0 } },
+    );
+    return { ok: false, reason: "expired", attemptsRemaining: 0 };
+  }
+
+  const attempts = doc.resetOtpAttempts || 0;
+  if (attempts >= MAX_OTP_ATTEMPTS) {
+    await collection.updateOne(
+      { _id: doc._id },
+      { $set: { resetOtpHash: null, resetOtpExpiresAt: null, resetOtpAttempts: 0 } },
+    );
+    return { ok: false, reason: "exhausted", attemptsRemaining: 0 };
+  }
+
+  if (hashToken(code) !== doc.resetOtpHash) {
+    const nextAttempts = attempts + 1;
+    await collection.updateOne({ _id: doc._id }, { $inc: { resetOtpAttempts: 1 } });
+    const remaining = Math.max(0, MAX_OTP_ATTEMPTS - nextAttempts);
+    if (remaining === 0) {
+      await collection.updateOne(
+        { _id: doc._id },
+        { $set: { resetOtpHash: null, resetOtpExpiresAt: null, resetOtpAttempts: 0 } },
+      );
+    }
+    return {
+      ok: false,
+      reason: remaining === 0 ? "exhausted" : "invalid",
+      attemptsRemaining: remaining,
+    };
+  }
+
+  const passwordHash = await hashPassword(newPassword);
+  await collection.updateOne(
+    { _id: doc._id },
+    {
+      $set: {
+        passwordHash,
+        resetOtpHash: null,
+        resetOtpExpiresAt: null,
+        resetOtpAttempts: 0,
+        loginOtpHash: null,
+        loginOtpExpiresAt: null,
+        loginOtpAttempts: 0,
+        updatedAt: new Date().toISOString(),
+      },
+    },
+  );
+
+  return { ok: true };
+}
+
+export { MAX_OTP_ATTEMPTS };
 
 export async function countAdminUsers(): Promise<number> {
   const db = await getDb();
@@ -346,4 +490,4 @@ export async function getAllAdminNotificationEmails(): Promise<string[]> {
   }
 }
 
-export { MAX_MFA_EMAILS };
+export { MAX_MFA_EMAILS, OTP_TTL_MS };

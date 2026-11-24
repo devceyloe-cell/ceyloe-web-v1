@@ -17,6 +17,7 @@ import {
   LogOut,
   Menu,
   Package,
+  MessageSquareQuote,
   Percent,
   Settings,
   Users,
@@ -43,6 +44,7 @@ const primaryNav: NavItem[] = [
   { href: "/admin/products", label: "Products", icon: Gem },
   { href: "/admin/orders", label: "Orders", icon: Package },
   { href: "/admin/discounts", label: "Discounts", icon: Percent },
+  { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
   { href: "/admin/appointments", label: "Bookings", icon: Calendar },
 ];
 
@@ -65,6 +67,7 @@ const mobileGroups: { title: string; items: NavItem[] }[] = [
       { href: "/admin/products", label: "Products", icon: Gem },
       { href: "/admin/orders", label: "Orders", icon: Package },
       { href: "/admin/discounts", label: "Discounts", icon: Percent },
+      { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
       { href: "/admin/appointments", label: "Bookings", icon: Calendar },
     ],
   },
