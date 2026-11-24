@@ -32,7 +32,11 @@ export async function GET() {
       username: session.username,
       email: profile?.email ?? null,
       emails: profile?.emails ?? [],
+      role: profile?.role ?? session.adminRole,
+      mfaEnabled: profile?.mfaEnabled ?? false,
+      active: profile?.active ?? true,
     },
+    canManageSecurity: session.adminRole === "owner",
   });
 }
 
@@ -56,7 +60,7 @@ export async function PATCH(request: NextRequest) {
     );
   }
 
-  const { mfaEnabled, emails, currentPassword, newPassword } = parsed.data;
+  const { mfaEnabled, mfaRequired, emails, currentPassword, newPassword } = parsed.data;
 
   if ((currentPassword && !newPassword) || (!currentPassword && newPassword)) {
     return NextResponse.json(
@@ -75,36 +79,68 @@ export async function PATCH(request: NextRequest) {
   }
 
   let profile = await getAdminUserById(session.id);
+  const security = await getAdminSecuritySettings();
 
-  if (emails !== undefined) {
+  if (emails !== undefined || typeof mfaEnabled === "boolean") {
     try {
-      profile = await updateAdminProfile(session.id, { emails });
+      if (typeof mfaEnabled === "boolean" && mfaEnabled && security.mfaRequired === false) {
+        const resolvedEmails =
+          emails !== undefined
+            ? emails
+            : profile?.emails ?? [];
+        if (resolvedEmails.length === 0) {
+          return NextResponse.json(
+            { error: "Add at least one MFA email before enabling MFA" },
+            { status: 400 },
+          );
+        }
+      }
+
+      profile = await updateAdminProfile(session.id, {
+        ...(emails !== undefined ? { emails } : {}),
+        ...(typeof mfaEnabled === "boolean" ? { mfaEnabled } : {}),
+      });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Could not update emails";
+      const message = err instanceof Error ? err.message : "Could not update profile";
       return NextResponse.json({ error: message }, { status: 400 });
     }
   }
 
-  const resolvedEmails = profile?.emails ?? [];
-  if (mfaEnabled && resolvedEmails.length === 0) {
+  let nextSecurity = security;
+  if (typeof mfaRequired === "boolean") {
+    if (session.adminRole !== "owner") {
+      return NextResponse.json(
+        { error: "Only owners can require MFA for all admins" },
+        { status: 403 },
+      );
+    }
+    const saved = await saveAdminSecuritySettings({ mfaRequired });
+    if (!saved) {
+      return NextResponse.json({ error: "Could not save settings" }, { status: 500 });
+    }
+    nextSecurity = saved;
+  }
+
+  const effectiveMfa =
+    nextSecurity.mfaRequired || Boolean(profile?.mfaEnabled);
+  if (effectiveMfa && (profile?.emails?.length ?? 0) === 0) {
     return NextResponse.json(
-      { error: "Add at least one MFA email before enabling MFA" },
+      { error: "Add at least one MFA email before MFA is required" },
       { status: 400 },
     );
   }
 
-  const security = await saveAdminSecuritySettings({ mfaEnabled });
-  if (!security) {
-    return NextResponse.json({ error: "Could not save settings" }, { status: 500 });
-  }
-
   return NextResponse.json({
-    security,
+    security: nextSecurity,
     profile: {
       username: session.username,
       email: profile?.email ?? null,
       emails: profile?.emails ?? [],
+      role: profile?.role ?? session.adminRole,
+      mfaEnabled: profile?.mfaEnabled ?? false,
+      active: profile?.active ?? true,
     },
+    canManageSecurity: session.adminRole === "owner",
     passwordChanged: Boolean(currentPassword && newPassword),
   });
 }

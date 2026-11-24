@@ -22,7 +22,10 @@ async function verifyToken(token: string): Promise<boolean> {
   if (!secret) return false;
   try {
     const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
-    return payload.role === "admin";
+    const adminRole = payload.adminRole;
+    return (
+      payload.role === "admin" && (adminRole === "owner" || adminRole === "staff")
+    );
   } catch {
     return false;
   }

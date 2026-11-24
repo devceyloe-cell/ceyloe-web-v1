@@ -91,9 +91,10 @@ export async function POST(request: NextRequest) {
   }
 
   const security = await getAdminSecuritySettings();
+  const needsMfa = security.mfaRequired || user.mfaEnabled;
 
-  if (!security.mfaEnabled) {
-    const token = await createSessionToken(user.id, user.username);
+  if (!needsMfa) {
+    const token = await createSessionToken(user.id, user.username, user.role);
     if (!token) {
       return NextResponse.json({ error: "Could not create session" }, { status: 500 });
     }

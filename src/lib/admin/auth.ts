@@ -2,6 +2,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { isMongoConfigured } from "@/config/env";
 import { authenticateAdminUser } from "@/lib/mongodb/admin-users";
+import { type AdminRole, isAdminRole } from "@/lib/admin/roles";
 
 const COOKIE_NAME = "ceyloe-admin-session";
 const MFA_PENDING_COOKIE = "ceyloe-admin-mfa-pending";
@@ -16,11 +17,15 @@ export function isAdminConfigured(): boolean {
   return isMongoConfigured() && Boolean(process.env.ADMIN_JWT_SECRET);
 }
 
-export async function createSessionToken(userId: string, username: string): Promise<string | null> {
+export async function createSessionToken(
+  userId: string,
+  username: string,
+  adminRole: AdminRole,
+): Promise<string | null> {
   const secret = getJwtSecret();
   if (!secret) return null;
 
-  return new SignJWT({ role: "admin", sub: userId, username })
+  return new SignJWT({ role: "admin", sub: userId, username, adminRole })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
@@ -45,7 +50,9 @@ export async function createMfaPendingToken(
 export type AdminSession = {
   id: string;
   username: string;
+  /** JWT auth marker — always "admin" when fully signed in */
   role: string;
+  adminRole: AdminRole;
 };
 
 export type AdminMfaPending = {
@@ -66,9 +73,10 @@ export async function getAdminSession(): Promise<AdminSession | null> {
     const username = typeof payload.username === "string" ? payload.username : "";
     const role = typeof payload.role === "string" ? payload.role : "admin";
     const id = typeof payload.sub === "string" ? payload.sub : "";
+    const adminRole = payload.adminRole;
 
-    if (!username || !id || role !== "admin") return null;
-    return { id, username, role };
+    if (!username || !id || role !== "admin" || !isAdminRole(adminRole)) return null;
+    return { id, username, role, adminRole };
   } catch {
     return null;
   }
@@ -100,7 +108,7 @@ export async function verifySessionToken(token: string): Promise<boolean> {
 
   try {
     const { payload } = await jwtVerify(token, secret);
-    return payload.role === "admin";
+    return payload.role === "admin" && isAdminRole(payload.adminRole);
   } catch {
     return false;
   }
@@ -143,10 +151,24 @@ export async function isAuthenticated(): Promise<boolean> {
   return Boolean(session);
 }
 
+export async function requireOwner(): Promise<AdminSession | null> {
+  const session = await getAdminSession();
+  if (!session || session.adminRole !== "owner") return null;
+  return session;
+}
+
+export async function requireAdminRole(
+  ...roles: AdminRole[]
+): Promise<AdminSession | null> {
+  const session = await getAdminSession();
+  if (!session || !roles.includes(session.adminRole)) return null;
+  return session;
+}
+
 export async function loginAdmin(username: string, password: string): Promise<string | null> {
   const user = await authenticateAdminUser(username, password);
   if (!user) return null;
-  return createSessionToken(user.id, user.username);
+  return createSessionToken(user.id, user.username, user.role);
 }
 
 export { COOKIE_NAME, MFA_PENDING_COOKIE };

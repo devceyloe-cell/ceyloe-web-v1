@@ -19,12 +19,9 @@ import {
 } from "lucide-react";
 import type { CmsPage } from "@/lib/cms/types";
 import type { AdminSession } from "@/lib/admin/auth";
+import { formatAdminRole } from "@/lib/admin/roles";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
-
-function formatRole(role: string) {
-  return role === "admin" ? "Administrator" : role;
-}
 
 type DashboardStats = {
   products: number;
@@ -149,7 +146,7 @@ export function AdminDashboard({
             </h1>
             <p className="mt-1 text-sm text-muted">
               {session
-                ? `Signed in as ${formatRole(session.role)}. Manage catalog, bookings, users, and pages.`
+                ? `Signed in as ${formatAdminRole(session.adminRole)}. Manage catalog, bookings, users, and pages.`
                 : "Manage catalog, bookings, users, and pages."}
             </p>
           </div>

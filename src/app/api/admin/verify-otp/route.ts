@@ -76,7 +76,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const token = await createSessionToken(result.user.id, result.user.username);
+  const token = await createSessionToken(
+    result.user.id,
+    result.user.username,
+    result.user.role,
+  );
   if (!token) {
     return NextResponse.json({ error: "Could not create session" }, { status: 500 });
   }

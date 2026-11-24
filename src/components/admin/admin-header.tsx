@@ -20,16 +20,19 @@ import {
   MessageSquareQuote,
   Percent,
   Settings,
+  Shield,
   Users,
   Video,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatAdminRole } from "@/lib/admin/roles";
 import { cn } from "@/lib/utils";
 
 type AdminUser = {
   username: string;
   role: string;
+  adminRole?: string;
 };
 
 type NavItem = {
@@ -48,7 +51,7 @@ const primaryNav: NavItem[] = [
   { href: "/admin/appointments", label: "Bookings", icon: Calendar },
 ];
 
-const moreNav: NavItem[] = [
+const moreNavBase: NavItem[] = [
   { href: "/admin/videos", label: "Videos", icon: Video },
   { href: "/admin/collection", label: "Collection", icon: Images },
   { href: "/admin/homepage-banner", label: "Homepage banner", icon: GalleryHorizontal },
@@ -59,45 +62,56 @@ const moreNav: NavItem[] = [
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
-const mobileGroups: { title: string; items: NavItem[] }[] = [
-  {
-    title: "Store",
-    items: [
-      { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-      { href: "/admin/products", label: "Products", icon: Gem },
-      { href: "/admin/orders", label: "Orders", icon: Package },
-      { href: "/admin/discounts", label: "Discounts", icon: Percent },
-      { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
-      { href: "/admin/appointments", label: "Bookings", icon: Calendar },
-    ],
-  },
-  {
-    title: "Content",
-    items: [
-      { href: "/admin/videos", label: "Videos", icon: Video },
-      { href: "/admin/collection", label: "Collection", icon: Images },
-      { href: "/admin/homepage-banner", label: "Homepage banner", icon: GalleryHorizontal },
-      { href: "/admin/hero-images", label: "Hero images", icon: ImagePlay },
-      { href: "/admin/team", label: "Our team", icon: Contact },
-      { href: "/admin/pages/new", label: "Pages", icon: FileText },
-    ],
-  },
-  {
-    title: "Account",
-    items: [
-      { href: "/admin/users", label: "Users", icon: Users },
-      { href: "/admin/settings", label: "Settings", icon: Settings },
-    ],
-  },
-];
+const adminsNavItem: NavItem = {
+  href: "/admin/admins",
+  label: "Admins",
+  icon: Shield,
+};
 
-function formatRole(role: string) {
-  switch (role) {
-    case "admin":
-      return "Administrator";
-    default:
-      return role.charAt(0).toUpperCase() + role.slice(1);
-  }
+function buildMoreNav(isOwner: boolean): NavItem[] {
+  if (!isOwner) return moreNavBase;
+  const settingsIndex = moreNavBase.findIndex((item) => item.href === "/admin/settings");
+  if (settingsIndex === -1) return [...moreNavBase, adminsNavItem];
+  return [
+    ...moreNavBase.slice(0, settingsIndex),
+    adminsNavItem,
+    ...moreNavBase.slice(settingsIndex),
+  ];
+}
+
+function buildMobileGroups(isOwner: boolean): { title: string; items: NavItem[] }[] {
+  return [
+    {
+      title: "Store",
+      items: [
+        { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+        { href: "/admin/products", label: "Products", icon: Gem },
+        { href: "/admin/orders", label: "Orders", icon: Package },
+        { href: "/admin/discounts", label: "Discounts", icon: Percent },
+        { href: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
+        { href: "/admin/appointments", label: "Bookings", icon: Calendar },
+      ],
+    },
+    {
+      title: "Content",
+      items: [
+        { href: "/admin/videos", label: "Videos", icon: Video },
+        { href: "/admin/collection", label: "Collection", icon: Images },
+        { href: "/admin/homepage-banner", label: "Homepage banner", icon: GalleryHorizontal },
+        { href: "/admin/hero-images", label: "Hero images", icon: ImagePlay },
+        { href: "/admin/team", label: "Our team", icon: Contact },
+        { href: "/admin/pages/new", label: "Pages", icon: FileText },
+      ],
+    },
+    {
+      title: "Account",
+      items: [
+        { href: "/admin/users", label: "Users", icon: Users },
+        ...(isOwner ? [adminsNavItem] : []),
+        { href: "/admin/settings", label: "Settings", icon: Settings },
+      ],
+    },
+  ];
 }
 
 function initials(username: string) {
@@ -149,6 +163,9 @@ export function AdminHeader({ title }: { title?: string }) {
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
+  const isOwner = user?.adminRole === "owner";
+  const moreNav = buildMoreNav(Boolean(isOwner));
+  const mobileGroups = buildMobileGroups(Boolean(isOwner));
   const moreActive = moreNav.some((item) => isActive(pathname, item));
 
   useEffect(() => {
@@ -237,7 +254,7 @@ export function AdminHeader({ title }: { title?: string }) {
               <div className="min-w-0 leading-tight">
                 <p className="truncate text-sm font-medium text-foreground">{user.username}</p>
                 <p className="text-[10px] tracking-[0.14em] text-muted uppercase">
-                  {formatRole(user.role)}
+                  {formatAdminRole(user.adminRole || user.role)}
                 </p>
               </div>
             </div>

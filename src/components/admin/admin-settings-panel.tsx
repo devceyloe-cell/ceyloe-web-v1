@@ -1,14 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { Button } from "@/components/ui/button";
+import { formatAdminRole } from "@/lib/admin/roles";
 
 const MAX_MFA_EMAILS = 5;
 
 type SettingsForm = {
   mfaEnabled: boolean;
+  mfaRequired: boolean;
   emails: string[];
   updatedAt: string | null;
 };
@@ -17,8 +20,11 @@ export function AdminSettingsPanel() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [username, setUsername] = useState("");
+  const [adminRole, setAdminRole] = useState("staff");
+  const [canManageSecurity, setCanManageSecurity] = useState(false);
   const [form, setForm] = useState<SettingsForm>({
     mfaEnabled: false,
+    mfaRequired: false,
     emails: [""],
     updatedAt: null,
   });
@@ -35,6 +41,8 @@ export function AdminSettingsPanel() {
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
         setUsername(data.profile?.username || "");
+        setAdminRole(data.profile?.role || "staff");
+        setCanManageSecurity(Boolean(data.canManageSecurity));
         const emails: string[] =
           Array.isArray(data.profile?.emails) && data.profile.emails.length > 0
             ? data.profile.emails
@@ -42,7 +50,8 @@ export function AdminSettingsPanel() {
               ? [data.profile.email]
               : [""];
         setForm({
-          mfaEnabled: Boolean(data.security?.mfaEnabled),
+          mfaEnabled: Boolean(data.profile?.mfaEnabled),
+          mfaRequired: Boolean(data.security?.mfaRequired),
           emails,
           updatedAt: data.security?.updatedAt || null,
         });
@@ -80,8 +89,9 @@ export function AdminSettingsPanel() {
     setMessage("");
 
     const cleanedEmails = form.emails.map((e) => e.trim()).filter(Boolean);
+    const personalMfaOn = form.mfaRequired || form.mfaEnabled;
 
-    if (form.mfaEnabled && cleanedEmails.length === 0) {
+    if (personalMfaOn && cleanedEmails.length === 0) {
       setError("Add at least one MFA email before enabling MFA");
       setSaving(false);
       return;
@@ -107,9 +117,8 @@ export function AdminSettingsPanel() {
       body: JSON.stringify({
         mfaEnabled: form.mfaEnabled,
         emails: cleanedEmails,
-        ...(changingPassword
-          ? { currentPassword, newPassword }
-          : {}),
+        ...(canManageSecurity ? { mfaRequired: form.mfaRequired } : {}),
+        ...(changingPassword ? { currentPassword, newPassword } : {}),
       }),
     });
 
@@ -126,10 +135,12 @@ export function AdminSettingsPanel() {
         : [""];
 
     setForm({
-      mfaEnabled: Boolean(data.security?.mfaEnabled),
+      mfaEnabled: Boolean(data.profile?.mfaEnabled),
+      mfaRequired: Boolean(data.security?.mfaRequired),
       emails,
       updatedAt: data.security?.updatedAt || null,
     });
+    setCanManageSecurity(Boolean(data.canManageSecurity));
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
@@ -139,6 +150,8 @@ export function AdminSettingsPanel() {
     setSaving(false);
   }
 
+  const mfaLockedOn = form.mfaRequired;
+
   return (
     <div>
       <AdminHeader title="Settings" />
@@ -146,8 +159,8 @@ export function AdminSettingsPanel() {
         <p className="text-xs uppercase tracking-[0.2em] text-gold">Security</p>
         <h1 className="mt-2 font-display text-3xl font-light">Admin settings</h1>
         <p className="mt-2 text-sm text-muted">
-          Change your password and configure MFA. Listed emails also receive new-order
-          alerts when a Stripe payment completes.
+          Manage your password and personal MFA. Listed emails receive MFA codes and
+          new-order alerts.
         </p>
 
         {loading ? (
@@ -158,7 +171,18 @@ export function AdminSettingsPanel() {
               <div>
                 <p className="text-xs uppercase tracking-widest text-muted">Signed in email</p>
                 <p className="mt-1 text-sm font-medium">{username}</p>
+                <p className="mt-1 text-xs text-muted">{formatAdminRole(adminRole)}</p>
               </div>
+
+              {canManageSecurity ? (
+                <p className="text-sm text-muted">
+                  Manage other admin accounts on the{" "}
+                  <Link href="/admin/admins" className="text-gold underline-offset-2 hover:underline">
+                    Admins
+                  </Link>{" "}
+                  page.
+                </p>
+              ) : null}
 
               <h2 className="font-display text-xl font-light">Change password</h2>
               <p className="text-xs text-muted">
@@ -196,10 +220,10 @@ export function AdminSettingsPanel() {
             </section>
 
             <section className="space-y-4 border border-border bg-surface p-6">
-              <h2 className="font-display text-xl font-light">Notification emails</h2>
+              <h2 className="font-display text-xl font-light">Your MFA emails</h2>
               <p className="text-xs text-muted">
-                Used for MFA one-time codes and order-success emails with full payment and
-                delivery details (up to {MAX_MFA_EMAILS}).
+                Used for your MFA one-time codes and order-success emails (up to{" "}
+                {MAX_MFA_EMAILS}).
               </p>
 
               <div className="space-y-3">
@@ -211,7 +235,7 @@ export function AdminSettingsPanel() {
                       onChange={(e) => updateEmail(index, e.target.value)}
                       className="w-full border border-border bg-background px-4 py-3 text-sm focus:border-gold focus:outline-none"
                       placeholder={`admin${index + 1}@ceyloe.com`}
-                      required={form.mfaEnabled && index === 0}
+                      required={(mfaLockedOn || form.mfaEnabled) && index === 0}
                     />
                     <button
                       type="button"
@@ -238,21 +262,48 @@ export function AdminSettingsPanel() {
                 Add email
               </Button>
 
-              <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border bg-background p-4">
+              <label
+                className={`flex items-start gap-3 rounded-md border border-border bg-background p-4 ${
+                  mfaLockedOn ? "cursor-not-allowed opacity-80" : "cursor-pointer"
+                }`}
+              >
                 <input
                   type="checkbox"
-                  checked={form.mfaEnabled}
+                  checked={mfaLockedOn || form.mfaEnabled}
+                  disabled={mfaLockedOn}
                   onChange={(e) => setForm((s) => ({ ...s, mfaEnabled: e.target.checked }))}
                   className="mt-1 h-4 w-4 accent-[var(--gold,#C09A4A)]"
                 />
                 <span>
-                  <span className="block text-sm font-medium">Require MFA (email OTP)</span>
+                  <span className="block text-sm font-medium">Enable MFA for my account</span>
                   <span className="mt-1 block text-xs text-muted">
-                    Defaults to on in production. Turn off only for trusted local/staging
-                    environments.
+                    {mfaLockedOn
+                      ? "MFA is required for all admins by an owner. Your personal toggle is locked on."
+                      : "When enabled, sign-in requires an email OTP sent only to your addresses."}
                   </span>
                 </span>
               </label>
+
+              {canManageSecurity ? (
+                <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border bg-background p-4">
+                  <input
+                    type="checkbox"
+                    checked={form.mfaRequired}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, mfaRequired: e.target.checked }))
+                    }
+                    className="mt-1 h-4 w-4 accent-[var(--gold,#C09A4A)]"
+                  />
+                  <span>
+                    <span className="block text-sm font-medium">
+                      Require MFA for all admins
+                    </span>
+                    <span className="mt-1 block text-xs text-muted">
+                      Owner setting. When on, every admin must complete MFA at login.
+                    </span>
+                  </span>
+                </label>
+              ) : null}
 
               {form.updatedAt ? (
                 <p className="text-xs text-muted">

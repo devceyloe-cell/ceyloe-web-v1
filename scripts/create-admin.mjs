@@ -2,12 +2,13 @@
  * Create an admin user in MongoDB (password stored as scrypt hash).
  *
  * Usage:
- *   node --env-file=.env.local scripts/create-admin.mjs <email> <password>
+ *   node --env-file=.env.local scripts/create-admin.mjs <email> <password> [--role=owner|staff]
  *
  * Example:
- *   node --env-file=.env.local scripts/create-admin.mjs admin@ceyloe.com 'StrongPass1!'
+ *   node --env-file=.env.local scripts/create-admin.mjs admin@ceyloe.com 'StrongPass1!' --role=staff
  *
- * Username must be an email address (used for sign-in and password reset).
+ * Defaults: role=owner if no active owners exist, otherwise staff.
+ * MFA defaults to on in production, off in development.
  */
 import { randomBytes, scrypt } from "node:crypto";
 import { promisify } from "node:util";
@@ -23,15 +24,29 @@ async function hashPassword(password) {
   return `${salt}:${derived.toString("hex")}`;
 }
 
+function parseArgs(argv) {
+  const positional = [];
+  let role = null;
+  for (const arg of argv) {
+    if (arg.startsWith("--role=")) {
+      role = arg.slice("--role=".length).trim().toLowerCase();
+    } else if (!arg.startsWith("--")) {
+      positional.push(arg);
+    }
+  }
+  return { positional, role };
+}
+
 async function main() {
-  const username = process.argv[2]?.trim().toLowerCase();
-  const password = process.argv[3];
-  const emailArg = process.argv[4]?.trim().toLowerCase() || null;
+  const { positional, role: roleArg } = parseArgs(process.argv.slice(2));
+  const username = positional[0]?.trim().toLowerCase();
+  const password = positional[1];
+  const emailArg = positional[2]?.trim().toLowerCase() || null;
   const email = emailArg || (username && EMAIL_RE.test(username) ? username : null);
 
   if (!username || !password) {
     console.error(
-      "Usage: node --env-file=.env.local scripts/create-admin.mjs <email> <password>",
+      "Usage: node --env-file=.env.local scripts/create-admin.mjs <email> <password> [--role=owner|staff]",
     );
     process.exit(1);
   }
@@ -48,6 +63,11 @@ async function main() {
 
   if (emailArg && !EMAIL_RE.test(emailArg)) {
     console.error("Invalid email address.");
+    process.exit(1);
+  }
+
+  if (roleArg && roleArg !== "owner" && roleArg !== "staff") {
+    console.error('Role must be "owner" or "staff".');
     process.exit(1);
   }
 
@@ -72,6 +92,13 @@ async function main() {
     process.exit(1);
   }
 
+  const ownerCount = await collection.countDocuments({
+    role: "owner",
+    active: { $ne: false },
+  });
+  const role = roleArg || (ownerCount === 0 ? "owner" : "staff");
+  const mfaEnabled = process.env.NODE_ENV === "production";
+
   const passwordHash = await hashPassword(password);
   const now = new Date().toISOString();
 
@@ -80,10 +107,13 @@ async function main() {
     passwordHash,
     email: email || username,
     emails: [email || username],
+    role,
+    mfaEnabled,
+    active: true,
     createdAt: now,
   });
 
-  console.log(`Admin user created: ${username}`);
+  console.log(`Admin user created: ${username} (${role}, mfa=${mfaEnabled ? "on" : "off"})`);
   await client.close();
 }
 

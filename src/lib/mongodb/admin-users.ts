@@ -1,6 +1,11 @@
 import { createHash, randomInt } from "crypto";
 import { ObjectId } from "mongodb";
 import { hashPassword, verifyPassword } from "@/lib/admin/password";
+import {
+  type AdminRole,
+  isAdminRole,
+  normalizeAdminRole,
+} from "@/lib/admin/roles";
 import { getDb } from "@/lib/mongodb/client";
 
 const COLLECTION = "admin_users";
@@ -15,6 +20,9 @@ type StoredAdminUser = {
   /** @deprecated use emails — kept for older documents */
   email?: string | null;
   emails?: string[];
+  role?: AdminRole;
+  mfaEnabled?: boolean;
+  active?: boolean;
   loginOtpHash?: string | null;
   loginOtpExpiresAt?: string | null;
   loginOtpAttempts?: number;
@@ -36,8 +44,15 @@ export type AdminUser = {
   email: string | null;
   /** All MFA delivery addresses */
   emails: string[];
+  role: AdminRole;
+  mfaEnabled: boolean;
+  active: boolean;
   createdAt: string;
 };
+
+function defaultPersonalMfaEnabled(): boolean {
+  return process.env.NODE_ENV === "production";
+}
 
 function normalizeUsername(username: string) {
   return username.trim().toLowerCase();
@@ -85,8 +100,46 @@ function toAdminUser(doc: StoredAdminUser & { _id: ObjectId }): AdminUser {
     username: doc.username,
     email: emails[0] ?? null,
     emails,
+    role: normalizeAdminRole(doc.role, "owner"),
+    mfaEnabled:
+      typeof doc.mfaEnabled === "boolean" ? doc.mfaEnabled : defaultPersonalMfaEnabled(),
+    active: doc.active !== false,
     createdAt: doc.createdAt,
   };
+}
+
+let migrationPromise: Promise<void> | null = null;
+
+async function ensureAdminUserDefaults() {
+  if (migrationPromise) return migrationPromise;
+  migrationPromise = (async () => {
+    try {
+      const db = await getDb();
+      if (!db) return;
+      const collection = db.collection<StoredAdminUser>(COLLECTION);
+      const now = new Date().toISOString();
+      await collection.updateMany(
+        {
+          $or: [
+            { role: { $exists: false } },
+            { role: { $nin: ["owner", "staff"] } },
+          ],
+        } as Record<string, unknown>,
+        { $set: { role: "owner", updatedAt: now } },
+      );
+      await collection.updateMany(
+        { mfaEnabled: { $exists: false } },
+        { $set: { mfaEnabled: defaultPersonalMfaEnabled(), updatedAt: now } },
+      );
+      await collection.updateMany(
+        { active: { $exists: false } },
+        { $set: { active: true, updatedAt: now } },
+      );
+    } catch (err) {
+      console.error("[admin-users] ensureAdminUserDefaults failed:", err);
+    }
+  })();
+  return migrationPromise;
 }
 
 async function getCollection() {
@@ -94,6 +147,7 @@ async function getCollection() {
   if (!db) throw new Error("MongoDB is not configured");
   const collection = db.collection<StoredAdminUser>(COLLECTION);
   await collection.createIndex({ username: 1 }, { unique: true });
+  await ensureAdminUserDefaults();
   return collection;
 }
 
@@ -127,6 +181,7 @@ export async function authenticateAdminUser(
 ): Promise<AdminUser | null> {
   const user = await getAdminUserByUsername(username);
   if (!user) return null;
+  if (!user.active) return null;
 
   const valid = await verifyPassword(password, user.passwordHash);
   if (!valid) return null;
@@ -163,7 +218,11 @@ export function validatePasswordStrength(password: string): void {
 export async function createAdminUser(
   username: string,
   password: string,
-  email?: string,
+  options?: {
+    email?: string;
+    role?: AdminRole;
+    mfaEnabled?: boolean;
+  },
 ): Promise<AdminUser> {
   const normalized = normalizeUsername(username);
   if (!normalized) throw new Error("Username is required");
@@ -173,7 +232,7 @@ export async function createAdminUser(
 
   validatePasswordStrength(password);
 
-  const emails = normalizeMfaEmails([email?.trim() || normalized]);
+  const emails = normalizeMfaEmails([options?.email?.trim() || normalized]);
   if (emails.length === 0) {
     throw new Error("Enter a valid email address");
   }
@@ -182,6 +241,22 @@ export async function createAdminUser(
   const existing = await collection.findOne({ username: normalized });
   if (existing) throw new Error("Email already registered");
 
+  const ownerCount = await collection.countDocuments({
+    role: "owner",
+    active: { $ne: false },
+  });
+  const role: AdminRole =
+    options?.role && isAdminRole(options.role)
+      ? options.role
+      : ownerCount === 0
+        ? "owner"
+        : "staff";
+
+  const mfaEnabled =
+    typeof options?.mfaEnabled === "boolean"
+      ? options.mfaEnabled
+      : defaultPersonalMfaEnabled();
+
   const now = new Date().toISOString();
   const passwordHash = await hashPassword(password);
   const result = await collection.insertOne({
@@ -189,6 +264,9 @@ export async function createAdminUser(
     passwordHash,
     email: emails[0],
     emails,
+    role,
+    mfaEnabled,
+    active: true,
     createdAt: now,
   });
 
@@ -197,13 +275,16 @@ export async function createAdminUser(
     username: normalized,
     email: emails[0],
     emails,
+    role,
+    mfaEnabled,
+    active: true,
     createdAt: now,
   };
 }
 
 export async function updateAdminProfile(
   id: string,
-  input: { emails?: string[] },
+  input: { emails?: string[]; mfaEnabled?: boolean },
 ): Promise<AdminUser | null> {
   if (!ObjectId.isValid(id)) return null;
 
@@ -222,6 +303,10 @@ export async function updateAdminProfile(
     }
     updates.emails = emails;
     updates.email = emails[0] ?? null;
+  }
+
+  if (typeof input.mfaEnabled === "boolean") {
+    updates.mfaEnabled = input.mfaEnabled;
   }
 
   const result = await collection.findOneAndUpdate(
@@ -270,6 +355,7 @@ export async function issueAdminLoginOtp(username: string): Promise<{
   if (!doc) return null;
 
   const user = toAdminUser(doc as StoredAdminUser & { _id: ObjectId });
+  if (!user.active) return null;
   if (user.emails.length === 0) {
     throw new Error("Admin MFA emails are required. Set them in Admin → Settings.");
   }
@@ -381,6 +467,8 @@ export async function findAdminForPasswordReset(identifier: string): Promise<{
   if (!doc) return null;
 
   const user = toAdminUser(doc as StoredAdminUser & { _id: ObjectId });
+  if (!user.active) return null;
+
   let sendTo: string | null = null;
   if (isValidAdminEmail(user.username)) {
     sendTo = user.username;
@@ -508,14 +596,102 @@ export async function countAdminUsers(): Promise<number> {
   return db.collection<StoredAdminUser>(COLLECTION).countDocuments();
 }
 
+export async function countActiveOwners(excludeId?: string): Promise<number> {
+  const collection = await getCollection();
+  const filter: Record<string, unknown> = {
+    role: "owner",
+    active: { $ne: false },
+  };
+  if (excludeId && ObjectId.isValid(excludeId)) {
+    filter._id = { $ne: new ObjectId(excludeId) };
+  }
+  return collection.countDocuments(filter);
+}
+
+export async function listAdminUsers(): Promise<AdminUser[]> {
+  const collection = await getCollection();
+  const docs = await collection.find({}).sort({ createdAt: 1 }).toArray();
+  return docs.map((doc) => toAdminUser(doc as StoredAdminUser & { _id: ObjectId }));
+}
+
+export async function updateAdminByOwner(
+  id: string,
+  input: { role?: AdminRole; active?: boolean; mfaEnabled?: boolean },
+  actorId: string,
+): Promise<AdminUser> {
+  if (!ObjectId.isValid(id)) throw new Error("Admin not found");
+
+  const collection = await getCollection();
+  const doc = await collection.findOne({ _id: new ObjectId(id) });
+  if (!doc) throw new Error("Admin not found");
+
+  const current = toAdminUser(doc as StoredAdminUser & { _id: ObjectId });
+  const nextRole = input.role !== undefined ? normalizeAdminRole(input.role) : current.role;
+  const nextActive = input.active !== undefined ? Boolean(input.active) : current.active;
+
+  if (id === actorId && input.active === false) {
+    throw new Error("You cannot deactivate your own account");
+  }
+
+  const becomingNonOwner =
+    current.role === "owner" && (nextRole !== "owner" || nextActive === false);
+  if (becomingNonOwner) {
+    const remainingOwners = await countActiveOwners(id);
+    if (remainingOwners === 0) {
+      throw new Error("Cannot remove or demote the last active owner");
+    }
+  }
+
+  const updates: Partial<StoredAdminUser> = {
+    updatedAt: new Date().toISOString(),
+  };
+  if (input.role !== undefined) updates.role = nextRole;
+  if (input.active !== undefined) updates.active = nextActive;
+  if (typeof input.mfaEnabled === "boolean") updates.mfaEnabled = input.mfaEnabled;
+
+  const result = await collection.findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    { $set: updates },
+    { returnDocument: "after" },
+  );
+  if (!result) throw new Error("Admin not found");
+  return toAdminUser(result as StoredAdminUser & { _id: ObjectId });
+}
+
+export async function setAdminPasswordByOwner(id: string, newPassword: string): Promise<void> {
+  if (!ObjectId.isValid(id)) throw new Error("Admin not found");
+  validatePasswordStrength(newPassword);
+
+  const collection = await getCollection();
+  const doc = await collection.findOne({ _id: new ObjectId(id) });
+  if (!doc) throw new Error("Admin not found");
+
+  const passwordHash = await hashPassword(newPassword);
+  await collection.updateOne(
+    { _id: doc._id },
+    {
+      $set: {
+        passwordHash,
+        loginOtpHash: null,
+        loginOtpExpiresAt: null,
+        loginOtpAttempts: 0,
+        resetOtpHash: null,
+        resetOtpExpiresAt: null,
+        resetOtpAttempts: 0,
+        updatedAt: new Date().toISOString(),
+      },
+    },
+  );
+}
+
 /**
- * Unique emails from every admin user’s MFA email list.
- * Used for order-success notifications (and MFA OTP delivery).
+ * Unique emails from every active admin user’s MFA email list.
+ * Used for order-success notifications.
  */
 export async function getAllAdminNotificationEmails(): Promise<string[]> {
   try {
     const collection = await getCollection();
-    const docs = await collection.find({}).toArray();
+    const docs = await collection.find({ active: { $ne: false } }).toArray();
     const seen = new Set<string>();
     const out: string[] = [];
     for (const doc of docs) {

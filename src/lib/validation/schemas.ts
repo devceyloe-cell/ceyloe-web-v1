@@ -78,13 +78,30 @@ export const AdminVerifyOtpSchema = z.object({
 });
 
 export const AdminSecuritySettingsSchema = z.object({
-  mfaEnabled: z.boolean(),
+  /** Personal MFA preference for the signed-in admin */
+  mfaEnabled: z.boolean().optional(),
+  /** Owner-only: force MFA for every admin login */
+  mfaRequired: z.boolean().optional(),
   emails: z
     .array(EmailSchema)
     .max(5, "You can add up to 5 MFA emails")
     .optional(),
   currentPassword: z.string().min(1).max(200).optional(),
   newPassword: z.string().min(12).max(200).optional(),
+});
+
+export const AdminCreateSchema = z.object({
+  email: EmailSchema,
+  password: z.string().min(12).max(200),
+  role: z.enum(["owner", "staff"]).default("staff"),
+  mfaEnabled: z.boolean().optional(),
+});
+
+export const AdminUpdateSchema = z.object({
+  role: z.enum(["owner", "staff"]).optional(),
+  active: z.boolean().optional(),
+  mfaEnabled: z.boolean().optional(),
+  password: z.string().min(12).max(200).optional(),
 });
 
 export type ContactFormData = z.infer<typeof ContactFormSchema>;
